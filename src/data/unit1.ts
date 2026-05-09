@@ -1,0 +1,535 @@
+import type { Unit } from "@/core/types";
+
+export const unit1: Unit = {
+  id: 1,
+  order: 1,
+  titleKk: "Сәлем!",
+  titleEn: "Hello!",
+  cefrLevel: "A1",
+  emoji: "👋",
+  description: "Greetings, the Kazakh alphabet, and numbers 1–10.",
+  culturalNote:
+    "Kazakhs greet warmly, often with both hands or a hand over the heart. 'Сәлеметсіз бе' is the formal version of 'Сәлем' — used with elders and strangers.",
+  lessons: [
+    {
+      id: "u1-l1",
+      unitId: 1,
+      order: 1,
+      titleKk: "Сәлемдесу",
+      titleEn: "Greetings & Introductions",
+      vocab: [
+        { id: "v-salem", kazakh: "сәлем", english: "hi (informal)" },
+        { id: "v-salemetsiz", kazakh: "сәлеметсіз бе", english: "hello (formal)" },
+        { id: "v-rakhmet", kazakh: "рақмет", english: "thank you" },
+        { id: "v-iya", kazakh: "иә", english: "yes" },
+        { id: "v-zhok", kazakh: "жоқ", english: "no" },
+        { id: "v-kosh", kazakh: "қош", english: "bye" },
+      ],
+      exercises: [
+        {
+          id: "u1-l1-e1",
+          type: "MULTIPLE_CHOICE",
+          prompt: {
+            type: "MULTIPLE_CHOICE",
+            promptKk: "сәлем",
+            questionEn: "What does this mean?",
+            options: ["Hello", "Thank you", "Goodbye", "Yes"],
+            correctAns: "Hello",
+          },
+        },
+        {
+          id: "u1-l1-e2",
+          type: "MULTIPLE_CHOICE",
+          prompt: {
+            type: "MULTIPLE_CHOICE",
+            promptKk: "рақмет",
+            questionEn: "What does this mean?",
+            options: ["Please", "Sorry", "Thank you", "Welcome"],
+            correctAns: "Thank you",
+          },
+        },
+        {
+          id: "u1-l1-e3",
+          type: "LISTENING",
+          prompt: {
+            type: "LISTENING",
+            audioKk: "сәлеметсіз бе",
+            options: ["сәлеметсіз бе", "сәлем", "рақмет", "қош"],
+            correctAns: "сәлеметсіз бе",
+          },
+        },
+        {
+          id: "u1-l1-e4",
+          type: "TRANSLATE_KK_EN",
+          prompt: {
+            type: "TRANSLATE_KK_EN",
+            promptKk: "иә",
+            options: ["yes", "no", "maybe", "thanks"],
+            correctAns: "yes",
+          },
+        },
+        {
+          id: "u1-l1-e5",
+          type: "TRANSLATE_KK_EN",
+          prompt: {
+            type: "TRANSLATE_KK_EN",
+            promptKk: "жоқ",
+            options: ["yes", "no", "now", "good"],
+            correctAns: "no",
+          },
+        },
+        {
+          id: "u1-l1-e6",
+          type: "MATCH_PAIRS",
+          prompt: {
+            type: "MATCH_PAIRS",
+            pairs: [
+              { kazakh: "сәлем", english: "hi" },
+              { kazakh: "рақмет", english: "thank you" },
+              { kazakh: "иә", english: "yes" },
+              { kazakh: "жоқ", english: "no" },
+              { kazakh: "қош", english: "bye" },
+            ],
+          },
+        },
+        {
+          id: "u1-l1-e7",
+          type: "TRANSLATE_EN_KK",
+          prompt: {
+            type: "TRANSLATE_EN_KK",
+            promptEn: "Hello (informal)",
+            tiles: ["сәлем", "рақмет", "қош", "иә"],
+            correctAns: ["сәлем"],
+          },
+        },
+        {
+          id: "u1-l1-e8",
+          type: "TRANSLATE_EN_KK",
+          prompt: {
+            type: "TRANSLATE_EN_KK",
+            promptEn: "Thank you",
+            tiles: ["қош", "сәлем", "рақмет", "жоқ"],
+            correctAns: ["рақмет"],
+          },
+        },
+        {
+          id: "u1-l1-e9",
+          type: "FILL_BLANK",
+          prompt: {
+            type: "FILL_BLANK",
+            sentenceKkParts: ["", ", қалайсыз?"],
+            options: ["сәлем", "жоқ", "иә"],
+            correctAns: "сәлем",
+            hintEn: "Hi, how are you?",
+          },
+        },
+        {
+          id: "u1-l1-e10",
+          type: "MULTIPLE_CHOICE",
+          prompt: {
+            type: "MULTIPLE_CHOICE",
+            promptKk: "қош",
+            questionEn: "What does this mean?",
+            options: ["Bye", "Now", "Why", "Hi"],
+            correctAns: "Bye",
+          },
+        },
+        {
+          id: "u1-l1-e11",
+          type: "LISTENING",
+          prompt: {
+            type: "LISTENING",
+            audioKk: "рақмет",
+            options: ["сәлем", "рақмет", "иә", "жоқ"],
+            correctAns: "рақмет",
+          },
+        },
+        {
+          id: "u1-l1-e12",
+          type: "TRANSLATE_EN_KK",
+          prompt: {
+            type: "TRANSLATE_EN_KK",
+            promptEn: "Goodbye",
+            tiles: ["қош", "сәлем", "рақмет", "иә"],
+            correctAns: ["қош"],
+          },
+        },
+      ],
+    },
+    {
+      id: "u1-l2",
+      unitId: 1,
+      order: 2,
+      titleKk: "Әліпби",
+      titleEn: "The Alphabet",
+      vocab: [
+        { id: "v-alpha-a", kazakh: "ана", english: "mother" },
+        { id: "v-alpha-bala", kazakh: "бала", english: "child" },
+        { id: "v-alpha-kitap", kazakh: "кітап", english: "book" },
+        { id: "v-alpha-koz", kazakh: "көз", english: "eye" },
+        { id: "v-alpha-uy", kazakh: "үй", english: "house" },
+      ],
+      exercises: [
+        {
+          id: "u1-l2-e1",
+          type: "MULTIPLE_CHOICE",
+          prompt: {
+            type: "MULTIPLE_CHOICE",
+            promptKk: "ана",
+            questionEn: "What does this mean?",
+            options: ["mother", "father", "child", "house"],
+            correctAns: "mother",
+          },
+        },
+        {
+          id: "u1-l2-e2",
+          type: "MULTIPLE_CHOICE",
+          prompt: {
+            type: "MULTIPLE_CHOICE",
+            promptKk: "бала",
+            questionEn: "What does this mean?",
+            options: ["dog", "child", "ball", "book"],
+            correctAns: "child",
+          },
+        },
+        {
+          id: "u1-l2-e3",
+          type: "LISTENING",
+          prompt: {
+            type: "LISTENING",
+            audioKk: "кітап",
+            options: ["кітап", "көз", "үй", "ана"],
+            correctAns: "кітап",
+          },
+        },
+        {
+          id: "u1-l2-e4",
+          type: "TRANSLATE_KK_EN",
+          prompt: {
+            type: "TRANSLATE_KK_EN",
+            promptKk: "көз",
+            options: ["eye", "ear", "hand", "leg"],
+            correctAns: "eye",
+          },
+        },
+        {
+          id: "u1-l2-e5",
+          type: "TRANSLATE_KK_EN",
+          prompt: {
+            type: "TRANSLATE_KK_EN",
+            promptKk: "үй",
+            options: ["house", "tree", "city", "road"],
+            correctAns: "house",
+          },
+        },
+        {
+          id: "u1-l2-e6",
+          type: "MATCH_PAIRS",
+          prompt: {
+            type: "MATCH_PAIRS",
+            pairs: [
+              { kazakh: "ана", english: "mother" },
+              { kazakh: "бала", english: "child" },
+              { kazakh: "кітап", english: "book" },
+              { kazakh: "көз", english: "eye" },
+              { kazakh: "үй", english: "house" },
+            ],
+          },
+        },
+        {
+          id: "u1-l2-e7",
+          type: "TRANSLATE_EN_KK",
+          prompt: {
+            type: "TRANSLATE_EN_KK",
+            promptEn: "book",
+            tiles: ["кітап", "ана", "бала", "үй"],
+            correctAns: ["кітап"],
+          },
+        },
+        {
+          id: "u1-l2-e8",
+          type: "FILL_BLANK",
+          prompt: {
+            type: "FILL_BLANK",
+            sentenceKkParts: ["Менің ", "м үлкен."],
+            options: ["үй", "ана", "көз"],
+            correctAns: "үй",
+            hintEn: "My house is big.",
+          },
+        },
+        {
+          id: "u1-l2-e9",
+          type: "LISTENING",
+          prompt: {
+            type: "LISTENING",
+            audioKk: "ана",
+            options: ["ана", "бала", "үй", "көз"],
+            correctAns: "ана",
+          },
+        },
+        {
+          id: "u1-l2-e10",
+          type: "TRANSLATE_EN_KK",
+          prompt: {
+            type: "TRANSLATE_EN_KK",
+            promptEn: "child",
+            tiles: ["бала", "ана", "көз", "кітап"],
+            correctAns: ["бала"],
+          },
+        },
+      ],
+    },
+    {
+      id: "u1-l3",
+      unitId: 1,
+      order: 3,
+      titleKk: "Сандар 1–10",
+      titleEn: "Numbers 1–10",
+      vocab: [
+        { id: "v-num-1", kazakh: "бір", english: "one" },
+        { id: "v-num-2", kazakh: "екі", english: "two" },
+        { id: "v-num-3", kazakh: "үш", english: "three" },
+        { id: "v-num-4", kazakh: "төрт", english: "four" },
+        { id: "v-num-5", kazakh: "бес", english: "five" },
+        { id: "v-num-6", kazakh: "алты", english: "six" },
+        { id: "v-num-7", kazakh: "жеті", english: "seven" },
+        { id: "v-num-8", kazakh: "сегіз", english: "eight" },
+        { id: "v-num-9", kazakh: "тоғыз", english: "nine" },
+        { id: "v-num-10", kazakh: "он", english: "ten" },
+      ],
+      exercises: [
+        {
+          id: "u1-l3-e1",
+          type: "MULTIPLE_CHOICE",
+          prompt: {
+            type: "MULTIPLE_CHOICE",
+            promptKk: "бір",
+            questionEn: "Which number?",
+            options: ["1", "2", "3", "4"],
+            correctAns: "1",
+          },
+        },
+        {
+          id: "u1-l3-e2",
+          type: "MULTIPLE_CHOICE",
+          prompt: {
+            type: "MULTIPLE_CHOICE",
+            promptKk: "бес",
+            questionEn: "Which number?",
+            options: ["3", "4", "5", "6"],
+            correctAns: "5",
+          },
+        },
+        {
+          id: "u1-l3-e3",
+          type: "LISTENING",
+          prompt: {
+            type: "LISTENING",
+            audioKk: "үш",
+            options: ["екі", "үш", "төрт", "бес"],
+            correctAns: "үш",
+          },
+        },
+        {
+          id: "u1-l3-e4",
+          type: "MATCH_PAIRS",
+          prompt: {
+            type: "MATCH_PAIRS",
+            pairs: [
+              { kazakh: "бір", english: "1" },
+              { kazakh: "екі", english: "2" },
+              { kazakh: "үш", english: "3" },
+              { kazakh: "бес", english: "5" },
+              { kazakh: "он", english: "10" },
+            ],
+          },
+        },
+        {
+          id: "u1-l3-e5",
+          type: "TRANSLATE_KK_EN",
+          prompt: {
+            type: "TRANSLATE_KK_EN",
+            promptKk: "тоғыз",
+            options: ["seven", "eight", "nine", "ten"],
+            correctAns: "nine",
+          },
+        },
+        {
+          id: "u1-l3-e6",
+          type: "TRANSLATE_EN_KK",
+          prompt: {
+            type: "TRANSLATE_EN_KK",
+            promptEn: "ten",
+            tiles: ["он", "бір", "екі", "үш"],
+            correctAns: ["он"],
+          },
+        },
+        {
+          id: "u1-l3-e7",
+          type: "MULTIPLE_CHOICE",
+          prompt: {
+            type: "MULTIPLE_CHOICE",
+            promptKk: "сегіз",
+            questionEn: "Which number?",
+            options: ["6", "7", "8", "9"],
+            correctAns: "8",
+          },
+        },
+        {
+          id: "u1-l3-e8",
+          type: "FILL_BLANK",
+          prompt: {
+            type: "FILL_BLANK",
+            sentenceKkParts: ["", " + бір = екі"],
+            options: ["бір", "екі", "үш"],
+            correctAns: "бір",
+            hintEn: "1 + 1 = 2",
+          },
+        },
+        {
+          id: "u1-l3-e9",
+          type: "LISTENING",
+          prompt: {
+            type: "LISTENING",
+            audioKk: "жеті",
+            options: ["жеті", "алты", "сегіз", "тоғыз"],
+            correctAns: "жеті",
+          },
+        },
+        {
+          id: "u1-l3-e10",
+          type: "TRANSLATE_EN_KK",
+          prompt: {
+            type: "TRANSLATE_EN_KK",
+            promptEn: "four",
+            tiles: ["төрт", "бес", "алты", "үш"],
+            correctAns: ["төрт"],
+          },
+        },
+      ],
+    },
+    {
+      id: "u1-l4",
+      unitId: 1,
+      order: 4,
+      titleKk: "Қалайсыз?",
+      titleEn: "How are you?",
+      vocab: [
+        { id: "v-qalay", kazakh: "қалайсыз", english: "how are you (formal)" },
+        { id: "v-jaksy", kazakh: "жақсы", english: "good" },
+        { id: "v-zhaman", kazakh: "жаман", english: "bad" },
+        { id: "v-keshirin", kazakh: "кешіріңіз", english: "excuse me / sorry" },
+        { id: "v-otinish", kazakh: "өтініш", english: "please" },
+      ],
+      exercises: [
+        {
+          id: "u1-l4-e1",
+          type: "MULTIPLE_CHOICE",
+          prompt: {
+            type: "MULTIPLE_CHOICE",
+            promptKk: "жақсы",
+            questionEn: "What does this mean?",
+            options: ["bad", "good", "okay", "sad"],
+            correctAns: "good",
+          },
+        },
+        {
+          id: "u1-l4-e2",
+          type: "TRANSLATE_KK_EN",
+          prompt: {
+            type: "TRANSLATE_KK_EN",
+            promptKk: "өтініш",
+            options: ["please", "thanks", "sorry", "yes"],
+            correctAns: "please",
+          },
+        },
+        {
+          id: "u1-l4-e3",
+          type: "LISTENING",
+          prompt: {
+            type: "LISTENING",
+            audioKk: "қалайсыз",
+            options: ["қалайсыз", "жақсы", "жаман", "өтініш"],
+            correctAns: "қалайсыз",
+          },
+        },
+        {
+          id: "u1-l4-e4",
+          type: "FILL_BLANK",
+          prompt: {
+            type: "FILL_BLANK",
+            sentenceKkParts: ["Сәлем, ", "?"],
+            options: ["қалайсыз", "өтініш", "жаман"],
+            correctAns: "қалайсыз",
+            hintEn: "Hi, how are you?",
+          },
+        },
+        {
+          id: "u1-l4-e5",
+          type: "MATCH_PAIRS",
+          prompt: {
+            type: "MATCH_PAIRS",
+            pairs: [
+              { kazakh: "жақсы", english: "good" },
+              { kazakh: "жаман", english: "bad" },
+              { kazakh: "өтініш", english: "please" },
+              { kazakh: "кешіріңіз", english: "excuse me" },
+              { kazakh: "қалайсыз", english: "how are you" },
+            ],
+          },
+        },
+        {
+          id: "u1-l4-e6",
+          type: "TRANSLATE_EN_KK",
+          prompt: {
+            type: "TRANSLATE_EN_KK",
+            promptEn: "please",
+            tiles: ["өтініш", "рақмет", "иә", "жоқ"],
+            correctAns: ["өтініш"],
+          },
+        },
+        {
+          id: "u1-l4-e7",
+          type: "MULTIPLE_CHOICE",
+          prompt: {
+            type: "MULTIPLE_CHOICE",
+            promptKk: "кешіріңіз",
+            questionEn: "What does this mean?",
+            options: ["please", "excuse me", "thank you", "goodbye"],
+            correctAns: "excuse me",
+          },
+        },
+        {
+          id: "u1-l4-e8",
+          type: "TRANSLATE_EN_KK",
+          prompt: {
+            type: "TRANSLATE_EN_KK",
+            promptEn: "good",
+            tiles: ["жақсы", "жаман", "иә", "жоқ"],
+            correctAns: ["жақсы"],
+          },
+        },
+        {
+          id: "u1-l4-e9",
+          type: "LISTENING",
+          prompt: {
+            type: "LISTENING",
+            audioKk: "жаман",
+            options: ["жаман", "жақсы", "өтініш", "сәлем"],
+            correctAns: "жаман",
+          },
+        },
+        {
+          id: "u1-l4-e10",
+          type: "TRANSLATE_KK_EN",
+          prompt: {
+            type: "TRANSLATE_KK_EN",
+            promptKk: "жаман",
+            options: ["bad", "good", "great", "ok"],
+            correctAns: "bad",
+          },
+        },
+      ],
+    },
+  ],
+};

@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: "Inter", "Noto Sans", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background-color: #f8f9fa;
+  color: #1a1a2e;
+}
+
+.dark body {
+  background-color: #1a1a2e;
+  color: #f8f9fa;
+}
+
+.kk {
+  font-family: "Noto Sans", "Inter", system-ui, sans-serif;
+  font-feature-settings: "ss01" on, "cv01" on;
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-2xl px-5 py-3 font-semibold transition active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-berkut-primary text-white shadow-[0_4px_0_0_#0096B7] hover:bg-berkut-primary-dark;
+  }
+  .btn-success {
+    @apply btn bg-berkut-success text-white shadow-[0_4px_0_0_#04a87f];
+  }
+  .btn-error {
+    @apply btn bg-berkut-error text-white shadow-[0_4px_0_0_#c0395a];
+  }
+  .btn-outline {
+    @apply btn bg-white text-berkut-ink border-2 border-berkut-border hover:border-berkut-primary;
+  }
+  .dark .btn-outline {
+    @apply bg-berkut-card-dark text-berkut-ink-dark border-berkut-border-dark hover:border-berkut-primary;
+  }
+  .card {
+    @apply bg-white rounded-2xl border-2 border-berkut-border p-5 shadow-sm;
+  }
+  .dark .card {
+    @apply bg-berkut-card-dark border-berkut-border-dark;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-semibold;
+  }
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 8px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #33335e;
+}
