@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { getBearer, userClient } from "./_lib/supabase";
+import { getBearer, userClient } from "./_lib/supabase.js";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const token = getBearer(req as any);
