@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getSupabase, isSupabaseConfigured } from "@/core/supabase";
 import GoogleButton from "@/components/GoogleButton";
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from ?? "/";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +19,7 @@ export default function Login() {
 
     const sb = getSupabase();
     if (!sb) {
-      navigate("/");
+      navigate(from, { replace: true });
       return;
     }
     setBusy(true);
@@ -31,7 +33,7 @@ export default function Login() {
       }
       return;
     }
-    navigate("/", { replace: true });
+    navigate(from, { replace: true });
   }
 
   return (
@@ -71,9 +73,6 @@ export default function Login() {
             Create an account
           </Link>
         </div>
-        <Link to="/" className="block text-berkut-muted dark:text-berkut-muted-dark hover:underline">
-          Continue without an account
-        </Link>
       </div>
     </AuthShell>
   );

@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Layout from "@/components/Layout";
+import RequireAuth from "@/components/RequireAuth";
+import RedirectIfAuthed from "@/components/RedirectIfAuthed";
 import Home from "@/pages/Home";
 import LessonPlayer from "@/pages/LessonPlayer";
 import LessonComplete from "@/pages/LessonComplete";
@@ -34,20 +36,95 @@ export default function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path="/" element={<Home />} />
+        {/* Public — pre-auth */}
         <Route path="/welcome" element={<Welcome />} />
-        <Route path="/lesson/:id" element={<LessonPlayer />} />
-        <Route path="/lesson/:id/complete" element={<LessonComplete />} />
-        <Route path="/practice" element={<Practice />} />
-        <Route path="/leaderboard" element={<Leaderboard />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/auth/login" element={<Login />} />
-        <Route path="/auth/register" element={<Register />} />
+        <Route
+          path="/auth/login"
+          element={
+            <RedirectIfAuthed>
+              <Login />
+            </RedirectIfAuthed>
+          }
+        />
+        <Route
+          path="/auth/register"
+          element={
+            <RedirectIfAuthed>
+              <Register />
+            </RedirectIfAuthed>
+          }
+        />
+        <Route
+          path="/auth/forgot"
+          element={
+            <RedirectIfAuthed>
+              <ForgotPassword />
+            </RedirectIfAuthed>
+          }
+        />
+        {/* Mid-flow auth pages — must run with or without an existing session */}
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/auth/verify-email" element={<VerifyEmail />} />
-        <Route path="/auth/forgot" element={<ForgotPassword />} />
         <Route path="/auth/reset" element={<ResetPassword />} />
+
+        {/* Protected — require signed-in session */}
+        <Route
+          path="/"
+          element={
+            <RequireAuth>
+              <Home />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/lesson/:id"
+          element={
+            <RequireAuth>
+              <LessonPlayer />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/lesson/:id/complete"
+          element={
+            <RequireAuth>
+              <LessonComplete />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/practice"
+          element={
+            <RequireAuth>
+              <Practice />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/leaderboard"
+          element={
+            <RequireAuth>
+              <Leaderboard />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <RequireAuth>
+              <Profile />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <RequireAuth>
+              <Settings />
+            </RequireAuth>
+          }
+        />
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

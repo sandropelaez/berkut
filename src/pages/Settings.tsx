@@ -17,8 +17,15 @@ export default function Settings() {
 
   async function handleLogout() {
     const sb = getSupabase();
-    if (sb) await sb.auth.signOut();
+    if (sb) {
+      await sb.auth.signOut({ scope: "local" });
+    }
     reset();
+    try {
+      localStorage.removeItem("berkut-store");
+    } catch {
+      // ignore — private mode / disabled storage
+    }
     navigate("/auth/login", { replace: true });
   }
 
