@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useStore } from "@/store/useStore";
+import { useContentStore } from "@/store/useContentStore";
 import { dueItems } from "@/core/srs";
-import { allVocab } from "@/data/units";
 import ScriptText from "@/components/ScriptText";
 import { speakKazakh } from "@/core/tts";
 import { answersMatch } from "@/core/scoring";
@@ -12,8 +12,29 @@ export default function Practice() {
   const reviewVocab = useStore((s) => s.reviewVocab);
   const ensureSrs = useStore((s) => s.ensureSrs);
   const bumpStreak = useStore((s) => s.bumpStreak);
+  const contentStatus = useContentStore((s) => s.status);
+  const loadCourse = useContentStore((s) => s.loadCourse);
+  const units = useContentStore((s) => s.units);
 
-  const allVocabList = useMemo(() => allVocab(), []);
+  useEffect(() => {
+    if (contentStatus === "idle") loadCourse("kk");
+  }, [contentStatus, loadCourse]);
+
+  const allVocabList = useMemo(() => {
+    const seen = new Set<string>();
+    const out: { id: string; kazakh: string; english: string }[] = [];
+    for (const u of units) {
+      for (const l of u.lessons) {
+        for (const v of l.vocab) {
+          if (!seen.has(v.id)) {
+            seen.add(v.id);
+            out.push(v);
+          }
+        }
+      }
+    }
+    return out;
+  }, [units]);
   const due = useMemo(() => {
     const items = dueItems(Object.values(srsMap));
     return items

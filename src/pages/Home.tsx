@@ -1,13 +1,42 @@
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { units } from "@/data/units";
+import { useContentStore } from "@/store/useContentStore";
 import { useStore } from "@/store/useStore";
 import ScriptText from "@/components/ScriptText";
 
 export default function Home() {
   const progress = useStore((s) => s.progress);
+  const status = useContentStore((s) => s.status);
+  const units = useContentStore((s) => s.units);
+  const loadCourse = useContentStore((s) => s.loadCourse);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (status === "idle") loadCourse("kk");
+  }, [status, loadCourse]);
+
   const completedCount = Object.values(progress).filter((p) => p.completed).length;
+
+  if (status === "loading" || status === "idle") {
+    return (
+      <div className="mx-auto max-w-3xl px-4 sm:pl-32 py-10 text-center">
+        <div className="text-4xl animate-pulse">🦅</div>
+        <p className="text-berkut-muted dark:text-berkut-muted-dark mt-3">Loading course…</p>
+      </div>
+    );
+  }
+
+  if (status === "error") {
+    return (
+      <div className="mx-auto max-w-3xl px-4 sm:pl-32 py-10 text-center">
+        <div className="text-4xl">⚠️</div>
+        <p className="text-berkut-error mt-3 font-bold">Couldn't load course content.</p>
+        <button onClick={() => loadCourse("kk")} className="btn-primary mt-6">
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:pl-32 py-6">
@@ -27,7 +56,6 @@ export default function Home() {
         {units.map((unit) => {
           const total = unit.lessons.length;
           const done = unit.lessons.filter((l) => progress[l.id]?.completed).length;
-          const locked = unit.id > 1 && !units[unit.id - 2]?.lessons.every((l) => progress[l.id]?.completed) && total === 0;
           return (
             <section key={unit.id} className="card">
               <header className="flex items-center gap-3 mb-4">
@@ -54,15 +82,16 @@ export default function Home() {
 
               {total === 0 ? (
                 <p className="text-sm text-berkut-muted dark:text-berkut-muted-dark">
-                  {unit.description}
+                  {unit.description ?? "Coming soon"}
                 </p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {unit.lessons.map((lesson, idx) => {
                     const completed = progress[lesson.id]?.completed;
                     const perfectRun = progress[lesson.id]?.perfectRun;
-                    const prevDone = idx === 0 || progress[unit.lessons[idx - 1]!.id]?.completed;
-                    const isLocked = locked || (!prevDone && !completed);
+                    const prevDone =
+                      idx === 0 || progress[unit.lessons[idx - 1]!.id]?.completed;
+                    const isLocked = !prevDone && !completed;
                     return (
                       <button
                         key={lesson.id}
@@ -93,7 +122,7 @@ export default function Home() {
                               <ScriptText>{lesson.titleKk}</ScriptText>
                             </div>
                             <div className="text-sm text-berkut-muted dark:text-berkut-muted-dark">
-                              {lesson.titleEn} · {lesson.exercises.length} exercises
+                              {lesson.titleEn}
                             </div>
                           </div>
                         </div>

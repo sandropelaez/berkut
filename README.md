@@ -8,6 +8,26 @@ Cloudflare (DNS + CDN).
 
 ---
 
+## Admin section
+
+Visit `/admin` after signing in with `sandro.a.pelaez@gmail.com` (or any
+user you've promoted). The link also appears in the sidebar.
+
+- `/admin` — overview KPIs (DAU/WAU/MAU, signups, completed lessons)
+- `/admin/users` — search/list/edit users; hard-delete (cascades)
+- `/admin/admins` — grant/revoke roles (super-admin only)
+- `/admin/content` — manage languages → units → lessons → exercises
+- `/admin/audit` — append-only log of every admin write
+- `/admin/analytics` — derived stats
+
+**Granting admin to a new user:**
+1. The user must have already registered (signed up + verified).
+2. Sign in as `sandro.a.pelaez@gmail.com` → `/admin/admins` → enter their email → pick role.
+
+**Promoting yourself if your email differs:** edit
+`supabase/migrations/002_admin_and_content.sql`, change the email in the
+bootstrap `UPDATE`, re-run the migration.
+
 ## What's included
 
 - **Skill tree** with Units 1–3 fully seeded (Greetings, Family, Food) and
@@ -80,9 +100,16 @@ You need three accounts: **Supabase** (DB + Auth + OAuth broker), **Vercel**
 1. Sign up at <https://supabase.com> → **New project** → name it `berkut-prod`.
    Choose a region near your users (Singapore, Frankfurt, US-East).
 2. Wait ~2 min for provisioning.
-3. **SQL Editor** → paste the contents of [`supabase/schema.sql`](supabase/schema.sql) →
-   **Run**. This creates the tables, RLS policies, and the
-   `handle_new_user` trigger.
+3. **SQL Editor** → run the migrations in order. Each file is idempotent —
+   safe to re-apply when you pull new migrations later:
+   - [`supabase/schema.sql`](supabase/schema.sql) — base user/profile tables,
+     RLS, `handle_new_user` trigger.
+   - [`supabase/migrations/002_admin_and_content.sql`](supabase/migrations/002_admin_and_content.sql) —
+     role enum, content tables (`languages`, `units`, `lessons`, `exercises`,
+     `vocab`), audit log, lesson revisions, RLS for everything new. **Bootstraps
+     `sandro.a.pelaez@gmail.com` as `super_admin` on every run.**
+   - [`supabase/migrations/003_seed_content.sql`](supabase/migrations/003_seed_content.sql) —
+     upserts the Kazakh language + Units 1–3 content + Units 4–10 stubs.
 4. **Project Settings → API** → copy the three values you'll need:
    - `Project URL` → `SUPABASE_URL` and `VITE_SUPABASE_URL`
    - `anon public` key → `SUPABASE_ANON_KEY` and `VITE_SUPABASE_ANON_KEY`

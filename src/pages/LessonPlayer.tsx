@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { findLesson } from "@/data/units";
+import { useContentStore } from "@/store/useContentStore";
 import { useStore } from "@/store/useStore";
 import ProgressBar from "@/components/ProgressBar";
 import MultipleChoice from "@/exercises/MultipleChoice";
@@ -10,14 +10,14 @@ import Listening from "@/exercises/Listening";
 import MatchPairs from "@/exercises/MatchPairs";
 import FillBlank from "@/exercises/FillBlank";
 import { XP } from "@/core/scoring";
-import type { Exercise } from "@/core/types";
+import type { Exercise, Lesson } from "@/core/types";
 
 type Phase = "answering" | "checked";
 
 export default function LessonPlayer() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const found = id ? findLesson(id) : undefined;
+  const loadLesson = useContentStore((s) => s.loadLesson);
 
   const hearts = useStore((s) => s.hearts);
   const spendHeart = useStore((s) => s.spendHeart);
@@ -26,6 +26,8 @@ export default function LessonPlayer() {
   const recordLesson = useStore((s) => s.recordLesson);
   const bumpStreak = useStore((s) => s.bumpStreak);
 
+  const [lesson, setLesson] = useState<Lesson | null>(null);
+  const [loadError, setLoadError] = useState(false);
   const [idx, setIdx] = useState(0);
   const [phase, setPhase] = useState<Phase>("answering");
   const [feedback, setFeedback] = useState<"correct" | "wrong" | null>(null);
@@ -35,10 +37,23 @@ export default function LessonPlayer() {
   const [floats, setFloats] = useState<Array<{ id: number; xp: number }>>([]);
 
   useEffect(() => {
-    if (found) ensureSrs(found.lesson.vocab.map((v) => v.id));
-  }, [found, ensureSrs]);
+    if (!id) return;
+    let cancelled = false;
+    loadLesson(id).then((l) => {
+      if (cancelled) return;
+      if (!l) {
+        setLoadError(true);
+        return;
+      }
+      setLesson(l);
+      ensureSrs(l.vocab.map((v) => v.id));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [id, loadLesson, ensureSrs]);
 
-  if (!found) {
+  if (loadError) {
     return (
       <div className="px-4 py-10 text-center">
         <h1 className="text-xl font-bold">Lesson not found.</h1>
@@ -49,12 +64,16 @@ export default function LessonPlayer() {
     );
   }
 
-  const { lesson } = found;
-  const exercise: Exercise | undefined = lesson.exercises[idx];
-
-  if (!exercise) {
-    return null;
+  if (!lesson) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-3xl animate-pulse">🦅</div>
+      </div>
+    );
   }
+
+  const exercise: Exercise | undefined = lesson.exercises[idx];
+  if (!exercise) return null;
 
   const total = lesson.exercises.length;
 
@@ -84,9 +103,9 @@ export default function LessonPlayer() {
     }
     if (idx + 1 >= total) {
       const perfect = mistakes === 0;
-      const result = recordLesson(lesson.id, scoreAcc, perfect);
+      const result = recordLesson(lesson!.id, scoreAcc, perfect);
       const newDay = bumpStreak();
-      navigate(`/lesson/${lesson.id}/complete`, {
+      navigate(`/lesson/${lesson!.id}/complete`, {
         replace: true,
         state: {
           xpAwarded: result.xpAwarded + (newDay ? XP.STREAK_DAY : 0),
@@ -114,59 +133,17 @@ export default function LessonPlayer() {
   const ExerciseEl = (() => {
     switch (exercise.type) {
       case "MULTIPLE_CHOICE":
-        return (
-          <MultipleChoice
-            key={exercise.id}
-            prompt={exercise.prompt as any}
-            phase={phase}
-            onAnswer={handleAnswer}
-          />
-        );
+        return <MultipleChoice key={exercise.id} prompt={exercise.prompt as any} phase={phase} onAnswer={handleAnswer} />;
       case "TRANSLATE_EN_KK":
-        return (
-          <TranslateENKK
-            key={exercise.id}
-            prompt={exercise.prompt as any}
-            phase={phase}
-            onAnswer={handleAnswer}
-          />
-        );
+        return <TranslateENKK key={exercise.id} prompt={exercise.prompt as any} phase={phase} onAnswer={handleAnswer} />;
       case "TRANSLATE_KK_EN":
-        return (
-          <TranslateKKEN
-            key={exercise.id}
-            prompt={exercise.prompt as any}
-            phase={phase}
-            onAnswer={handleAnswer}
-          />
-        );
+        return <TranslateKKEN key={exercise.id} prompt={exercise.prompt as any} phase={phase} onAnswer={handleAnswer} />;
       case "LISTENING":
-        return (
-          <Listening
-            key={exercise.id}
-            prompt={exercise.prompt as any}
-            phase={phase}
-            onAnswer={handleAnswer}
-          />
-        );
+        return <Listening key={exercise.id} prompt={exercise.prompt as any} phase={phase} onAnswer={handleAnswer} />;
       case "MATCH_PAIRS":
-        return (
-          <MatchPairs
-            key={exercise.id}
-            prompt={exercise.prompt as any}
-            phase={phase}
-            onAnswer={handleAnswer}
-          />
-        );
+        return <MatchPairs key={exercise.id} prompt={exercise.prompt as any} phase={phase} onAnswer={handleAnswer} />;
       case "FILL_BLANK":
-        return (
-          <FillBlank
-            key={exercise.id}
-            prompt={exercise.prompt as any}
-            phase={phase}
-            onAnswer={handleAnswer}
-          />
-        );
+        return <FillBlank key={exercise.id} prompt={exercise.prompt as any} phase={phase} onAnswer={handleAnswer} />;
     }
   })();
 
@@ -177,8 +154,7 @@ export default function LessonPlayer() {
           <div className="text-5xl">💔</div>
           <h1 className="text-2xl font-extrabold mt-3">Out of hearts</h1>
           <p className="text-berkut-muted dark:text-berkut-muted-dark mt-2">
-            Hearts regenerate over time (1 every 30 minutes). Take a quick break,
-            or visit the shop to refill.
+            Hearts regenerate over time (1 every 30 minutes).
           </p>
           <Link to="/" className="btn-primary mt-6 inline-flex">
             Back home
@@ -191,29 +167,20 @@ export default function LessonPlayer() {
   return (
     <div className="min-h-screen flex flex-col bg-berkut-bg dark:bg-berkut-bg-dark">
       <header className="px-4 py-3 border-b border-berkut-border dark:border-berkut-border-dark flex items-center gap-3">
-        <button
-          onClick={() => navigate("/")}
-          className="text-berkut-muted dark:text-berkut-muted-dark text-2xl"
-          aria-label="Quit lesson"
-        >
+        <button onClick={() => navigate("/")} className="text-berkut-muted dark:text-berkut-muted-dark text-2xl" aria-label="Quit lesson">
           ✕
         </button>
         <div className="flex-1">
           <ProgressBar value={idx + (phase === "checked" ? 1 : 0)} max={total} />
         </div>
-        <div className="text-rose-500 font-extrabold flex items-center gap-1">
-          ❤️ {hearts}
-        </div>
+        <div className="text-rose-500 font-extrabold flex items-center gap-1">❤️ {hearts}</div>
       </header>
 
       <div className="flex-1 mx-auto w-full max-w-2xl px-4 py-6 relative">
         {ExerciseEl}
         <div className="pointer-events-none absolute right-6 top-6">
           {floats.map((f) => (
-            <div
-              key={f.id}
-              className="text-berkut-success font-extrabold text-2xl animate-floatUp"
-            >
+            <div key={f.id} className="text-berkut-success font-extrabold text-2xl animate-floatUp">
               +{f.xp} XP
             </div>
           ))}
@@ -230,12 +197,8 @@ export default function LessonPlayer() {
         }`}
       >
         <div className="mx-auto max-w-2xl flex items-center gap-3">
-          {feedback === "correct" && (
-            <div className="font-bold text-berkut-success">Дұрыс! Nice.</div>
-          )}
-          {feedback === "wrong" && (
-            <div className="font-bold text-berkut-error">Not quite. Try again.</div>
-          )}
+          {feedback === "correct" && <div className="font-bold text-berkut-success">Дұрыс! Nice.</div>}
+          {feedback === "wrong" && <div className="font-bold text-berkut-error">Not quite. Try again.</div>}
           <div className="ml-auto flex gap-2">
             {feedback === "wrong" && retries === 0 && (
               <button onClick={tryAgain} className="btn-outline">
