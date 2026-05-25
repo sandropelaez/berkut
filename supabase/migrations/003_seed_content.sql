@@ -1257,13 +1257,13 @@ insert into public.exercises (id, lesson_id, "order", type, prompt, status) valu
 -- Placeholder units (4-10) — stubs with no lessons yet, so the skill tree
 -- shows the full A1→B1 arc. Replace with real content as it's authored.
 insert into public.units (id, language_code, "order", title_native, title_en, cefr_level, emoji, description, status) values
-  ('u4',  'kk', 4,  'Күнделікті өмір',         'Daily Life',                '🌞', 'A2', 'Coming soon', 'active'),
-  ('u5',  'kk', 5,  'Қала мен көлік',          'City & Transport',          '🚌', 'A2', 'Coming soon', 'active'),
-  ('u6',  'kk', 6,  'Нарық пен дүкен',         'Shopping & Market',         '🛒', 'A2', 'Coming soon', 'active'),
-  ('u7',  'kk', 7,  'Денсаулық',                'Health',                    '🏥', 'B1', 'Coming soon', 'active'),
-  ('u8',  'kk', 8,  'Саяхат',                   'Travel across Kazakhstan',  '🏔️', 'B1', 'Coming soon', 'active'),
-  ('u9',  'kk', 9,  'Жұмыс пен оқу',           'Work & Study',              '💼', 'B1', 'Coming soon', 'active'),
-  ('u10', 'kk', 10, 'Мерекелер мен дәстүрлер', 'Holidays & Traditions',     '🎉', 'B1', 'Coming soon', 'active')
+  ('u4',  'kk', 4,  'Күнделікті өмір',         'Daily Life',                'A2', '🌞', 'Coming soon', 'active'),
+  ('u5',  'kk', 5,  'Қала мен көлік',          'City & Transport',          'A2', '🚌', 'Coming soon', 'active'),
+  ('u6',  'kk', 6,  'Нарық пен дүкен',         'Shopping & Market',         'A2', '🛒', 'Coming soon', 'active'),
+  ('u7',  'kk', 7,  'Денсаулық',                'Health',                    'B1', '🏥', 'Coming soon', 'active'),
+  ('u8',  'kk', 8,  'Саяхат',                   'Travel across Kazakhstan',  'B1', '🏔️', 'Coming soon', 'active'),
+  ('u9',  'kk', 9,  'Жұмыс пен оқу',           'Work & Study',              'B1', '💼', 'Coming soon', 'active'),
+  ('u10', 'kk', 10, 'Мерекелер мен дәстүрлер', 'Holidays & Traditions',     'B1', '🎉', 'Coming soon', 'active')
 on conflict (id) do update set
   language_code = excluded.language_code, "order" = excluded."order",
   title_native = excluded.title_native, title_en = excluded.title_en,
