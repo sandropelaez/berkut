@@ -6,9 +6,13 @@ import { requireAdmin, recordAudit, type AdminContext } from "../_lib/admin.js";
 // per endpoint. Each branch is small and the dispatch is method+path-based.
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const segments = ([] as string[])
-    .concat(((req.query.path as string[] | string | undefined) ?? []) as any)
-    .filter(Boolean);
+  // Parse path segments from req.url. We don't trust req.query.path because
+  // Vercel's catch-all query parsing isn't reliable across runtime versions.
+  const url = new URL(req.url ?? "/", "http://x");
+  const segments = url.pathname
+    .split("/")
+    .filter(Boolean)
+    .slice(2); // drop ['api', 'admin']
 
   // /api/admin/admins/grant requires super_admin; everything else needs admin.
   const needsSuper =

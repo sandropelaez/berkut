@@ -12,9 +12,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: "method_not_allowed" });
   }
 
-  const segments = ([] as string[])
-    .concat(((req.query.path as string[] | string | undefined) ?? []) as any)
-    .filter(Boolean);
+  // Parse path segments from req.url — see api/admin/[...path].ts for why.
+  const url = new URL(req.url ?? "/", "http://x");
+  const segments = url.pathname
+    .split("/")
+    .filter(Boolean)
+    .slice(2); // drop ['api', 'content']
 
   try {
     const svc = adminClient();
