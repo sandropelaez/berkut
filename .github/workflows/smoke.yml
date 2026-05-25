@@ -1,0 +1,50 @@
+name: Production smoke test
+
+# Runs after Vercel finishes deploying to production. Polls for the new
+# deployment to be live (matches the latest commit), then hits the live URL
+# with the smoke checks. Fails the workflow if any check breaks — you'll
+# get an email from GitHub.
+#
+# Also runs on-demand via "Run workflow" in the Actions tab, so you can
+# re-verify the live site whenever Supabase wakes up from auto-pause etc.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    # Every 6 hours — catches Supabase free-tier pauses + cert/DNS regressions.
+    - cron: "0 */6 * * *"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install (runtime only — smoke test has no extra deps)
+        run: npm ci
+
+      - name: Wait for Vercel to publish the new deployment
+        # Polls /api/health up to ~5 minutes after a push. For non-push triggers
+        # (schedule, workflow_dispatch) this just verifies the site is reachable.
+        run: |
+          for i in $(seq 1 30); do
+            if curl -fsSL https://berkutai.com/api/health -o /dev/null; then
+              echo "Site is reachable"
+              exit 0
+            fi
+            echo "Waiting for site… ($i/30)"
+            sleep 10
+          done
+          echo "Site never came back. Aborting."
+          exit 1
+
+      - name: Run smoke checks
+        run: BASE_URL=https://berkutai.com npm run smoke

@@ -27,13 +27,33 @@ export default function Home() {
   }
 
   if (status === "error") {
+    const error = useContentStore.getState().error;
     return (
-      <div className="mx-auto max-w-3xl px-4 sm:pl-32 py-10 text-center">
-        <div className="text-4xl">⚠️</div>
-        <p className="text-berkut-error mt-3 font-bold">Couldn't load course content.</p>
-        <button onClick={() => loadCourse("kk")} className="btn-primary mt-6">
-          Retry
-        </button>
+      <div className="mx-auto max-w-2xl px-4 sm:pl-32 py-10">
+        <div className="card border-berkut-error">
+          <div className="flex items-start gap-3">
+            <div className="text-3xl">⚠️</div>
+            <div className="flex-1">
+              <h1 className="font-extrabold text-lg">Couldn't load course content.</h1>
+              {error && (
+                <pre className="mt-2 text-xs bg-berkut-bg dark:bg-berkut-bg-dark rounded-lg p-2 overflow-x-auto whitespace-pre-wrap break-all">
+                  {error}
+                </pre>
+              )}
+              <div className="mt-4 text-sm text-berkut-muted dark:text-berkut-muted-dark space-y-2">
+                <p>Common causes:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>The SQL migrations haven't been applied — run <code>supabase/migrations/002_admin_and_content.sql</code> and <code>003_seed_content.sql</code> in the Supabase SQL editor.</li>
+                  <li>The Supabase project is paused (free tier auto-pauses after a week of inactivity).</li>
+                  <li>Vercel env vars missing or stale — check <code>VITE_SUPABASE_URL</code>, <code>VITE_SUPABASE_ANON_KEY</code>.</li>
+                </ul>
+              </div>
+              <button onClick={() => loadCourse("kk")} className="btn-primary mt-6">
+                Retry
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

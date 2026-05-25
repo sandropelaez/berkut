@@ -94,8 +94,28 @@ export const useContentStore = create<ContentState>((set, get) => ({
     set({ status: "loading", error: null });
     try {
       const res = await fetch(`/api/content/courses/${lang}`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const payload = (await res.json()) as CoursePayload;
+      const text = await res.text();
+      if (!res.ok) {
+        // Surface enough detail to debug: HTTP status + body, capped.
+        const body = text.slice(0, 240);
+        throw new Error(`HTTP ${res.status} — ${body}`);
+      }
+      let payload: CoursePayload;
+      try {
+        payload = JSON.parse(text) as CoursePayload;
+      } catch {
+        // Most common cause: SPA HTML returned instead of JSON
+        // (vercel.json rewrite swallowing /api/*).
+        throw new Error(
+          "API returned HTML instead of JSON — likely a routing/rewrite issue. " +
+            "Check vercel.json and ensure /api/* isn't matched by the SPA rewrite.",
+        );
+      }
+      if (!payload.units || payload.units.length === 0) {
+        throw new Error(
+          "API returned 0 units. Did you run supabase/migrations/003_seed_content.sql?",
+        );
+      }
       const units = payload.units.map((u) => toUnit(u, payload.lessons, payload.vocab));
       set({ status: "ready", units });
     } catch (e: any) {
