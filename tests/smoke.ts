@@ -56,20 +56,20 @@ const CHECKS: Check[] = [
     },
   },
   {
-    name: "/api/content/languages returns kk",
+    name: "/api/content?action=languages returns kk",
     fn: async () => {
-      const { res, json, text } = await fetchJson("/api/content/languages");
-      assert(res.ok, `/api/content/languages returned ${res.status} — ${text.slice(0, 120)}`);
+      const { res, json, text } = await fetchJson("/api/content?action=languages");
+      assert(res.ok, `languages returned ${res.status} — ${text.slice(0, 120)}`);
       assert(Array.isArray(json), `expected array, got ${typeof json}`);
       const kk = json.find((l: any) => l.code === "kk");
       assert(kk, `Kazakh language row missing — did the seed migration run?`);
     },
   },
   {
-    name: "/api/content/courses/kk returns ≥3 units",
+    name: "/api/content?action=course&lang=kk returns ≥3 units",
     fn: async () => {
-      const { res, json, text } = await fetchJson("/api/content/courses/kk");
-      assert(res.ok, `/api/content/courses/kk returned ${res.status} — ${text.slice(0, 120)}`);
+      const { res, json, text } = await fetchJson("/api/content?action=course&lang=kk");
+      assert(res.ok, `course returned ${res.status} — ${text.slice(0, 120)}`);
       assert(
         json?.units?.length >= 3,
         `expected ≥3 units, got ${json?.units?.length}. ` +
@@ -79,10 +79,10 @@ const CHECKS: Check[] = [
     },
   },
   {
-    name: "/api/content/lessons/u1-l1 returns ≥10 exercises",
+    name: "/api/content?action=lesson&id=u1-l1 returns ≥10 exercises",
     fn: async () => {
-      const { res, json } = await fetchJson("/api/content/lessons/u1-l1");
-      assert(res.ok, `/api/content/lessons/u1-l1 returned ${res.status}`);
+      const { res, json } = await fetchJson("/api/content?action=lesson&id=u1-l1");
+      assert(res.ok, `lesson returned ${res.status}`);
       assert(
         json?.exercises?.length >= 10,
         `expected ≥10 exercises in u1-l1, got ${json?.exercises?.length}`,
@@ -90,13 +90,13 @@ const CHECKS: Check[] = [
     },
   },
   {
-    name: "Protected route bounces unauth to login",
+    name: "Admin endpoint requires auth",
     fn: async () => {
-      // /api/admin/* without a token must 401/403, never 500 or 200.
-      const res = await fetch(`${BASE_URL}/api/admin/stats`);
+      // /api/admin?action=stats without a token must 401/403, never 500 or 200.
+      const res = await fetch(`${BASE_URL}/api/admin?action=stats`);
       assert(
         res.status === 401 || res.status === 403,
-        `/api/admin/stats unauth returned ${res.status} (expected 401/403)`,
+        `admin stats unauth returned ${res.status} (expected 401/403)`,
       );
     },
   },

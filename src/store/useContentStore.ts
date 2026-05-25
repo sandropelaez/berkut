@@ -93,7 +93,7 @@ export const useContentStore = create<ContentState>((set, get) => ({
     if (get().status === "loading") return;
     set({ status: "loading", error: null });
     try {
-      const res = await fetch(`/api/content/courses/${lang}`);
+      const res = await fetch(`/api/content?action=course&lang=${encodeURIComponent(lang)}`);
       const text = await res.text();
       if (!res.ok) {
         // Surface enough detail to debug: HTTP status + body, capped.
@@ -124,7 +124,7 @@ export const useContentStore = create<ContentState>((set, get) => ({
   },
 
   loadLesson: async (lessonId) => {
-    const res = await fetch(`/api/content/lessons/${lessonId}`);
+    const res = await fetch(`/api/content?action=lesson&id=${encodeURIComponent(lessonId)}`);
     if (!res.ok) return null;
     const data = (await res.json()) as {
       lesson: RawLesson;

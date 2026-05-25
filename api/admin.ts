@@ -1,41 +1,52 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { requireAdmin, recordAudit, type AdminContext } from "../_lib/admin.js";
+import { requireAdmin, recordAudit, type AdminContext } from "./_lib/admin.js";
 
-// Single catch-all admin router. Vercel Hobby plan has a hard limit on
-// serverless functions, so we route within one handler instead of one file
-// per endpoint. Each branch is small and the dispatch is method+path-based.
+// Single endpoint that fans out by ?action. Avoids Vercel catch-all
+// routing pitfalls and keeps the function count within Hobby plan limits.
+//
+// URL shape examples:
+//   GET    /api/admin?action=stats
+//   GET    /api/admin?action=users                   (list)
+//   GET    /api/admin?action=users&id=<uuid>         (single)
+//   PATCH  /api/admin?action=users&id=<uuid>
+//   DELETE /api/admin?action=users&id=<uuid>
+//   GET    /api/admin?action=admins
+//   POST   /api/admin?action=admins                  (grant)
+//   DELETE /api/admin?action=admins                  (revoke)
+//   GET    /api/admin?action=content&kind=languages
+//   GET    /api/admin?action=content&kind=units&language_code=kk
+//   GET    /api/admin?action=content&kind=lessons&unit_id=u1
+//   GET    /api/admin?action=content&kind=exercises&lesson_id=u1-l1
+//   GET    /api/admin?action=content&kind=lessons&id=u1-l1
+//   POST   /api/admin?action=content&kind=units
+//   PATCH  /api/admin?action=content&kind=lessons&id=u1-l1
+//   DELETE /api/admin?action=content&kind=exercises&id=u1-l1-e1
+//   GET    /api/admin?action=audit
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Parse path segments from req.url. We don't trust req.query.path because
-  // Vercel's catch-all query parsing isn't reliable across runtime versions.
-  const url = new URL(req.url ?? "/", "http://x");
-  const segments = url.pathname
-    .split("/")
-    .filter(Boolean)
-    .slice(2); // drop ['api', 'admin']
+  const action = (req.query.action as string) ?? "";
 
-  // /api/admin/admins/grant requires super_admin; everything else needs admin.
-  const needsSuper =
-    segments[0] === "admins" && (req.method === "POST" || req.method === "DELETE");
+  // /admins POST/DELETE requires super_admin; everything else needs admin.
+  const needsSuper = action === "admins" && (req.method === "POST" || req.method === "DELETE");
   const ctx = await requireAdmin(req, res, needsSuper);
   if (!ctx) return;
 
   try {
-    switch (segments[0]) {
+    switch (action) {
       case "stats":
         return await getStats(ctx, res);
       case "users":
-        return await handleUsers(ctx, req, res, segments.slice(1));
+        return await handleUsers(ctx, req, res);
       case "admins":
         return await handleAdmins(ctx, req, res);
       case "audit":
         return await getAudit(ctx, req, res);
       case "content":
-        return await handleContent(ctx, req, res, segments.slice(1));
-      case undefined:
-        return res.status(200).json({ ok: true, message: "Berkut admin API" });
+        return await handleContent(ctx, req, res);
+      case "":
+        return res.status(200).json({ ok: true, message: "Berkut admin API. Use ?action=..." });
       default:
-        return res.status(404).json({ error: "not_found", segments });
+        return res.status(404).json({ error: "unknown_action", action });
     }
   } catch (e: any) {
     console.error("admin handler error", e);
@@ -43,7 +54,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 }
 
-// ─── /api/admin/stats ───────────────────────────────────────────────────
 async function getStats(ctx: AdminContext, res: VercelResponse) {
   const svc = ctx.service;
   const dayMs = 24 * 60 * 60 * 1000;
@@ -85,18 +95,11 @@ async function getStats(ctx: AdminContext, res: VercelResponse) {
   });
 }
 
-// ─── /api/admin/users[/{id}] ────────────────────────────────────────────
-async function handleUsers(
-  ctx: AdminContext,
-  req: VercelRequest,
-  res: VercelResponse,
-  rest: string[],
-) {
-  const id = rest[0];
+async function handleUsers(ctx: AdminContext, req: VercelRequest, res: VercelResponse) {
+  const id = (req.query.id as string | undefined) ?? "";
   const svc = ctx.service;
 
   if (!id) {
-    // List with filters
     const q = ((req.query.q as string) ?? "").trim();
     const limit = Math.min(100, Math.max(1, parseInt((req.query.limit as string) ?? "30", 10)));
     let query = svc
@@ -111,9 +114,7 @@ async function handleUsers(
     const { data, count, error } = await query;
     if (error) return res.status(500).json({ error: error.message });
 
-    // Hydrate emails from auth.users (admin API)
     if (data && data.length) {
-      const ids = data.map((r) => r.user_id);
       const { data: authData } = await svc.auth.admin.listUsers({ perPage: 200 });
       const byId = new Map<string, string | null>();
       for (const u of authData?.users ?? []) byId.set(u.id, u.email ?? null);
@@ -123,7 +124,6 @@ async function handleUsers(
     return res.status(200).json({ users: data ?? [], total: count ?? 0 });
   }
 
-  // Single user
   if (req.method === "GET") {
     const { data: profile } = await svc.from("user_profiles").select("*").eq("user_id", id).maybeSingle();
     if (!profile) return res.status(404).json({ error: "not_found" });
@@ -192,7 +192,6 @@ async function handleUsers(
   return res.status(405).json({ error: "method_not_allowed" });
 }
 
-// ─── /api/admin/admins (grant/revoke admin role) ────────────────────────
 async function handleAdmins(ctx: AdminContext, req: VercelRequest, res: VercelResponse) {
   const svc = ctx.service;
 
@@ -214,7 +213,6 @@ async function handleAdmins(ctx: AdminContext, req: VercelRequest, res: VercelRe
   }
 
   if (req.method === "POST") {
-    // Grant role. Body: { email: string, role: 'content_editor' | 'admin' }
     const body = (req.body as any) ?? {};
     const email = String(body.email ?? "").toLowerCase().trim();
     const role = String(body.role ?? "");
@@ -268,7 +266,6 @@ async function handleAdmins(ctx: AdminContext, req: VercelRequest, res: VercelRe
   return res.status(405).json({ error: "method_not_allowed" });
 }
 
-// ─── /api/admin/audit ───────────────────────────────────────────────────
 async function getAudit(ctx: AdminContext, req: VercelRequest, res: VercelResponse) {
   const limit = Math.min(200, Math.max(1, parseInt((req.query.limit as string) ?? "50", 10)));
   const { data, error } = await ctx.service
@@ -280,15 +277,9 @@ async function getAudit(ctx: AdminContext, req: VercelRequest, res: VercelRespon
   return res.status(200).json(data ?? []);
 }
 
-// ─── /api/admin/content/<kind>[/{id}] ───────────────────────────────────
-async function handleContent(
-  ctx: AdminContext,
-  req: VercelRequest,
-  res: VercelResponse,
-  rest: string[],
-) {
-  const kind = rest[0]; // 'languages' | 'units' | 'lessons' | 'exercises' | 'vocab'
-  const id = rest[1];
+async function handleContent(ctx: AdminContext, req: VercelRequest, res: VercelResponse) {
+  const kind = (req.query.kind as string) ?? "";
+  const id = (req.query.id as string | undefined) ?? "";
   const svc = ctx.service;
   const validKinds = ["languages", "units", "lessons", "exercises", "vocab"] as const;
   if (!validKinds.includes(kind as any)) {
@@ -324,12 +315,10 @@ async function handleContent(
       before = beforeQ.data;
       result = await svc.from(kind).update(body).eq("id", id).select().maybeSingle();
     } else {
-      // POST: include id in body
       result = await svc.from(kind).insert(body).select().maybeSingle();
     }
     if (result.error) return res.status(500).json({ error: result.error.message });
 
-    // Snapshot lesson revisions when a lesson or its exercises are edited
     if (req.method === "PATCH" && (kind === "lessons" || kind === "exercises")) {
       const lessonId = kind === "lessons" ? id! : (before as any)?.lesson_id;
       if (lessonId) {
@@ -349,7 +338,7 @@ async function handleContent(
     await recordAudit(ctx, {
       action: `${kind}_${req.method === "POST" ? "create" : "update"}`,
       target_type: kind,
-      target_id: id ?? (result.data as any)?.id ?? null,
+      target_id: id || (result.data as any)?.id || null,
       before_state: before,
       after_state: result.data,
     });
