@@ -27,6 +27,7 @@ import AdminContent from "@/pages/admin/Content";
 import AdminLessonEditor from "@/pages/admin/LessonEditor";
 import AdminAudit from "@/pages/admin/Audit";
 import AdminAnalytics from "@/pages/admin/Analytics";
+import AdminReports from "@/pages/admin/Reports";
 import { useStore } from "@/store/useStore";
 
 export default function App() {
@@ -60,6 +61,7 @@ export default function App() {
         <Route path="admins" element={<AdminAdmins />} />
         <Route path="content" element={<AdminContent />} />
         <Route path="content/lessons/:id" element={<AdminLessonEditor />} />
+        <Route path="reports" element={<AdminReports />} />
         <Route path="audit" element={<AdminAudit />} />
         <Route path="analytics" element={<AdminAnalytics />} />
       </Route>

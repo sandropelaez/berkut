@@ -101,6 +101,17 @@ const CHECKS: Check[] = [
     },
   },
   {
+    name: "/api/report requires auth",
+    fn: async () => {
+      const res = await fetch(`${BASE_URL}/api/report`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ exercise_id: "u1-l1-e1", reason: "typo" }),
+      });
+      assert(res.status === 401, `/api/report unauth returned ${res.status} (expected 401)`);
+    },
+  },
+  {
     name: "Auth pages render without a session",
     fn: async () => {
       const res = await fetch(`${BASE_URL}/auth/login`);

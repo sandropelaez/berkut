@@ -34,6 +34,10 @@ function buildUrl(path: string): string {
       // /users/<id>
       if (segments[1]) params.set("id", segments[1]);
       break;
+    case "reports":
+      // /reports/<id>
+      if (segments[1]) params.set("id", segments[1]);
+      break;
     case "content":
       // /content/<kind>[/<id>]
       if (segments[1]) params.set("kind", segments[1]);

@@ -43,6 +43,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return await getAudit(ctx, req, res);
       case "content":
         return await handleContent(ctx, req, res);
+      case "reports":
+        return await handleReports(ctx, req, res);
       case "":
         return res.status(200).json({ ok: true, message: "Berkut admin API. Use ?action=..." });
       default:
@@ -275,6 +277,75 @@ async function getAudit(ctx: AdminContext, req: VercelRequest, res: VercelRespon
     .limit(limit);
   if (error) return res.status(500).json({ error: error.message });
   return res.status(200).json(data ?? []);
+}
+
+async function handleReports(ctx: AdminContext, req: VercelRequest, res: VercelResponse) {
+  const svc = ctx.service;
+  const id = (req.query.id as string | undefined) ?? "";
+  const status = (req.query.status as string | undefined) ?? "open";
+
+  if (req.method === "GET") {
+    let query = svc
+      .from("exercise_reports")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(200);
+    if (status !== "all") query = query.eq("status", status);
+
+    const { data: reports, error } = await query;
+    if (error) return res.status(500).json({ error: error.message });
+
+    // Hydrate with exercise + lesson details for triage UI.
+    const exerciseIds = Array.from(new Set((reports ?? []).map((r: any) => r.exercise_id)));
+    if (exerciseIds.length) {
+      const { data: exercises } = await svc
+        .from("exercises")
+        .select("id, lesson_id, type, prompt, status, confidence")
+        .in("id", exerciseIds);
+      const byId = new Map<string, any>();
+      for (const e of exercises ?? []) byId.set(e.id, e);
+      for (const r of reports as any[]) r.exercise = byId.get(r.exercise_id) ?? null;
+    }
+    return res.status(200).json(reports ?? []);
+  }
+
+  if (req.method === "PATCH" && id) {
+    const body = (req.body as any) ?? {};
+    const allowed: Record<string, unknown> = {};
+    if (typeof body.status === "string" && ["open", "resolved", "dismissed"].includes(body.status)) {
+      allowed.status = body.status;
+      if (body.status !== "open") {
+        allowed.resolved_by = ctx.userId;
+        allowed.resolved_at = new Date().toISOString();
+      } else {
+        allowed.resolved_by = null;
+        allowed.resolved_at = null;
+      }
+    }
+    if (typeof body.admin_notes === "string") allowed.admin_notes = body.admin_notes.slice(0, 1000);
+    if (!Object.keys(allowed).length) return res.status(400).json({ error: "no_fields" });
+
+    const before = await svc.from("exercise_reports").select("*").eq("id", id).maybeSingle();
+    const { data: updated, error } = await svc
+      .from("exercise_reports")
+      .update(allowed)
+      .eq("id", id)
+      .select()
+      .maybeSingle();
+    if (error) return res.status(500).json({ error: error.message });
+
+    await recordAudit(ctx, {
+      action: `report_${allowed.status ?? "update"}`,
+      target_type: "report",
+      target_id: id,
+      before_state: before.data,
+      after_state: updated,
+    });
+    return res.status(200).json(updated);
+  }
+
+  res.setHeader("Allow", "GET, PATCH");
+  return res.status(405).json({ error: "method_not_allowed" });
 }
 
 async function handleContent(ctx: AdminContext, req: VercelRequest, res: VercelResponse) {

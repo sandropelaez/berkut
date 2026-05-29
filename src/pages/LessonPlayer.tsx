@@ -11,6 +11,7 @@ import MatchPairs from "@/exercises/MatchPairs";
 import FillBlank from "@/exercises/FillBlank";
 import { XP } from "@/core/scoring";
 import type { Exercise, Lesson } from "@/core/types";
+import ReportButton from "@/components/ReportButton";
 
 type Phase = "answering" | "checked";
 
@@ -199,7 +200,8 @@ export default function LessonPlayer() {
         <div className="mx-auto max-w-2xl flex items-center gap-3">
           {feedback === "correct" && <div className="font-bold text-berkut-success">Дұрыс! Nice.</div>}
           {feedback === "wrong" && <div className="font-bold text-berkut-error">Not quite. Try again.</div>}
-          <div className="ml-auto flex gap-2">
+          <div className="ml-auto flex items-center gap-3">
+            <ReportButton exerciseId={exercise.id} />
             {feedback === "wrong" && retries === 0 && (
               <button onClick={tryAgain} className="btn-outline">
                 Try again
