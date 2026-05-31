@@ -296,7 +296,7 @@ insert into public.vocab (id, unit_id, native, english) values
   ('v-u21-uni','u21','университет','university'),
   ('v-u21-sab','u21','сабақ','lesson'),
   ('v-u21-ker','u21','керек','need'),
-  ('v-u21-mug','u21','тиіс','must')
+  ('v-u21-tis','u21','тиіс','must')
 on conflict (id) do update set
   unit_id=excluded.unit_id, native=excluded.native, english=excluded.english;
 
