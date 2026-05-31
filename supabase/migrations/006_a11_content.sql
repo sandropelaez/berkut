@@ -449,9 +449,9 @@ insert into public.exercises (id, lesson_id, "order", type, prompt, status, conf
    '{"type":"TRANSLATE_KK_EN","promptKk":"Ол шаршады.","options":["He / she is tired.","I am tired.","Be tired.","You are tired."],"correctAns":"He / she is tired."}'::jsonb,'active','high'),
 
   ('u5-c4-e1','u5-c4',1,'MULTIPLE_CHOICE',
-   '{"type":"MULTIPLE_CHOICE","promptKk":"Сіз","questionEn":"When do you use 'сіз' instead of 'сен'?","options":["With elders / strangers (formal)","With close friends","Only in writing","Only on the phone"],"correctAns":"With elders / strangers (formal)"}'::jsonb,'active','high'),
+   '{"type":"MULTIPLE_CHOICE","promptKk":"Сіз","questionEn":"When do you use ''сіз'' instead of ''сен''?","options":["With elders / strangers (formal)","With close friends","Only in writing","Only on the phone"],"correctAns":"With elders / strangers (formal)"}'::jsonb,'active','high'),
   ('u5-c4-e2','u5-c4',2,'MULTIPLE_CHOICE',
-   '{"type":"MULTIPLE_CHOICE","promptKk":"Сен","questionEn":"When do you use 'сен' instead of 'сіз'?","options":["With close friends / family","With elders","Only with bosses","Always (only one option exists)"],"correctAns":"With close friends / family"}'::jsonb,'active','high'),
+   '{"type":"MULTIPLE_CHOICE","promptKk":"Сен","questionEn":"When do you use ''сен'' instead of ''сіз''?","options":["With close friends / family","With elders","Only with bosses","Always (only one option exists)"],"correctAns":"With close friends / family"}'::jsonb,'active','high'),
   ('u5-c4-e3','u5-c4',3,'TRANSLATE_KK_EN',
    '{"type":"TRANSLATE_KK_EN","promptKk":"Сіз қалайсыз?","options":["How are you? (formal)","How are you? (informal)","How am I?","Who are you?"],"correctAns":"How are you? (formal)"}'::jsonb,'active','high'),
   ('u5-c4-e4','u5-c4',4,'TRANSLATE_KK_EN',
