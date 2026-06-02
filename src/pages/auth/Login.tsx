@@ -2,11 +2,14 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getSupabase, isSupabaseConfigured } from "@/core/supabase";
 import GoogleButton from "@/components/GoogleButton";
+import { useStore } from "@/store/useStore";
 
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as { from?: string } | null)?.from ?? "/";
+  const staySignedIn = useStore((s) => s.staySignedIn);
+  const setStaySignedIn = useStore((s) => s.setStaySignedIn);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -53,6 +56,19 @@ export default function Login() {
           onChange={setPassword}
           required
         />
+        <label className="flex items-center gap-2 text-sm font-medium select-none">
+          <input
+            type="checkbox"
+            checked={staySignedIn}
+            onChange={(e) => setStaySignedIn(e.target.checked)}
+            className="accent-berkut-primary h-4 w-4"
+          />
+          <span>Stay signed in</span>
+          <span className="text-xs text-berkut-muted dark:text-berkut-muted-dark ml-auto">
+            (don't sign me out for 30 days)
+          </span>
+        </label>
+
         {error && <p className="text-sm text-berkut-error font-bold">{error}</p>}
         <button type="submit" disabled={busy} className="btn-primary w-full">
           {busy ? "Signing in…" : "Sign in"}

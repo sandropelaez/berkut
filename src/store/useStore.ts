@@ -57,6 +57,8 @@ export interface UserState {
   noteScriptUsed: (s: Script) => void;
   speakingCompleted: number;
   noteSpeakingCompleted: () => void;
+  staySignedIn: boolean;
+  setStaySignedIn: (v: boolean) => void;
   reset: () => void;
 }
 
@@ -199,6 +201,19 @@ export const useStore = create<UserState>()(
         const next = get().speakingCompleted + 1;
         set({ speakingCompleted: next });
         if (next >= 10) get().awardBadge("voice_of_steppe");
+      },
+
+      staySignedIn: true,
+      setStaySignedIn: (v) => {
+        set({ staySignedIn: v });
+        // When unchecked, switch the Supabase session storage to sessionStorage
+        // so the next sign-in doesn't survive a browser close. We mark this in
+        // a separate localStorage key that supabase.ts reads at module load.
+        try {
+          localStorage.setItem("berkut-stay-signed-in", v ? "true" : "false");
+        } catch {
+          // private mode / disabled storage — checkbox stays UX-only
+        }
       },
 
       reset: () =>
