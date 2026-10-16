@@ -55,7 +55,7 @@ export default function MultipleChoice({
                   : "btn-outline opacity-40";
           return (
             <button key={opt} onClick={() => choose(opt)} className={cls}>
-              {opt}
+              {prompt.scriptOptions === "kk" ? <ScriptText>{opt}</ScriptText> : opt}
             </button>
           );
         })}

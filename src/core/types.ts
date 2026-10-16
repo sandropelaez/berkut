@@ -8,7 +8,8 @@ export type ExerciseType =
   | "TRANSLATE_KK_EN"
   | "LISTENING"
   | "MATCH_PAIRS"
-  | "FILL_BLANK";
+  | "FILL_BLANK"
+  | "TEACH";
 
 export interface Vocab {
   id: string;
@@ -64,13 +65,26 @@ export interface FillBlankPrompt {
   hintEn?: string;
 }
 
+// Ungraded explanation card shown between exercises. Text fields support
+// **bold** spans (used to highlight suffixes); Kazakh text is transliterated
+// with the learner's script preference like everywhere else.
+export interface TeachPrompt {
+  type: "TEACH";
+  title: string;
+  body?: string[];
+  examples?: Array<{ kk: string; en: string }>;
+  table?: { headers: string[]; rows: string[][] };
+  tip?: string;
+}
+
 export type ExercisePrompt =
   | MultipleChoicePrompt
   | TranslateENKKPrompt
   | TranslateKKENPrompt
   | ListeningPrompt
   | MatchPairsPrompt
-  | FillBlankPrompt;
+  | FillBlankPrompt
+  | TeachPrompt;
 
 export interface Exercise {
   id: string;
