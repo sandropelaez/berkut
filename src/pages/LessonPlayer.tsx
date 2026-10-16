@@ -9,6 +9,7 @@ import TranslateKKEN from "@/exercises/TranslateKKEN";
 import Listening from "@/exercises/Listening";
 import MatchPairs from "@/exercises/MatchPairs";
 import FillBlank from "@/exercises/FillBlank";
+import TeachCard from "@/exercises/TeachCard";
 import { XP } from "@/core/scoring";
 import type { Exercise, Lesson } from "@/core/types";
 import ReportButton from "@/components/ReportButton";
@@ -77,6 +78,8 @@ export default function LessonPlayer() {
   if (!exercise) return null;
 
   const total = lesson.exercises.length;
+  // Teach cards are ungraded: no answer phase, just read and continue.
+  const isTeach = exercise.type === "TEACH";
 
   function handleAnswer(correct: boolean, vocabIds: string[] = []) {
     if (phase !== "answering") return;
@@ -145,6 +148,8 @@ export default function LessonPlayer() {
         return <MatchPairs key={exercise.id} prompt={exercise.prompt as any} phase={phase} onAnswer={handleAnswer} />;
       case "FILL_BLANK":
         return <FillBlank key={exercise.id} prompt={exercise.prompt as any} phase={phase} onAnswer={handleAnswer} />;
+      case "TEACH":
+        return <TeachCard key={exercise.id} prompt={exercise.prompt as any} />;
     }
   })();
 
@@ -172,7 +177,7 @@ export default function LessonPlayer() {
           ✕
         </button>
         <div className="flex-1">
-          <ProgressBar value={idx + (phase === "checked" ? 1 : 0)} max={total} />
+          <ProgressBar value={idx + (phase === "checked" || isTeach ? 1 : 0)} max={total} />
         </div>
         <div className="text-rose-500 font-extrabold flex items-center gap-1">❤️ {hearts}</div>
       </header>
@@ -202,6 +207,11 @@ export default function LessonPlayer() {
           {feedback === "wrong" && <div className="font-bold text-berkut-error">Not quite. Try again.</div>}
           <div className="ml-auto flex items-center gap-3">
             <ReportButton exerciseId={exercise.id} />
+            {isTeach && (
+              <button onClick={nextExercise} className="btn-primary">
+                Got it →
+              </button>
+            )}
             {feedback === "wrong" && retries === 0 && (
               <button onClick={tryAgain} className="btn-outline">
                 Try again

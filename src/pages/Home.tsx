@@ -135,7 +135,7 @@ export default function Home() {
                                   : "bg-berkut-primary text-white"
                             }`}
                           >
-                            {completed ? (perfectRun ? "★" : "✓") : isLocked ? "🔒" : lesson.order}
+                            {completed ? (perfectRun ? "★" : "✓") : isLocked ? "🔒" : idx + 1}
                           </div>
                           <div>
                             <div className="font-bold">
