@@ -9,8 +9,8 @@
 -- present tense. Every lesson opens with ungraded TEACH cards that explain
 -- the rule before the exercises practise it.
 --
--- The lessons these units previously held are archived (status='archived'),
--- not deleted, so exercise reports keep their references.
+-- The lessons these units previously held are archived (status='archived') and their
+-- vocab moves to the hidden u-legacy-a1 unit — nothing is deleted.
 
 -- ─── Allow ungraded TEACH (explanation) cards ───────────────────────────
 alter table public.exercises drop constraint if exists exercises_type_check;
@@ -33,11 +33,15 @@ on conflict (id) do update set
   status=excluded.status;
 
 -- ─── Retire the lessons and vocab these units used to hold ──────────────
--- Archived (not deleted) so existing exercise reports keep their rows.
+-- Archived (not deleted) so exercise reports and SRS history keep their rows.
 update public.lessons set status = 'archived'
   where unit_id in ('u1', 'u2', 'u3', 'u4', 'u5', 'u6', 'u7')
     and id not in ('u1-b1', 'u1-b2', 'u1-b3', 'u1-b4', 'u1-b5', 'u2-b1', 'u2-b2', 'u2-b3', 'u2-b4', 'u2-b5', 'u3-b1', 'u3-b2', 'u3-b3', 'u3-b4', 'u3-b5', 'u4-b1', 'u4-b2', 'u4-b3', 'u4-b4', 'u4-b5', 'u5-b1', 'u5-b2', 'u5-b3', 'u5-b4', 'u5-b5', 'u6-b1', 'u6-b2', 'u6-b3', 'u6-b4', 'u6-b5', 'u7-b1', 'u7-b2', 'u7-b3', 'u7-b4', 'u7-b5');
-delete from public.vocab where unit_id in ('u1', 'u2', 'u3', 'u4', 'u5', 'u6', 'u7') and id not like 'vb-%';
+-- Old vocab moves to a hidden archived unit instead of being deleted.
+insert into public.units (id, language_code, "order", title_native, title_en, cefr_level, emoji, description, status) values
+  ('u-legacy-a1', 'kk', 900, 'Ескі сөздер', 'Legacy A1 vocab (archived)', 'A1', '🗄️', 'Vocabulary from the pre-v1.6 A1 lessons, kept for reference. Not shown to learners.', 'archived')
+on conflict (id) do update set status = excluded.status;
+update public.vocab set unit_id = 'u-legacy-a1' where unit_id in ('u1', 'u2', 'u3', 'u4', 'u5', 'u6', 'u7') and id not like 'vb-%';
 
 -- ─── Lessons ─────────────────────────────────────────────────────────────
 insert into public.lessons (id, unit_id, "order", title_native, title_en, status) values

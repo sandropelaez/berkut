@@ -11,5 +11,5 @@ export const BEGINNER_MIGRATION_HEADER = `-- Berkut v1.6 — Beginner course rev
 -- present tense. Every lesson opens with ungraded TEACH cards that explain
 -- the rule before the exercises practise it.
 --
--- The lessons these units previously held are archived (status='archived'),
--- not deleted, so exercise reports keep their references.`;
+-- The lessons these units previously held are archived (status='archived') and their
+-- vocab moves to the hidden u-legacy-a1 unit — nothing is deleted.`;
