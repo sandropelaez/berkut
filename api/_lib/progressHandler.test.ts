@@ -87,23 +87,20 @@ beforeEach(() => {
 describe("/api/progress", () => {
   it("saves a posted snapshot to the right tables and returns it", async () => {
     const res = await call("POST", {
-      progress: { "u1-l1": { completed: true, score: 30, perfectRun: true, completedAt: 1 } },
+      progress: { "u1-l1": { completed: true, perfectRun: true, completedAt: 1 } },
       srs: {},
       badges: { first_lesson: 1 },
-      xpTotal: 45,
-      xpWeekly: 45,
-      gems: 5,
       streakCount: 1,
       lastActiveDate: "2026-10-20",
     });
     expect(res.statusCode).toBe(200);
     expect(res.body.progress["u1-l1"].completed).toBe(true);
     expect(tables.user_progress![0]).toMatchObject({
-      completed_lessons: { "u1-l1": { completed: true, score: 30 } },
+      completed_lessons: { "u1-l1": { completed: true, perfectRun: true } },
       badges: { first_lesson: 1 },
       last_active_date: "2026-10-20",
     });
-    expect(tables.user_profiles![0]).toMatchObject({ xp_total: 45, gems: 5, streak_count: 1, role: "user" });
+    expect(tables.user_profiles![0]).toMatchObject({ streak_count: 1, role: "user" });
     expect(tables.user_profiles![0]!.last_active_at).toEqual(expect.any(String));
 
     const got = await call("GET");
@@ -113,18 +110,23 @@ describe("/api/progress", () => {
 
   it("merges instead of overwriting when a device posts stale state", async () => {
     await call("POST", {
-      progress: { a: { completed: true, score: 10 }, b: { completed: true, score: 10 } },
-      xpTotal: 100,
+      progress: { a: { completed: true }, b: { completed: true } },
+      streakCount: 4,
+      lastActiveDate: "2026-10-20",
     });
-    const res = await call("POST", { progress: { c: { completed: true, score: 10 } }, xpTotal: 20 });
+    const res = await call("POST", {
+      progress: { c: { completed: true } },
+      streakCount: 1,
+      lastActiveDate: "2026-10-12",
+    });
     expect(Object.keys(res.body.progress).sort()).toEqual(["a", "b", "c"]);
-    expect(res.body.xpTotal).toBe(100);
+    expect(res.body).toMatchObject({ streakCount: 4, lastActiveDate: "2026-10-20" });
     expect(Object.keys(tables.user_progress![0]!.completed_lessons as object).sort()).toEqual(["a", "b", "c"]);
   });
 
   it("creates the progress row if the signup trigger never did", async () => {
     tables.user_progress = [];
-    const res = await call("POST", { progress: { a: { completed: true, score: 1 } } });
+    const res = await call("POST", { progress: { a: { completed: true } } });
     expect(res.statusCode).toBe(200);
     expect(tables.user_progress).toHaveLength(1);
   });

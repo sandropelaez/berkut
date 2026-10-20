@@ -67,14 +67,17 @@ afterEach(() => {
 describe("progress sync", () => {
   it("restores saved progress on sign-in (e.g. after logout or on a new device)", async () => {
     server.db.alice = sanitizeSnapshot({
-      progress: { "u1-l1": { completed: true, score: 30 } },
-      xpTotal: 45,
+      progress: { "u1-l1": { completed: true } },
+      badges: { first_lesson: 1 },
+      streakCount: 3,
+      lastActiveDate: "2026-10-19",
     });
     const sync = makeSync();
     sync.start("alice");
     await settle();
     expect(useStore.getState().progress["u1-l1"]?.completed).toBe(true);
-    expect(useStore.getState().xpTotal).toBe(45);
+    expect(useStore.getState()).toMatchObject({ streakCount: 3, lastActiveDate: "2026-10-19" });
+    expect(useStore.getState().badges.first_lesson).toBe(1);
     sync.stop();
   });
 
@@ -82,16 +85,16 @@ describe("progress sync", () => {
     const sync = makeSync();
     sync.start("alice");
     await settle();
-    useStore.getState().recordLesson("u1-l2", 20, false);
+    useStore.getState().recordLesson("u1-l2", false);
     expect(server.db.alice?.progress["u1-l2"]).toBeUndefined();
     await vi.advanceTimersByTimeAsync(1000);
     expect(server.db.alice?.progress["u1-l2"]?.completed).toBe(true);
-    expect(server.db.alice?.xpTotal).toBe(useStore.getState().xpTotal);
+    expect(server.db.alice?.badges.first_lesson).toBe(useStore.getState().badges.first_lesson);
     sync.stop();
   });
 
   it("uploads progress made before sync existed on first sign-in", async () => {
-    useStore.getState().recordLesson("u1-l1", 10, true);
+    useStore.getState().recordLesson("u1-l1", true);
     const sync = makeSync();
     sync.start("alice");
     await settle();
@@ -104,7 +107,7 @@ describe("progress sync", () => {
     const sync = makeSync();
     sync.start("alice");
     await settle();
-    useStore.getState().recordLesson("u1-l1", 10, false);
+    useStore.getState().recordLesson("u1-l1", false);
     await vi.advanceTimersByTimeAsync(1000);
     sync.stop();
 
@@ -121,10 +124,10 @@ describe("progress sync", () => {
     sync.start("alice");
     await settle();
 
-    useStore.getState().recordLesson("a", 10, false);
+    useStore.getState().recordLesson("a", false);
     const release = server.hold();
     await vi.advanceTimersByTimeAsync(1000); // first save is now in flight
-    useStore.getState().recordLesson("b", 10, false);
+    useStore.getState().recordLesson("b", false);
     release();
     await settle();
     expect(useStore.getState().progress.b?.completed).toBe(true); // stale reply not applied
@@ -140,7 +143,7 @@ describe("progress sync", () => {
     sync.start("alice");
     await settle();
     server.setOffline(true);
-    useStore.getState().recordLesson("a", 10, false);
+    useStore.getState().recordLesson("a", false);
     await expect(sync.flush()).resolves.toBe(false);
     expect(useStore.getState().progress.a?.completed).toBe(true); // kept locally
 

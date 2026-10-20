@@ -29,9 +29,6 @@ export function snapshotOf(s: UserState): ProgressSnapshot {
     progress: s.progress,
     srs: s.srs,
     badges: s.badges,
-    xpTotal: s.xpTotal,
-    xpWeekly: s.xpWeekly,
-    gems: s.gems,
     streakCount: s.streakCount,
     lastActiveDate: s.lastActiveDate,
   };
@@ -42,9 +39,6 @@ function progressChanged(a: UserState, b: UserState): boolean {
     a.progress !== b.progress ||
     a.srs !== b.srs ||
     a.badges !== b.badges ||
-    a.xpTotal !== b.xpTotal ||
-    a.xpWeekly !== b.xpWeekly ||
-    a.gems !== b.gems ||
     a.streakCount !== b.streakCount ||
     a.lastActiveDate !== b.lastActiveDate
   );
@@ -76,9 +70,6 @@ export function createProgressSync(deps: SyncDeps) {
         progress: merged.progress,
         srs: merged.srs,
         badges: merged.badges as Record<BadgeId, number>,
-        xpTotal: merged.xpTotal,
-        xpWeekly: merged.xpWeekly,
-        gems: merged.gems,
         streakCount: merged.streakCount,
         lastActiveDate: merged.lastActiveDate,
       });

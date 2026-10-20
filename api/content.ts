@@ -63,7 +63,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (!lesson) return res.status(404).json({ error: "lesson_not_found" });
 
       const [{ data: exercises }, { data: vocab }] = await Promise.all([
-        svc.from("exercises").select("*").eq("lesson_id", id).eq("status", "active").order("order"),
+        // Listening exercises are retired (browser TTS reads Kazakh too poorly);
+        // excluded here too in case an older migration re-activates them.
+        svc
+          .from("exercises")
+          .select("*")
+          .eq("lesson_id", id)
+          .eq("status", "active")
+          .neq("type", "LISTENING")
+          .order("order"),
         svc.from("vocab").select("*").eq("unit_id", (lesson as any).unit_id),
       ]);
       res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=300");

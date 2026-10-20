@@ -5,7 +5,6 @@
 export interface LessonProgressWire {
   lessonId: string;
   completed: boolean;
-  score: number;
   perfectRun: boolean;
   completedAt?: number;
 }
@@ -25,9 +24,6 @@ export interface ProgressSnapshot {
   progress: Record<string, LessonProgressWire>;
   srs: Record<string, SrsItemWire>;
   badges: Record<string, number>;
-  xpTotal: number;
-  xpWeekly: number;
-  gems: number;
   streakCount: number;
   lastActiveDate: string | null; // local calendar day, YYYY-MM-DD
 }
@@ -40,9 +36,6 @@ export function emptySnapshot(): ProgressSnapshot {
     progress: {},
     srs: {},
     badges: {},
-    xpTotal: 0,
-    xpWeekly: 0,
-    gems: 0,
     streakCount: 0,
     lastActiveDate: null,
   };
@@ -70,7 +63,6 @@ export function sanitizeSnapshot(raw: unknown): ProgressSnapshot {
       out.progress[id] = {
         lessonId: id,
         completed: p.completed === true,
-        score: count(p.score),
         perfectRun: p.perfectRun === true,
         completedAt: num(p.completedAt),
       };
@@ -101,9 +93,6 @@ export function sanitizeSnapshot(raw: unknown): ProgressSnapshot {
     }
   }
 
-  out.xpTotal = count(raw.xpTotal);
-  out.xpWeekly = count(raw.xpWeekly);
-  out.gems = count(raw.gems);
   out.streakCount = count(raw.streakCount);
   out.lastActiveDate =
     typeof raw.lastActiveDate === "string" && DATE_RE.test(raw.lastActiveDate)
@@ -122,16 +111,14 @@ function mergeLesson(a: LessonProgressWire, b: LessonProgressWire): LessonProgre
   return {
     lessonId: a.lessonId,
     completed: a.completed || b.completed,
-    score: Math.max(a.score, b.score),
     perfectRun: a.perfectRun || b.perfectRun,
     completedAt,
   };
 }
 
 // mergeSnapshots combines two devices' views without losing work from either:
-// lessons and badges are unioned, counters only go up, each SRS card keeps its
-// most recent review, and the streak comes from whichever side was active
-// latest. Order matters only for exact ties, where `b` wins.
+// lessons and badges are unioned, each SRS card keeps its most recent review,
+// and the streak comes from whichever side was active latest. Order matters only for exact ties, where `b` wins.
 export function mergeSnapshots(a: ProgressSnapshot, b: ProgressSnapshot): ProgressSnapshot {
   const progress: Record<string, LessonProgressWire> = { ...a.progress };
   for (const [id, p] of Object.entries(b.progress)) {
@@ -166,9 +153,6 @@ export function mergeSnapshots(a: ProgressSnapshot, b: ProgressSnapshot): Progre
     progress,
     srs,
     badges,
-    xpTotal: Math.max(a.xpTotal, b.xpTotal),
-    xpWeekly: Math.max(a.xpWeekly, b.xpWeekly),
-    gems: Math.max(a.gems, b.gems),
     streakCount,
     lastActiveDate,
   };

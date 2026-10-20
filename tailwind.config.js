@@ -37,10 +37,6 @@ export default {
           "0%": { transform: "scale(0.95)", opacity: "0" },
           "100%": { transform: "scale(1)", opacity: "1" },
         },
-        floatUp: {
-          "0%": { transform: "translateY(0)", opacity: "1" },
-          "100%": { transform: "translateY(-40px)", opacity: "0" },
-        },
         shake: {
           "0%,100%": { transform: "translateX(0)" },
           "25%": { transform: "translateX(-6px)" },
@@ -49,7 +45,6 @@ export default {
       },
       animation: {
         pop: "pop 180ms ease-out",
-        floatUp: "floatUp 900ms ease-out forwards",
         shake: "shake 240ms ease-in-out",
       },
     },

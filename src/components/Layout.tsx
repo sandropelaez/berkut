@@ -32,16 +32,6 @@ const FlameIcon = () => (
     <path d="M12 2s4 5 4 9a4 4 0 1 1-8 0c0-1.5 1-3 1-3S6 11 6 14a6 6 0 1 0 12 0c0-5-6-12-6-12Z" />
   </svg>
 );
-const HeartIcon = () => (
-  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
-    <path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9Z" />
-  </svg>
-);
-const GemIcon = () => (
-  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
-    <path d="M6 3h12l4 6-10 12L2 9l4-6Z" />
-  </svg>
-);
 
 export default function Layout() {
   const { pathname } = useLocation();
@@ -50,10 +40,7 @@ export default function Layout() {
     pathname.startsWith("/auth/") ||
     pathname === "/welcome";
 
-  const xp = useStore((s) => s.xpTotal);
   const streak = useStore((s) => s.streakCount);
-  const hearts = useStore((s) => s.hearts);
-  const gems = useStore((s) => s.gems);
   const { role } = useAuth();
   const showAdmin = isAdminRole(role);
 
@@ -70,15 +57,6 @@ export default function Layout() {
               <span className="chip bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-200">
                 <FlameIcon /> {streak}
               </span>
-              <span className="chip bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-200">
-                <HeartIcon /> {hearts}
-              </span>
-              <span className="chip bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-200">
-                <GemIcon /> {gems}
-              </span>
-              <span className="chip bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200">
-                ⚡ {xp}
-              </span>
             </div>
           </div>
         </header>
@@ -90,10 +68,9 @@ export default function Layout() {
 
       {!hideChrome && (
         <nav className="fixed bottom-0 inset-x-0 z-20 bg-white dark:bg-berkut-card-dark border-t border-berkut-border dark:border-berkut-border-dark sm:hidden">
-          <div className="mx-auto max-w-3xl grid grid-cols-4">
+          <div className="mx-auto max-w-3xl grid grid-cols-3">
             <Tab to="/" icon={<HomeIcon />} label="Learn" />
             <Tab to="/practice" icon={<RefreshIcon />} label="Practice" />
-            <Tab to="/leaderboard" icon={<TrophyIcon />} label="League" />
             <Tab to="/profile" icon={<UserIcon />} label="Profile" />
           </div>
         </nav>
@@ -103,7 +80,6 @@ export default function Layout() {
         <nav className="hidden sm:flex fixed left-4 top-1/2 -translate-y-1/2 flex-col gap-1 z-20 bg-white dark:bg-berkut-card-dark border-2 border-berkut-border dark:border-berkut-border-dark rounded-2xl p-2 shadow">
           <SideTab to="/" icon={<HomeIcon />} label="Learn" />
           <SideTab to="/practice" icon={<RefreshIcon />} label="Practice" />
-          <SideTab to="/leaderboard" icon={<TrophyIcon />} label="League" />
           <SideTab to="/profile" icon={<UserIcon />} label="Profile" />
           <SideTab to="/settings" icon={<UserIcon />} label="Settings" />
           {showAdmin && <SideTab to="/admin" icon={<TrophyIcon />} label="Admin" />}

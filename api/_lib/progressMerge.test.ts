@@ -6,29 +6,23 @@ function snap(over: Partial<ProgressSnapshot>): ProgressSnapshot {
 }
 
 describe("mergeSnapshots", () => {
-  it("unions completed lessons and keeps the best result per lesson", () => {
+  it("unions completed lessons, keeping a perfect run and the latest completion", () => {
     const a = snap({
       progress: {
-        "u1-l1": { lessonId: "u1-l1", completed: true, score: 40, perfectRun: true, completedAt: 100 },
-        "u1-l2": { lessonId: "u1-l2", completed: true, score: 30, perfectRun: false, completedAt: 200 },
+        "u1-l1": { lessonId: "u1-l1", completed: true, perfectRun: true, completedAt: 100 },
+        "u1-l2": { lessonId: "u1-l2", completed: true, perfectRun: false, completedAt: 200 },
       },
     });
     const b = snap({
       progress: {
-        "u1-l2": { lessonId: "u1-l2", completed: true, score: 50, perfectRun: false, completedAt: 300 },
-        "u2-l1": { lessonId: "u2-l1", completed: true, score: 10, perfectRun: false },
+        "u1-l2": { lessonId: "u1-l2", completed: true, perfectRun: false, completedAt: 300 },
+        "u2-l1": { lessonId: "u2-l1", completed: true, perfectRun: false },
       },
     });
     const m = mergeSnapshots(a, b);
     expect(Object.keys(m.progress).sort()).toEqual(["u1-l1", "u1-l2", "u2-l1"]);
     expect(m.progress["u1-l1"]!.perfectRun).toBe(true);
-    expect(m.progress["u1-l2"]).toMatchObject({ score: 50, completedAt: 300 });
-  });
-
-  it("never lowers counters, so a stale device can't roll progress back", () => {
-    const server = snap({ xpTotal: 500, xpWeekly: 120, gems: 25 });
-    const staleDevice = snap({ xpTotal: 80, xpWeekly: 80, gems: 5 });
-    expect(mergeSnapshots(server, staleDevice)).toMatchObject({ xpTotal: 500, xpWeekly: 120, gems: 25 });
+    expect(m.progress["u1-l2"]).toMatchObject({ completedAt: 300 });
   });
 
   it("keeps the most recently reviewed SRS card", () => {
@@ -60,10 +54,9 @@ describe("mergeSnapshots", () => {
 
   it("merging with an empty snapshot is a no-op", () => {
     const s = snap({
-      xpTotal: 10,
       streakCount: 2,
       lastActiveDate: "2026-10-20",
-      progress: { a: { lessonId: "a", completed: true, score: 5, perfectRun: false } },
+      progress: { a: { lessonId: "a", completed: true, perfectRun: false } },
     });
     expect(mergeSnapshots(emptySnapshot(), s)).toEqual(s);
     expect(mergeSnapshots(s, emptySnapshot())).toEqual(s);
@@ -73,18 +66,17 @@ describe("mergeSnapshots", () => {
 describe("sanitizeSnapshot", () => {
   it("drops malformed input instead of storing it", () => {
     const s = sanitizeSnapshot({
-      progress: { ok: { completed: true, score: 12.7 }, bad: "nope" },
+      progress: { ok: { completed: true, score: 12 }, bad: "nope" },
       srs: { v1: { easeFactor: 2.5, nextReview: 1 }, v2: { easeFactor: "x" } },
       badges: { first_lesson: 5, junk: -1 },
-      xpTotal: -50,
-      gems: "lots",
+      streakCount: -3,
       lastActiveDate: "yesterday",
     });
     expect(Object.keys(s.progress)).toEqual(["ok"]);
-    expect(s.progress.ok).toMatchObject({ lessonId: "ok", completed: true, score: 12, perfectRun: false });
+    expect(s.progress.ok).toEqual({ lessonId: "ok", completed: true, perfectRun: false, completedAt: undefined });
     expect(Object.keys(s.srs)).toEqual(["v1"]);
     expect(s.badges).toEqual({ first_lesson: 5 });
-    expect(s).toMatchObject({ xpTotal: 0, gems: 0, lastActiveDate: null });
+    expect(s).toMatchObject({ streakCount: 0, lastActiveDate: null });
   });
 
   it("treats null / non-objects as empty", () => {

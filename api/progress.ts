@@ -11,8 +11,9 @@ import {
 // POST /api/progress → merge the posted snapshot into the saved one, save, and
 //                      return the merged result for the client to adopt.
 //
-// Lessons, SRS and badges live in user_progress; the counters live in
-// user_profiles (the leaderboard and admin stats read them from there).
+// Lessons, SRS, badges and the streak day live in user_progress; the streak
+// count and last-active time live in user_profiles, where the admin stats
+// read them.
 
 async function load(supabase: SupabaseClient, userId: string): Promise<ProgressSnapshot> {
   const [progress, profile] = await Promise.all([
@@ -23,7 +24,7 @@ async function load(supabase: SupabaseClient, userId: string): Promise<ProgressS
       .maybeSingle(),
     supabase
       .from("user_profiles")
-      .select("xp_total, xp_weekly, gems, streak_count")
+      .select("streak_count")
       .eq("user_id", userId)
       .maybeSingle(),
   ]);
@@ -34,9 +35,6 @@ async function load(supabase: SupabaseClient, userId: string): Promise<ProgressS
     srs: progress.data?.srs,
     badges: progress.data?.badges,
     lastActiveDate: progress.data?.last_active_date,
-    xpTotal: profile.data?.xp_total,
-    xpWeekly: profile.data?.xp_weekly,
-    gems: profile.data?.gems,
     streakCount: profile.data?.streak_count,
   });
 }
@@ -56,9 +54,6 @@ async function save(supabase: SupabaseClient, userId: string, s: ProgressSnapsho
     supabase
       .from("user_profiles")
       .update({
-        xp_total: s.xpTotal,
-        xp_weekly: s.xpWeekly,
-        gems: s.gems,
         streak_count: s.streakCount,
         last_active_at: new Date().toISOString(),
       })
