@@ -59,6 +59,10 @@ export interface UserState {
   noteSpeakingCompleted: () => void;
   staySignedIn: boolean;
   setStaySignedIn: (v: boolean) => void;
+  // Account whose server progress this local state was last merged with.
+  // Guards against carrying one account's progress into another.
+  syncedUserId: string | null;
+  setSyncedUserId: (id: string | null) => void;
   reset: () => void;
 }
 
@@ -216,6 +220,9 @@ export const useStore = create<UserState>()(
         }
       },
 
+      syncedUserId: null,
+      setSyncedUserId: (id) => set({ syncedUserId: id }),
+
       reset: () =>
         set({
           xpTotal: 0,
@@ -230,6 +237,7 @@ export const useStore = create<UserState>()(
           badges: {} as Record<BadgeId, number>,
           scriptsUsed: ["CYRILLIC"],
           speakingCompleted: 0,
+          syncedUserId: null,
         }),
     }),
     {

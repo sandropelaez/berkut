@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useStore } from "@/store/useStore";
 import { isSupabaseConfigured, getSupabase } from "@/core/supabase";
+import { flushProgress, stopProgressSync } from "@/core/progressSync";
 import { useNavigate } from "react-router-dom";
 
 export default function Settings() {
@@ -18,6 +19,15 @@ export default function Settings() {
   async function handleLogout() {
     const sb = getSupabase();
     if (sb) {
+      // Local progress is wiped below; make sure the server has it first.
+      const saved = await flushProgress();
+      if (
+        !saved &&
+        !confirm("Some progress hasn't been saved to your account yet (are you offline?). Log out anyway and lose it?")
+      ) {
+        return;
+      }
+      stopProgressSync();
       await sb.auth.signOut({ scope: "local" });
     }
     reset();
@@ -43,6 +53,7 @@ export default function Settings() {
       } catch {
         // best-effort; localStorage will still be wiped
       }
+      stopProgressSync();
       await sb.auth.signOut();
     }
     reset();
