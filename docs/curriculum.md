@@ -17,10 +17,11 @@ A Duolingo-style progression from absolute beginner (A1.1) to upper-intermediate
 3. **Spiral review.** Vocab from unit N reappears at decreasing density
    through units N+1…N+5. The SRS handles long-term review; the curriculum
    handles short-term reinforcement so new learners don't drown.
-4. **Listening + production parity.** Every unit has at least 2 listening
-   lessons and 2 production (EN→KK) lessons. Receptive skills compound
-   faster than productive, so we force learners to produce earlier than they
-   feel ready.
+4. **Production early.** Every unit has at least 2 production (EN→KK)
+   lessons. Receptive skills compound faster than productive, so we force
+   learners to produce earlier than they feel ready. (Listening exercises
+   were retired in v1.7: browser TTS reads Kazakh too poorly. They come back
+   only with recorded audio.)
 5. **Cultural anchoring.** Every unit ends with a Cultural Card that ties the
    theme to a real Kazakh tradition, place, or text. Not graded; ungated.
 6. **Dual-script throughout.** Cyrillic is canonical; the Latin transliteration
