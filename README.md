@@ -38,14 +38,13 @@ bootstrap `UPDATE`, re-run the migration.
   Translate EN→KK, Translate KK→EN, Listening (Web Speech TTS), Match Pairs,
   Fill-in-the-Blank — plus ungraded **teach cards** that explain a rule
   before it's practised.
-- **Hearts**, **XP**, **streaks**, **gems**, **badges**, **dual-script toggle**,
-  **dark mode**.
+- **Streaks**, **badges**, **dual-script toggle**, **dark mode**. (Hearts, XP,
+  gems and the league were removed for now; the `user_profiles` columns remain.)
 - **SRS** with the SM-2 algorithm (§7).
 - **Auth** via Supabase: email + password, Google SSO, verify-email,
   forgot/reset password, account deletion. Falls back to localStorage-only
   when Supabase env vars aren't set.
 - **Cross-device sync** via Supabase RLS-protected tables.
-- **Leaderboard** via a Vercel serverless function reading the top 30 from Postgres.
 
 ## Project layout
 
@@ -54,7 +53,6 @@ berkut/
 ├── api/                      # Vercel serverless functions (REST endpoints)
 │   ├── _lib/supabase.ts      # admin + user-scoped Supabase clients
 │   ├── health.ts             # GET /api/health
-│   ├── leaderboard.ts        # GET /api/leaderboard
 │   ├── progress.ts           # GET/POST /api/progress
 │   └── users/me.ts           # DELETE /api/users/me   (GDPR)
 ├── public/                   # static assets served as-is
@@ -63,7 +61,7 @@ berkut/
 │   ├── components/           # Layout, GoogleButton, ScriptText, ProgressBar
 │   ├── data/                 # unit1.ts / unit2.ts / unit3.ts seed content
 │   ├── exercises/            # the 6 exercise components
-│   ├── pages/                # Home, LessonPlayer, Practice, Profile, Settings, Leaderboard, auth/*
+│   ├── pages/                # Home, LessonPlayer, Practice, Profile, Settings, auth/*
 │   ├── store/useStore.ts     # Zustand + persist (offline-first progress)
 │   ├── App.tsx               # router
 │   ├── main.tsx              # entry
@@ -192,7 +190,6 @@ Follows §12.3 of the spec.
 
 - `https://berkutai.com` → home screen renders.
 - `https://berkutai.com/api/health` → `{ "status": "ok", ... }`
-- `https://berkutai.com/api/leaderboard` → `[]` (empty until users sign up).
 - `https://berkutai.com/auth/register` → register a real account → confirm
   the verification email arrives → land on the home screen.
 - Click **Continue with Google** → should redirect through Google → back to

@@ -107,7 +107,7 @@ async function handleUsers(ctx: AdminContext, req: VercelRequest, res: VercelRes
     let query = svc
       .from("user_profiles")
       .select(
-        "user_id, display_name, role, xp_total, xp_weekly, streak_count, league, last_active_at, created_at",
+        "user_id, display_name, role, streak_count, last_active_at, created_at",
         { count: "exact" },
       )
       .order("created_at", { ascending: false })
@@ -151,11 +151,7 @@ async function handleUsers(ctx: AdminContext, req: VercelRequest, res: VercelRes
     const allowed: Record<string, unknown> = {};
     if (typeof body.display_name === "string" && body.display_name.length >= 2)
       allowed.display_name = body.display_name.slice(0, 30);
-    if (typeof body.xp_total === "number") allowed.xp_total = body.xp_total;
-    if (typeof body.xp_weekly === "number") allowed.xp_weekly = body.xp_weekly;
     if (typeof body.streak_count === "number") allowed.streak_count = body.streak_count;
-    if (typeof body.gems === "number") allowed.gems = body.gems;
-    if (typeof body.league === "string") allowed.league = body.league;
 
     if (!Object.keys(allowed).length) return res.status(400).json({ error: "no_fields" });
 

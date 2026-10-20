@@ -18,9 +18,7 @@ export default function AdminUserDetail() {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({
     display_name: "",
-    xp_total: 0,
     streak_count: 0,
-    gems: 0,
   });
   const [err, setErr] = useState<string | null>(null);
 
@@ -29,9 +27,7 @@ export default function AdminUserDetail() {
       setData(d);
       setForm({
         display_name: d.profile.display_name,
-        xp_total: d.profile.xp_total,
         streak_count: d.profile.streak_count,
-        gems: d.profile.gems,
       });
     });
   }
@@ -108,11 +104,7 @@ export default function AdminUserDetail() {
         <h2 className="font-bold">Profile</h2>
         {!editing ? (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-            <Stat label="XP total" value={data.profile.xp_total} />
-            <Stat label="XP weekly" value={data.profile.xp_weekly} />
             <Stat label="Streak" value={`${data.profile.streak_count}🔥`} />
-            <Stat label="Gems" value={`${data.profile.gems}💎`} />
-            <Stat label="League" value={data.profile.league} />
             <Stat label="Script" value={data.profile.script_pref} />
             <Stat label="Created" value={new Date(data.profile.created_at).toLocaleDateString()} />
             <Stat label="Last active" value={data.profile.last_active_at ? new Date(data.profile.last_active_at).toLocaleDateString() : "—"} />
@@ -120,9 +112,7 @@ export default function AdminUserDetail() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label="Display name" value={form.display_name} onChange={(v) => setForm({ ...form, display_name: v })} />
-            <Field label="XP total" type="number" value={String(form.xp_total)} onChange={(v) => setForm({ ...form, xp_total: parseInt(v, 10) || 0 })} />
             <Field label="Streak" type="number" value={String(form.streak_count)} onChange={(v) => setForm({ ...form, streak_count: parseInt(v, 10) || 0 })} />
-            <Field label="Gems" type="number" value={String(form.gems)} onChange={(v) => setForm({ ...form, gems: parseInt(v, 10) || 0 })} />
             <div className="sm:col-span-2 flex gap-2 justify-end">
               <button onClick={() => setEditing(false)} className="btn-outline text-sm">Cancel</button>
               <button onClick={save} className="btn-primary text-sm">Save</button>

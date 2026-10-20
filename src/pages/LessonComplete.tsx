@@ -3,8 +3,6 @@ import { useContentStore } from "@/store/useContentStore";
 import ScriptText from "@/components/ScriptText";
 
 interface LocState {
-  xpAwarded: number;
-  score: number;
   mistakes: number;
   perfect: boolean;
   firstCompletion: boolean;
@@ -18,8 +16,6 @@ export default function LessonComplete() {
     ? units.flatMap((u) => u.lessons).find((l) => l.id === id)
     : undefined;
   const state = (useLocation().state as LocState | null) ?? {
-    xpAwarded: 0,
-    score: 0,
     mistakes: 0,
     perfect: false,
     firstCompletion: false,
@@ -54,10 +50,9 @@ export default function LessonComplete() {
           <ScriptText>{found.titleKk}</ScriptText> — {found.titleEn}
         </p>
 
-        <div className="grid grid-cols-3 gap-3 mt-8">
-          <Stat label="Total XP" value={`+${state.xpAwarded}`} highlight />
-          <Stat label="Accuracy" value={`${accuracy}%`} />
-          <Stat label="Hearts left" value={state.perfect ? "❤️❤️❤️" : `−${state.mistakes}`} />
+        <div className="grid grid-cols-2 gap-3 mt-8">
+          <Stat label="Accuracy" value={`${accuracy}%`} highlight />
+          <Stat label="Mistakes" value={state.mistakes} />
         </div>
 
         {state.newStreakDay && (

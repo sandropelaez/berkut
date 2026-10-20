@@ -48,14 +48,6 @@ const CHECKS: Check[] = [
     },
   },
   {
-    name: "/api/leaderboard returns an array (200)",
-    fn: async () => {
-      const { res, json } = await fetchJson("/api/leaderboard");
-      assert(res.ok, `/api/leaderboard returned ${res.status}`);
-      assert(Array.isArray(json), `leaderboard is not an array: ${typeof json}`);
-    },
-  },
-  {
     name: "/api/content?action=languages returns kk",
     fn: async () => {
       const { res, json, text } = await fetchJson("/api/content?action=languages");

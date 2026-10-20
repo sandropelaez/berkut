@@ -10,7 +10,6 @@ import Listening from "@/exercises/Listening";
 import MatchPairs from "@/exercises/MatchPairs";
 import FillBlank from "@/exercises/FillBlank";
 import TeachCard from "@/exercises/TeachCard";
-import { XP } from "@/core/scoring";
 import type { Exercise, Lesson } from "@/core/types";
 import ReportButton from "@/components/ReportButton";
 
@@ -21,8 +20,6 @@ export default function LessonPlayer() {
   const navigate = useNavigate();
   const loadLesson = useContentStore((s) => s.loadLesson);
 
-  const hearts = useStore((s) => s.hearts);
-  const spendHeart = useStore((s) => s.spendHeart);
   const ensureSrs = useStore((s) => s.ensureSrs);
   const reviewVocab = useStore((s) => s.reviewVocab);
   const recordLesson = useStore((s) => s.recordLesson);
@@ -33,10 +30,8 @@ export default function LessonPlayer() {
   const [idx, setIdx] = useState(0);
   const [phase, setPhase] = useState<Phase>("answering");
   const [feedback, setFeedback] = useState<"correct" | "wrong" | null>(null);
-  const [scoreAcc, setScoreAcc] = useState(0);
   const [mistakes, setMistakes] = useState(0);
   const [retries, setRetries] = useState(0);
-  const [floats, setFloats] = useState<Array<{ id: number; xp: number }>>([]);
 
   useEffect(() => {
     if (!id) return;
@@ -88,32 +83,17 @@ export default function LessonPlayer() {
 
     for (const vid of vocabIds) reviewVocab(vid, correct);
 
-    if (correct) {
-      const xp = retries === 0 ? XP.CORRECT_FIRST : XP.CORRECT_SECOND;
-      setScoreAcc((s) => s + xp);
-      const fid = Date.now();
-      setFloats((f) => [...f, { id: fid, xp }]);
-      setTimeout(() => setFloats((f) => f.filter((x) => x.id !== fid)), 900);
-    } else {
-      setMistakes((m) => m + 1);
-      spendHeart();
-    }
+    if (!correct) setMistakes((m) => m + 1);
   }
 
   function nextExercise() {
-    if (hearts <= 0 && feedback === "wrong") {
-      navigate(`/`, { replace: true });
-      return;
-    }
     if (idx + 1 >= total) {
       const perfect = mistakes === 0;
-      const result = recordLesson(lesson!.id, scoreAcc, perfect);
+      const result = recordLesson(lesson!.id, perfect);
       const newDay = bumpStreak();
       navigate(`/lesson/${lesson!.id}/complete`, {
         replace: true,
         state: {
-          xpAwarded: result.xpAwarded + (newDay ? XP.STREAK_DAY : 0),
-          score: scoreAcc,
           mistakes,
           perfect,
           firstCompletion: result.firstCompletion,
@@ -153,23 +133,6 @@ export default function LessonPlayer() {
     }
   })();
 
-  if (hearts <= 0) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="max-w-md text-center">
-          <div className="text-5xl">💔</div>
-          <h1 className="text-2xl font-extrabold mt-3">Out of hearts</h1>
-          <p className="text-berkut-muted dark:text-berkut-muted-dark mt-2">
-            Hearts regenerate over time (1 every 30 minutes).
-          </p>
-          <Link to="/" className="btn-primary mt-6 inline-flex">
-            Back home
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen flex flex-col bg-berkut-bg dark:bg-berkut-bg-dark">
       <header className="px-4 py-3 border-b border-berkut-border dark:border-berkut-border-dark flex items-center gap-3">
@@ -179,18 +142,10 @@ export default function LessonPlayer() {
         <div className="flex-1">
           <ProgressBar value={idx + (phase === "checked" || isTeach ? 1 : 0)} max={total} />
         </div>
-        <div className="text-rose-500 font-extrabold flex items-center gap-1">❤️ {hearts}</div>
       </header>
 
-      <div className="flex-1 mx-auto w-full max-w-2xl px-4 py-6 relative">
+      <div className="flex-1 mx-auto w-full max-w-2xl px-4 py-6">
         {ExerciseEl}
-        <div className="pointer-events-none absolute right-6 top-6">
-          {floats.map((f) => (
-            <div key={f.id} className="text-berkut-success font-extrabold text-2xl animate-floatUp">
-              +{f.xp} XP
-            </div>
-          ))}
-        </div>
       </div>
 
       <footer

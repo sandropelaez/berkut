@@ -15,7 +15,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === "GET") {
     const { data, error } = await supabase
       .from("user_progress")
-      .select("xp_total, xp_weekly, streak_count, last_active_at, gems, league, completed_lessons, srs")
+      .select("streak_count, last_active_at, completed_lessons, srs")
       .eq("user_id", userId)
       .maybeSingle();
     if (error) return res.status(500).json({ error: "internal_error" });
@@ -25,20 +25,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === "POST") {
     const body = req.body && typeof req.body === "object" ? req.body : {};
     const {
-      xp_total,
-      xp_weekly,
       streak_count,
-      gems,
       completed_lessons,
       srs,
     } = body as Record<string, unknown>;
 
     const update: Record<string, unknown> = {
       user_id: userId,
-      xp_total: typeof xp_total === "number" ? xp_total : 0,
-      xp_weekly: typeof xp_weekly === "number" ? xp_weekly : 0,
       streak_count: typeof streak_count === "number" ? streak_count : 0,
-      gems: typeof gems === "number" ? gems : 0,
       last_active_at: new Date().toISOString(),
       completed_lessons: completed_lessons ?? {},
       srs: srs ?? {},
