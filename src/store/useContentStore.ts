@@ -50,6 +50,12 @@ interface ContentState {
   units: Unit[];
   loadCourse: (lang?: string) => Promise<void>;
   loadLesson: (lessonId: string) => Promise<Lesson | null>;
+  // Active exercises among `ids`, or null if the request failed.
+  loadExercises: (ids: string[]) => Promise<RepeatExercise[] | null>;
+}
+
+export interface RepeatExercise extends Exercise {
+  lessonId: string;
 }
 
 function toUnit(raw: RawUnit, lessonsAll: RawLesson[], vocabAll: RawVocab[]): Unit {
@@ -163,5 +169,17 @@ export const useContentStore = create<ContentState>((set, get) => ({
       ),
     });
     return hydrated;
+  },
+
+  loadExercises: async (ids) => {
+    if (!ids.length) return [];
+    try {
+      const res = await fetch(`/api/content?action=exercises&ids=${encodeURIComponent(ids.join(","))}`);
+      if (!res.ok) return null;
+      const data = (await res.json()) as { exercises: RawExercise[] };
+      return data.exercises.map((e) => ({ id: e.id, lessonId: e.lesson_id, type: e.type, prompt: e.prompt }));
+    } catch {
+      return null;
+    }
   },
 }));

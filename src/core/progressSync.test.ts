@@ -93,6 +93,23 @@ describe("progress sync", () => {
     sync.stop();
   });
 
+  it("syncs the repeat list to a second device", async () => {
+    const sync = makeSync();
+    sync.start("alice");
+    await settle();
+    useStore.getState().recordExerciseResult("u1-l1-e2", "u1-l1", false);
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(server.db.alice?.mistakes["u1-l1-e2"]?.wrongCount).toBe(1);
+    sync.stop();
+
+    useStore.getState().reset(); // fresh browser
+    const other = makeSync();
+    other.start("alice");
+    await settle();
+    expect(useStore.getState().mistakes["u1-l1-e2"]).toMatchObject({ lessonId: "u1-l1", correctStreak: 0 });
+    other.stop();
+  });
+
   it("uploads progress made before sync existed on first sign-in", async () => {
     useStore.getState().recordLesson("u1-l1", true);
     const sync = makeSync();

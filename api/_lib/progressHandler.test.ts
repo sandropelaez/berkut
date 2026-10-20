@@ -4,7 +4,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const COLUMNS: Record<string, string[]> = {
-  user_progress: ["user_id", "completed_lessons", "srs", "badges", "last_active_date", "updated_at"],
+  user_progress: ["user_id", "completed_lessons", "srs", "badges", "last_active_date", "mistakes", "updated_at"],
   user_profiles: [
     "user_id", "display_name", "avatar_url", "script_pref", "league", "xp_total", "xp_weekly",
     "streak_count", "streak_freezes", "gems", "last_active_at", "created_at", "updated_at", "role",
@@ -79,7 +79,7 @@ function call(method: string, body?: unknown) {
 
 beforeEach(() => {
   tables = {
-    user_progress: [{ user_id: "u1", completed_lessons: {}, srs: {}, badges: {}, last_active_date: null }],
+    user_progress: [{ user_id: "u1", completed_lessons: {}, srs: {}, badges: {}, last_active_date: null, mistakes: {} }],
     user_profiles: [{ user_id: "u1", xp_total: 0, xp_weekly: 0, gems: 0, streak_count: 0, last_active_at: null, role: "user" }],
   };
 });
@@ -92,6 +92,7 @@ describe("/api/progress", () => {
       badges: { first_lesson: 1 },
       streakCount: 1,
       lastActiveDate: "2026-10-20",
+      mistakes: { e1: { lessonId: "u1-l1", correctStreak: 0, wrongCount: 1, updatedAt: 1 } },
     });
     expect(res.statusCode).toBe(200);
     expect(res.body.progress["u1-l1"].completed).toBe(true);
@@ -99,6 +100,7 @@ describe("/api/progress", () => {
       completed_lessons: { "u1-l1": { completed: true, perfectRun: true } },
       badges: { first_lesson: 1 },
       last_active_date: "2026-10-20",
+      mistakes: { e1: { lessonId: "u1-l1", wrongCount: 1 } },
     });
     expect(tables.user_profiles![0]).toMatchObject({ streak_count: 1, role: "user" });
     expect(tables.user_profiles![0]!.last_active_at).toEqual(expect.any(String));

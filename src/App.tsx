@@ -8,6 +8,7 @@ import Home from "@/pages/Home";
 import LessonPlayer from "@/pages/LessonPlayer";
 import LessonComplete from "@/pages/LessonComplete";
 import Practice from "@/pages/Practice";
+import { RepeatHome, RepeatSession } from "@/pages/Repeat";
 import Profile from "@/pages/Profile";
 import Settings from "@/pages/Settings";
 import Welcome from "@/pages/Welcome";
@@ -74,6 +75,8 @@ export default function App() {
         <Route path="/lesson/:id" element={<RequireAuth><LessonPlayer /></RequireAuth>} />
         <Route path="/lesson/:id/complete" element={<RequireAuth><LessonComplete /></RequireAuth>} />
         <Route path="/practice" element={<RequireAuth><Practice /></RequireAuth>} />
+        <Route path="/repeat" element={<RequireAuth><RepeatHome /></RequireAuth>} />
+        <Route path="/repeat/session" element={<RequireAuth><RepeatSession /></RequireAuth>} />
         <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
         <Route path="/settings" element={<RequireAuth><Settings /></RequireAuth>} />
 
