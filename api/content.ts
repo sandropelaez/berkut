@@ -78,6 +78,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ lesson, exercises: exercises ?? [], vocab: vocab ?? [] });
     }
 
+    // Exercises by id, for the Repeat menu. Archived and Listening exercises
+    // are left out; the client drops missing ids from the learner's list.
+    if (action === "exercises") {
+      const ids = String(req.query.ids ?? "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .slice(0, 50);
+      if (!ids.length) return res.status(400).json({ error: "ids_required" });
+
+      const { data: exercises, error } = await svc
+        .from("exercises")
+        .select("id, lesson_id, type, prompt")
+        .in("id", ids)
+        .eq("status", "active")
+        .neq("type", "LISTENING");
+      if (error) return res.status(500).json({ error: error.message });
+      res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=300");
+      return res.status(200).json({ exercises: exercises ?? [] });
+    }
+
     return res.status(400).json({ error: "unknown_action", action });
   } catch (e: any) {
     console.error("content handler error", e);

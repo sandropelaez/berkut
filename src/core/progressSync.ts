@@ -31,6 +31,7 @@ export function snapshotOf(s: UserState): ProgressSnapshot {
     badges: s.badges,
     streakCount: s.streakCount,
     lastActiveDate: s.lastActiveDate,
+    mistakes: s.mistakes,
   };
 }
 
@@ -40,7 +41,8 @@ function progressChanged(a: UserState, b: UserState): boolean {
     a.srs !== b.srs ||
     a.badges !== b.badges ||
     a.streakCount !== b.streakCount ||
-    a.lastActiveDate !== b.lastActiveDate
+    a.lastActiveDate !== b.lastActiveDate ||
+    a.mistakes !== b.mistakes
   );
 }
 
@@ -72,6 +74,7 @@ export function createProgressSync(deps: SyncDeps) {
         badges: merged.badges as Record<BadgeId, number>,
         streakCount: merged.streakCount,
         lastActiveDate: merged.lastActiveDate,
+        mistakes: merged.mistakes,
       });
     } finally {
       applying = false;

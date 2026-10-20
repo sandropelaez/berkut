@@ -3,6 +3,7 @@ import { useStore } from "@/store/useStore";
 import { isAdminRole, useAuth } from "@/core/useAuth";
 import {
   HomeIcon,
+  RepeatIcon,
   ReviewIcon,
   SettingsIcon,
   ShieldIcon,
@@ -14,6 +15,7 @@ import {
 const TABS = [
   { to: "/", label: "Learn", Icon: HomeIcon },
   { to: "/practice", label: "Practice", Icon: ReviewIcon },
+  { to: "/repeat", label: "Repeat", Icon: RepeatIcon },
   { to: "/profile", label: "Profile", Icon: UserIcon },
 ];
 
@@ -21,6 +23,7 @@ export default function Layout() {
   const { pathname } = useLocation();
   const hideChrome =
     pathname.startsWith("/lesson/") ||
+    pathname.startsWith("/repeat/") ||
     pathname.startsWith("/auth/") ||
     pathname === "/welcome";
 
@@ -53,7 +56,7 @@ export default function Layout() {
           aria-label="Main"
           className="fixed bottom-0 inset-x-0 z-20 bg-berkut-raised shadow-sheet pb-[env(safe-area-inset-bottom)] sm:hidden"
         >
-          <div className="mx-auto max-w-content grid grid-cols-3">
+          <div className="mx-auto max-w-content grid grid-cols-4">
             {TABS.map((t) => (
               <Tab key={t.to} {...t} />
             ))}

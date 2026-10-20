@@ -32,6 +32,7 @@ export const CrossIcon = ({ className = "h-5 w-5" }: IconProps) => <Line classNa
 export const LockIcon = (p: IconProps) => <Line {...p}><rect x="5" y="10.5" width="14" height="10" rx="2.5" /><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" /></Line>;
 export const HomeIcon = (p: IconProps) => <Line {...p}><path d="M3.5 11 12 3.5 20.5 11M6 9v11h12V9" /></Line>;
 export const ReviewIcon = (p: IconProps) => <Line {...p}><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.5M20 4v4.5h-4.5M20 12a8 8 0 0 1-13.7 5.6L4 15.5M4 20v-4.5h4.5" /></Line>;
+export const RepeatIcon = (p: IconProps) => <Line {...p}><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3L4 9.4M4 4.5v4.9h4.9" /></Line>;
 export const TrophyIcon = (p: IconProps) => <Line {...p}><path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4ZM7 5H4v2a3 3 0 0 0 3 3M17 5h3v2a3 3 0 0 1-3 3" /></Line>;
 export const UserIcon = (p: IconProps) => <Line {...p}><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></Line>;
 export const SettingsIcon = (p: IconProps) => <Line {...p}><circle cx="12" cy="12" r="3" /><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" /></Line>;
@@ -187,5 +188,15 @@ export function SpokenPrompt({ onSpeak, children, size = "word" }: { onSpeak: ()
         <span className="sr-only">Play audio</span>
       </span>
     </button>
+  );
+}
+
+// Stat tile on the lesson and repeat end screens.
+export function ResultStat({ label, value, highlight }: { label: string; value: string | number; highlight?: boolean }) {
+  return (
+    <div className={`rounded-tile p-3 ${highlight ? "bg-berkut-gold text-berkut-on-gold" : "bg-berkut-raised shadow-card"}`}>
+      <div className={`text-[11px] font-bold uppercase tracking-[0.1em] ${highlight ? "" : "text-berkut-muted"}`}>{label}</div>
+      <div className="font-display text-xl font-semibold tabular-nums mt-1">{value}</div>
+    </div>
   );
 }

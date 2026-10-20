@@ -121,6 +121,15 @@ export interface SrsItem {
   lastReview?: number;
 }
 
+export interface MistakeItem {
+  exerciseId: string;
+  lessonId: string;
+  correctStreak: number; // correct first attempts since the last miss
+  wrongCount: number;
+  updatedAt: number;
+  clearedAt?: number; // set once cleared; the entry stays as a tombstone
+}
+
 export interface UserProgress {
   lessonId: string;
   completed: boolean;

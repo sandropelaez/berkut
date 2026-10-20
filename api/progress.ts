@@ -11,7 +11,7 @@ import {
 // POST /api/progress → merge the posted snapshot into the saved one, save, and
 //                      return the merged result for the client to adopt.
 //
-// Lessons, SRS, badges and the streak day live in user_progress; the streak
+// Lessons, SRS, badges, mistakes and the streak day live in user_progress; the streak
 // count and last-active time live in user_profiles, where the admin stats
 // read them.
 
@@ -19,7 +19,7 @@ async function load(supabase: SupabaseClient, userId: string): Promise<ProgressS
   const [progress, profile] = await Promise.all([
     supabase
       .from("user_progress")
-      .select("completed_lessons, srs, badges, last_active_date")
+      .select("completed_lessons, srs, badges, last_active_date, mistakes")
       .eq("user_id", userId)
       .maybeSingle(),
     supabase
@@ -35,6 +35,7 @@ async function load(supabase: SupabaseClient, userId: string): Promise<ProgressS
     srs: progress.data?.srs,
     badges: progress.data?.badges,
     lastActiveDate: progress.data?.last_active_date,
+    mistakes: progress.data?.mistakes,
     streakCount: profile.data?.streak_count,
   });
 }
@@ -48,6 +49,7 @@ async function save(supabase: SupabaseClient, userId: string, s: ProgressSnapsho
         srs: s.srs,
         badges: s.badges,
         last_active_date: s.lastActiveDate,
+        mistakes: s.mistakes,
       },
       { onConflict: "user_id" },
     ),

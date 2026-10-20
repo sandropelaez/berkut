@@ -52,6 +52,16 @@ describe("mergeSnapshots", () => {
     ).toBe(3);
   });
 
+  it("keeps each mistake's latest change, so a cleared exercise stays cleared", () => {
+    const listed = { exerciseId: "e1", lessonId: "l1", correctStreak: 2, wrongCount: 1, updatedAt: 100 };
+    const cleared = { ...listed, correctStreak: 3, updatedAt: 200, clearedAt: 200 };
+    const other = { ...listed, exerciseId: "e2", updatedAt: 50 };
+    const a = snap({ mistakes: { e1: listed, e2: other } });
+    const b = snap({ mistakes: { e1: cleared } });
+    expect(mergeSnapshots(a, b).mistakes).toEqual({ e1: cleared, e2: other });
+    expect(mergeSnapshots(b, a).mistakes).toEqual({ e1: cleared, e2: other });
+  });
+
   it("merging with an empty snapshot is a no-op", () => {
     const s = snap({
       streakCount: 2,
@@ -71,12 +81,20 @@ describe("sanitizeSnapshot", () => {
       badges: { first_lesson: 5, junk: -1 },
       streakCount: -3,
       lastActiveDate: "yesterday",
+      mistakes: {
+        e1: { lessonId: "l1", correctStreak: 1.7, wrongCount: -2, updatedAt: 9 },
+        e2: { lessonId: 3, updatedAt: 9 },
+        e3: { lessonId: "l1" },
+      },
     });
     expect(Object.keys(s.progress)).toEqual(["ok"]);
     expect(s.progress.ok).toEqual({ lessonId: "ok", completed: true, perfectRun: false, completedAt: undefined });
     expect(Object.keys(s.srs)).toEqual(["v1"]);
     expect(s.badges).toEqual({ first_lesson: 5 });
     expect(s).toMatchObject({ streakCount: 0, lastActiveDate: null });
+    expect(s.mistakes).toEqual({
+      e1: { exerciseId: "e1", lessonId: "l1", correctStreak: 1, wrongCount: 0, updatedAt: 9, clearedAt: undefined },
+    });
   });
 
   it("treats null / non-objects as empty", () => {

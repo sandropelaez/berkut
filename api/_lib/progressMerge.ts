@@ -18,6 +18,17 @@ export interface SrsItemWire {
   lastReview?: number;
 }
 
+// An exercise the learner got wrong. Cleared entries are kept (clearedAt set)
+// so a merge with an older copy can't put them back on the list.
+export interface MistakeWire {
+  exerciseId: string;
+  lessonId: string;
+  correctStreak: number;
+  wrongCount: number;
+  updatedAt: number;
+  clearedAt?: number;
+}
+
 // Everything that counts as "progress" — the part of the client store that
 // must survive a logout, a cleared browser, or a second device.
 export interface ProgressSnapshot {
@@ -26,6 +37,7 @@ export interface ProgressSnapshot {
   badges: Record<string, number>;
   streakCount: number;
   lastActiveDate: string | null; // local calendar day, YYYY-MM-DD
+  mistakes: Record<string, MistakeWire>;
 }
 
 const MAX_KEYS = 5000;
@@ -38,6 +50,7 @@ export function emptySnapshot(): ProgressSnapshot {
     badges: {},
     streakCount: 0,
     lastActiveDate: null,
+    mistakes: {},
   };
 }
 
@@ -93,6 +106,22 @@ export function sanitizeSnapshot(raw: unknown): ProgressSnapshot {
     }
   }
 
+  if (isObj(raw.mistakes)) {
+    for (const [id, m] of Object.entries(raw.mistakes).slice(0, MAX_KEYS)) {
+      if (!isObj(m)) continue;
+      const updatedAt = num(m.updatedAt);
+      if (updatedAt === undefined || typeof m.lessonId !== "string") continue;
+      out.mistakes[id] = {
+        exerciseId: id,
+        lessonId: m.lessonId,
+        correctStreak: count(m.correctStreak),
+        wrongCount: count(m.wrongCount),
+        updatedAt,
+        clearedAt: num(m.clearedAt),
+      };
+    }
+  }
+
   out.streakCount = count(raw.streakCount);
   out.lastActiveDate =
     typeof raw.lastActiveDate === "string" && DATE_RE.test(raw.lastActiveDate)
@@ -118,7 +147,8 @@ function mergeLesson(a: LessonProgressWire, b: LessonProgressWire): LessonProgre
 
 // mergeSnapshots combines two devices' views without losing work from either:
 // lessons and badges are unioned, each SRS card keeps its most recent review,
-// and the streak comes from whichever side was active latest. Order matters only for exact ties, where `b` wins.
+// each mistake keeps its latest change, and the streak comes from whichever
+// side was active latest. Order matters only for exact ties, where `b` wins.
 export function mergeSnapshots(a: ProgressSnapshot, b: ProgressSnapshot): ProgressSnapshot {
   const progress: Record<string, LessonProgressWire> = { ...a.progress };
   for (const [id, p] of Object.entries(b.progress)) {
@@ -134,6 +164,12 @@ export function mergeSnapshots(a: ProgressSnapshot, b: ProgressSnapshot): Progre
   const badges: Record<string, number> = { ...a.badges };
   for (const [id, at] of Object.entries(b.badges)) {
     badges[id] = badges[id] ? Math.min(badges[id]!, at) : at;
+  }
+
+  const mistakes: Record<string, MistakeWire> = { ...a.mistakes };
+  for (const [id, m] of Object.entries(b.mistakes)) {
+    const cur = mistakes[id];
+    if (!cur || m.updatedAt >= cur.updatedAt) mistakes[id] = m;
   }
 
   let streakCount: number;
@@ -155,5 +191,6 @@ export function mergeSnapshots(a: ProgressSnapshot, b: ProgressSnapshot): Progre
     badges,
     streakCount,
     lastActiveDate,
+    mistakes,
   };
 }

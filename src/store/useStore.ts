@@ -2,11 +2,13 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type {
   BadgeId,
+  MistakeItem,
   Script,
   SrsItem,
   UserProgress,
 } from "@/core/types";
 import { newSrsItem, reviewSrs } from "@/core/srs";
+import { clear, recordAttempt } from "@/core/mistakes";
 
 export interface UserState {
   hydrated: boolean;
@@ -34,6 +36,12 @@ export interface UserState {
   srs: Record<string, SrsItem>;
   ensureSrs: (vocabIds: string[]) => void;
   reviewVocab: (vocabId: string, correct: boolean) => void;
+
+  // Repeat list (docs/repetition.md), keyed by exercise id.
+  mistakes: Record<string, MistakeItem>;
+  // Record a graded exercise's first attempt. Retries must not be recorded.
+  recordExerciseResult: (exerciseId: string, lessonId: string, correct: boolean) => void;
+  dropMistakes: (exerciseIds: string[]) => void;
 
   badges: Record<BadgeId, number>;
   awardBadge: (badge: BadgeId) => boolean;
@@ -134,6 +142,16 @@ export const useStore = create<UserState>()(
         set({ srs: { ...cur, [vocabId]: next } });
       },
 
+      mistakes: {},
+      recordExerciseResult: (exerciseId, lessonId, correct) => {
+        const cur = get().mistakes;
+        const next = recordAttempt(cur, exerciseId, lessonId, correct);
+        if (next !== cur) set({ mistakes: next });
+      },
+      dropMistakes: (exerciseIds) => {
+        if (exerciseIds.length) set({ mistakes: clear(get().mistakes, exerciseIds) });
+      },
+
       badges: {} as Record<BadgeId, number>,
       awardBadge: (badge) => {
         if (get().badges[badge]) return false;
@@ -179,6 +197,7 @@ export const useStore = create<UserState>()(
           lastActiveDate: null,
           progress: {},
           srs: {},
+          mistakes: {},
           badges: {} as Record<BadgeId, number>,
           scriptsUsed: ["CYRILLIC"],
           speakingCompleted: 0,

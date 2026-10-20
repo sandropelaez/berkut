@@ -1,7 +1,7 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useContentStore } from "@/store/useContentStore";
 import ScriptText from "@/components/ScriptText";
-import { FlameIcon, Ornament, StarIcon, SunMark } from "@/components/ui";
+import { FlameIcon, Ornament, ResultStat, StarIcon, SunMark } from "@/components/ui";
 
 interface LocState {
   mistakes: number;
@@ -56,8 +56,8 @@ export default function LessonComplete() {
         <Ornament id="complete" className="my-8" />
 
         <div className="grid grid-cols-2 gap-3">
-          <Stat label="Accuracy" value={`${accuracy}%`} highlight />
-          <Stat label="Mistakes" value={state.mistakes} />
+          <ResultStat label="Accuracy" value={`${accuracy}%`} highlight />
+          <ResultStat label="Mistakes" value={state.mistakes} />
         </div>
 
         {state.newStreakDay && (
@@ -77,15 +77,6 @@ export default function LessonComplete() {
           <Link to="/practice" className="btn-secondary w-full">Review words</Link>
         </div>
       </div>
-    </div>
-  );
-}
-
-function Stat({ label, value, highlight }: { label: string; value: string | number; highlight?: boolean }) {
-  return (
-    <div className={`rounded-tile p-3 ${highlight ? "bg-berkut-gold text-berkut-on-gold" : "bg-berkut-raised shadow-card"}`}>
-      <div className={`text-[11px] font-bold uppercase tracking-[0.1em] ${highlight ? "" : "text-berkut-muted"}`}>{label}</div>
-      <div className="font-display text-xl font-semibold tabular-nums mt-1">{value}</div>
     </div>
   );
 }
