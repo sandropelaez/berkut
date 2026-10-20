@@ -6,7 +6,6 @@ import ProgressBar from "@/components/ProgressBar";
 import MultipleChoice from "@/exercises/MultipleChoice";
 import TranslateENKK from "@/exercises/TranslateENKK";
 import TranslateKKEN from "@/exercises/TranslateKKEN";
-import Listening from "@/exercises/Listening";
 import MatchPairs from "@/exercises/MatchPairs";
 import FillBlank from "@/exercises/FillBlank";
 import TeachCard from "@/exercises/TeachCard";
@@ -122,8 +121,6 @@ export default function LessonPlayer() {
         return <TranslateENKK key={exercise.id} prompt={exercise.prompt as any} phase={phase} onAnswer={handleAnswer} />;
       case "TRANSLATE_KK_EN":
         return <TranslateKKEN key={exercise.id} prompt={exercise.prompt as any} phase={phase} onAnswer={handleAnswer} />;
-      case "LISTENING":
-        return <Listening key={exercise.id} prompt={exercise.prompt as any} phase={phase} onAnswer={handleAnswer} />;
       case "MATCH_PAIRS":
         return <MatchPairs key={exercise.id} prompt={exercise.prompt as any} phase={phase} onAnswer={handleAnswer} />;
       case "FILL_BLANK":
