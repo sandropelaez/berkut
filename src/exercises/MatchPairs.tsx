@@ -76,12 +76,12 @@ export default function MatchPairs({
   }, [activeKK, activeEN, tiles, matched]);
 
   function tileClass(t: Tile) {
-    if (matched.has(t.id)) return "opacity-30 pointer-events-none";
+    if (matched.has(t.id)) return "tile-correct opacity-30 pointer-events-none";
     const isActive = t.id === activeKK || t.id === activeEN;
     const isWrong = wrongPair && (t.id === wrongPair[0] || t.id === wrongPair[1]);
-    if (isWrong) return "border-berkut-error bg-berkut-error/10 animate-shake";
-    if (isActive) return "border-berkut-primary bg-berkut-primary/10";
-    return "border-berkut-border dark:border-berkut-border-dark hover:border-berkut-primary";
+    if (isWrong) return "tile-wrong animate-shake";
+    if (isActive) return "tile-selected";
+    return "";
   }
 
   const left = tiles.filter((t) => t.side === "kk");
@@ -89,14 +89,14 @@ export default function MatchPairs({
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-extrabold">Match the pairs</h2>
+      <h2 className="font-sans text-[17px] leading-[26px] font-medium tracking-normal text-berkut-muted">Match the pairs</h2>
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-3">
           {left.map((t) => (
             <button
               key={t.id}
               onClick={() => clickTile(t)}
-              className={`w-full p-3 rounded-xl border-2 font-bold kk text-left transition ${tileClass(t)}`}
+              className={`tile tile-kk !justify-start !text-left ${tileClass(t)}`}
             >
               <ScriptText>{t.text}</ScriptText>
             </button>
@@ -107,7 +107,7 @@ export default function MatchPairs({
             <button
               key={t.id}
               onClick={() => clickTile(t)}
-              className={`w-full p-3 rounded-xl border-2 font-bold text-left transition ${tileClass(t)}`}
+              className={`tile !justify-start !text-left ${tileClass(t)}`}
             >
               {t.text}
             </button>
@@ -115,7 +115,7 @@ export default function MatchPairs({
         </div>
       </div>
       {phase === "answering" && matched.size < prompt.pairs.length * 2 && (
-        <p className="text-sm text-center text-berkut-muted dark:text-berkut-muted-dark">
+        <p className="text-[13px] font-medium text-center text-berkut-muted tabular-nums">
           {matched.size / 2} of {prompt.pairs.length} matched
           {mistakes > 0 ? ` · ${mistakes} mistake${mistakes === 1 ? "" : "s"}` : ""}
         </p>

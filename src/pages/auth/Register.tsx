@@ -105,7 +105,7 @@ export default function Register() {
                 onClick={() => setLocalScript(s)}
                 className={`px-3 py-2 rounded-xl border-2 font-bold transition ${
                   scriptPref === s
-                    ? "border-berkut-primary bg-berkut-primary/10"
+                    ? "border-berkut-sky-ink bg-berkut-sky-soft"
                     : "border-berkut-border dark:border-berkut-border-dark"
                 }`}
               >
