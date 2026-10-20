@@ -42,16 +42,16 @@ export default function TranslateENKK({
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-extrabold">
+      <h2 className="font-sans text-[17px] leading-[26px] font-medium tracking-normal text-berkut-muted">
         Translate this sentence
       </h2>
       <div className="card text-center">
-        <div className="text-2xl font-bold">{prompt.promptEn}</div>
+        <div className="text-xl font-semibold leading-8">{prompt.promptEn}</div>
       </div>
 
-      <div className="card min-h-[80px] flex flex-wrap gap-2 items-start">
+      <div className="min-h-[96px] rounded-sheet border-2 border-dashed border-berkut-line-strong/60 p-3 flex flex-wrap gap-2 items-start">
         {chosen.length === 0 ? (
-          <span className="text-berkut-muted dark:text-berkut-muted-dark italic">
+          <span className="p-2 text-berkut-muted">
             Tap tiles below to build the answer
           </span>
         ) : (
@@ -59,7 +59,7 @@ export default function TranslateENKK({
             <button
               key={`c-${p}-${i}`}
               onClick={() => unpickIdx(p)}
-              className="px-3 py-2 rounded-xl border-2 border-berkut-primary bg-berkut-primary/10 font-bold kk"
+              className="tile tile-kk tile-selected !w-auto !min-h-[48px] !text-base"
             >
               {toScript(tiles[i]!, script)}
             </button>
@@ -72,7 +72,7 @@ export default function TranslateENKK({
           <button
             key={`t-${i}`}
             onClick={() => pickTile(i)}
-            className="px-3 py-2 rounded-xl border-2 border-berkut-border dark:border-berkut-border-dark bg-white dark:bg-berkut-card-dark font-bold kk hover:border-berkut-primary"
+            className="tile tile-kk !w-auto !min-h-[48px] !text-base"
           >
             <ScriptText>{t}</ScriptText>
           </button>

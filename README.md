@@ -1,4 +1,4 @@
-# Berkut 🦅
+# Berkut
 
 Kazakh language learning app — bite-sized lessons, dual-script (Cyrillic ↔ Latin), gamified.
 
@@ -7,6 +7,21 @@ Supabase (Auth + Postgres + Storage), Vercel (frontend + serverless API),
 Cloudflare (DNS + CDN).
 
 ---
+
+## Design system
+
+The UI follows the **Berkut** design system in Claude Design:
+https://claude.ai/artifact/U1YbRHJgVMHBtVbeT4Z7fq (tokens, components, brand book).
+
+- Colours come from the flag of Kazakhstan: sky (`berkut-sky`) for the one primary action per
+  screen, sun gold (`berkut-gold`) only for rewards. Tokens live as CSS variables in
+  `src/index.css` (Day on `:root`, Steppe night on `.dark`) and are exposed to Tailwind as
+  `berkut-*` in `tailwind.config.js`.
+- Type: Unbounded for headings and Kazakh words (`font-display`), Onest for everything else.
+- Shared pieces (sun mark, ornament, icons, stat chips, choice tiles) are in
+  `src/components/ui.tsx`; component classes (`btn-*`, `card`, `tile-*`, `field`, `eyebrow`)
+  are in `src/index.css`.
+- Phone first: design at 375px, one column, primary action at the bottom. No emoji in the UI.
 
 ## Admin section
 

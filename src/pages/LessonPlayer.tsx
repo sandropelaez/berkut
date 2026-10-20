@@ -11,6 +11,7 @@ import FillBlank from "@/exercises/FillBlank";
 import TeachCard from "@/exercises/TeachCard";
 import type { Exercise, Lesson } from "@/core/types";
 import ReportButton from "@/components/ReportButton";
+import { CheckIcon, CloseIcon, CrossIcon, SunLoader } from "@/components/ui";
 
 type Phase = "answering" | "checked";
 
@@ -52,7 +53,7 @@ export default function LessonPlayer() {
   if (loadError) {
     return (
       <div className="px-4 py-10 text-center">
-        <h1 className="text-xl font-bold">Lesson not found.</h1>
+        <h1 className="text-xl">Lesson not found.</h1>
         <Link to="/" className="btn-primary mt-4 inline-flex">
           Back home
         </Link>
@@ -63,7 +64,7 @@ export default function LessonPlayer() {
   if (!lesson) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-3xl animate-pulse">🦅</div>
+        <SunLoader label="Loading lesson…" />
       </div>
     );
   }
@@ -131,46 +132,73 @@ export default function LessonPlayer() {
   })();
 
   return (
-    <div className="min-h-screen flex flex-col bg-berkut-bg dark:bg-berkut-bg-dark">
-      <header className="px-4 py-3 border-b border-berkut-border dark:border-berkut-border-dark flex items-center gap-3">
-        <button onClick={() => navigate("/")} className="text-berkut-muted dark:text-berkut-muted-dark text-2xl" aria-label="Quit lesson">
-          ✕
-        </button>
-        <div className="flex-1">
-          <ProgressBar value={idx + (phase === "checked" || isTeach ? 1 : 0)} max={total} />
+    <div className="min-h-screen flex flex-col bg-berkut-surface">
+      <header className="sticky top-0 z-10 bg-berkut-surface pt-[env(safe-area-inset-top)]">
+        <div className="mx-auto max-w-content px-2 h-14 flex items-center gap-2">
+          <button
+            onClick={() => navigate("/")}
+            className="grid h-12 w-12 flex-none place-items-center rounded-full text-berkut-muted hover:bg-berkut-sunk"
+            aria-label="Quit lesson"
+          >
+            <CloseIcon className="h-6 w-6" />
+          </button>
+          <div className="flex-1">
+            <ProgressBar value={idx + (phase === "checked" || isTeach ? 1 : 0)} max={total} />
+          </div>
+          <span className="w-2" aria-hidden="true" />
         </div>
       </header>
 
-      <div className="flex-1 mx-auto w-full max-w-2xl px-4 py-6">
+      <div className="flex-1 mx-auto w-full max-w-content px-4 pt-4 pb-8">
         {ExerciseEl}
       </div>
 
       <footer
-        className={`border-t-4 px-4 py-4 ${
+        className={`sticky bottom-0 rounded-t-sheet sm:rounded-none shadow-sheet px-4 pt-4 pb-[calc(16px+env(safe-area-inset-bottom))] transition-colors ${
           feedback === "correct"
-            ? "bg-berkut-success/10 border-berkut-success"
+            ? "bg-berkut-success-soft text-berkut-success"
             : feedback === "wrong"
-              ? "bg-berkut-error/10 border-berkut-error"
-              : "border-berkut-border dark:border-berkut-border-dark bg-white dark:bg-berkut-card-dark"
+              ? "bg-berkut-danger-soft text-berkut-danger"
+              : "bg-berkut-raised"
         }`}
       >
-        <div className="mx-auto max-w-2xl flex items-center gap-3">
-          {feedback === "correct" && <div className="font-bold text-berkut-success">Дұрыс! Nice.</div>}
-          {feedback === "wrong" && <div className="font-bold text-berkut-error">Not quite. Try again.</div>}
-          <div className="ml-auto flex items-center gap-3">
-            <ReportButton exerciseId={exercise.id} />
+        <div className="mx-auto max-w-content flex flex-col gap-3">
+          {feedback && (
+            <div className="flex items-center gap-3" role="status">
+              <span
+                className={`grid h-9 w-9 flex-none place-items-center rounded-full ${
+                  feedback === "correct" ? "bg-berkut-success text-berkut-on-success" : "bg-berkut-danger text-berkut-on-danger"
+                }`}
+              >
+                {feedback === "correct" ? <CheckIcon /> : <CrossIcon />}
+              </span>
+              <div className="flex-1 font-display text-lg font-semibold">
+                {feedback === "correct" ? "Дұрыс!" : "Not quite"}
+              </div>
+              <ReportButton exerciseId={exercise.id} />
+            </div>
+          )}
+          <div className="flex items-center gap-3 [&>*]:flex-1">
+            {!feedback && (
+              <div className="!flex-none">
+                <ReportButton exerciseId={exercise.id} />
+              </div>
+            )}
             {isTeach && (
               <button onClick={nextExercise} className="btn-primary">
-                Got it →
+                Got it
               </button>
             )}
             {feedback === "wrong" && retries === 0 && (
-              <button onClick={tryAgain} className="btn-outline">
+              <button onClick={tryAgain} className="btn-secondary">
                 Try again
               </button>
             )}
             {phase === "checked" && (
-              <button onClick={nextExercise} className="btn-primary">
+              <button
+                onClick={nextExercise}
+                className={feedback === "correct" ? "btn-success" : feedback === "wrong" ? "btn-danger" : "btn-primary"}
+              >
                 Continue
               </button>
             )}

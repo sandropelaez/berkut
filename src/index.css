@@ -2,8 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Berkut design system tokens (Claude Design: "Berkut").
+ * Colours are RGB channels so Tailwind's opacity modifiers work; see tailwind.config.js.
+ * Day theme on :root, Steppe night on .dark (toggled in Settings).
+ */
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
+  --bk-surface: 244 247 249;
+  --bk-surface-raised: 255 255 255;
+  --bk-surface-sunk: 233 239 243;
+  --bk-line: 220 229 235;
+  --bk-line-strong: 122 144 158;
+  --bk-ink: 12 30 43;
+  --bk-ink-muted: 84 102 115;
+  --bk-sky: 0 175 202;
+  --bk-sky-hover: 0 153 178;
+  --bk-on-sky: 4 32 42;
+  --bk-sky-ink: 0 112 138;
+  --bk-sky-soft: 227 246 250;
+  --bk-gold: 254 197 12;
+  --bk-on-gold: 42 31 0;
+  --bk-gold-ink: 138 100 0;
+  --bk-gold-soft: 255 245 209;
+  --bk-success: 31 122 77;
+  --bk-on-success: 255 255 255;
+  --bk-success-soft: 226 244 234;
+  --bk-danger: 184 50 60;
+  --bk-on-danger: 255 255 255;
+  --bk-danger-soft: 251 231 232;
+  --bk-focus: 0 112 138;
+  --bk-shadow-card: 0 1px 2px rgba(12, 30, 43, 0.06), 0 6px 20px rgba(12, 30, 43, 0.06);
+  --bk-shadow-sheet: 0 -8px 32px rgba(12, 30, 43, 0.1);
+}
+
+.dark {
+  color-scheme: dark;
+  --bk-surface: 8 19 28;
+  --bk-surface-raised: 15 32 44;
+  --bk-surface-sunk: 5 13 19;
+  --bk-line: 30 52 67;
+  --bk-line-strong: 86 117 138;
+  --bk-ink: 234 242 246;
+  --bk-ink-muted: 147 168 182;
+  --bk-sky: 25 185 210;
+  --bk-sky-hover: 60 198 220;
+  --bk-on-sky: 4 32 42;
+  --bk-sky-ink: 94 211 230;
+  --bk-sky-soft: 13 47 59;
+  --bk-gold: 255 203 46;
+  --bk-on-gold: 42 31 0;
+  --bk-gold-ink: 255 214 92;
+  --bk-gold-soft: 46 37 8;
+  --bk-success: 76 201 138;
+  --bk-on-success: 4 32 42;
+  --bk-success-soft: 15 46 32;
+  --bk-danger: 255 122 128;
+  --bk-on-danger: 42 6 9;
+  --bk-danger-soft: 58 20 24;
+  --bk-focus: 94 211 230;
+  --bk-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --bk-shadow-sheet: 0 -8px 32px rgba(0, 0, 0, 0.55);
 }
 
 html,
@@ -13,49 +72,116 @@ body,
 }
 
 body {
-  font-family: "Inter", "Noto Sans", system-ui, -apple-system, sans-serif;
+  font-family: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
-  background-color: #f8f9fa;
-  color: #1a1a2e;
+  -webkit-tap-highlight-color: transparent;
+  background-color: rgb(var(--bk-surface));
+  color: rgb(var(--bk-ink));
 }
 
-.dark body {
-  background-color: #1a1a2e;
-  color: #f8f9fa;
-}
-
+/*
+ * ScriptText marks every Kazakh span with .kk; it inherits its parent's face so
+ * Kazakh inside running text stays in Onest. Set the display face (Unbounded)
+ * on the container with font-display where a word is the subject.
+ */
 .kk {
-  font-family: "Noto Sans", "Inter", system-ui, sans-serif;
-  font-feature-settings: "ss01" on, "cv01" on;
+  font-family: inherit;
+}
+
+/* Headings use the display face; weights stay at or under 600 for an even, quiet colour. */
+h1,
+h2,
+h3 {
+  font-family: "Unbounded", "Onest", system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+:focus-visible {
+  outline: 2px solid rgb(var(--bk-focus));
+  outline-offset: 2px;
 }
 
 @layer components {
+  /* Button: 48px, radius-md. One primary (sky) per screen. */
   .btn {
-    @apply inline-flex items-center justify-center rounded-2xl px-5 py-3 font-semibold transition active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-tile px-6 text-base font-semibold leading-5 no-underline transition active:translate-y-px active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-45 disabled:active:transform-none;
   }
   .btn-primary {
-    @apply btn bg-berkut-primary text-white shadow-[0_4px_0_0_#0096B7] hover:bg-berkut-primary-dark;
+    @apply btn bg-berkut-sky text-berkut-on-sky hover:bg-berkut-sky-hover;
   }
-  .btn-success {
-    @apply btn bg-berkut-success text-white shadow-[0_4px_0_0_#04a87f];
-  }
-  .btn-error {
-    @apply btn bg-berkut-error text-white shadow-[0_4px_0_0_#c0395a];
+  .btn-secondary {
+    @apply btn bg-berkut-raised text-berkut-ink shadow-[inset_0_0_0_1.5px_rgb(var(--bk-line-strong))] hover:shadow-[inset_0_0_0_1.5px_rgb(var(--bk-sky-ink))];
   }
   .btn-outline {
-    @apply btn bg-white text-berkut-ink border-2 border-berkut-border hover:border-berkut-primary;
+    @apply btn-secondary;
   }
-  .dark .btn-outline {
-    @apply bg-berkut-card-dark text-berkut-ink-dark border-berkut-border-dark hover:border-berkut-primary;
+  .btn-gold {
+    @apply btn bg-berkut-gold text-berkut-on-gold;
   }
+  .btn-success {
+    @apply btn bg-berkut-success text-berkut-on-success;
+  }
+  .btn-error,
+  .btn-danger {
+    @apply btn bg-berkut-danger text-berkut-on-danger;
+  }
+  .btn-ghost {
+    @apply btn px-3 text-berkut-sky-ink hover:bg-berkut-sky-soft;
+  }
+  /* After the variants so it wins over their base size. */
+  .btn-sm {
+    @apply min-h-[40px] px-4 text-[15px];
+  }
+
+  /* Card: raised surface, radius-lg, one shadow. */
   .card {
-    @apply bg-white rounded-2xl border-2 border-berkut-border p-5 shadow-sm;
+    @apply rounded-sheet bg-berkut-raised p-4 shadow-card sm:p-5;
   }
-  .dark .card {
-    @apply bg-berkut-card-dark border-berkut-border-dark;
-  }
+
+  /* Stat chip */
   .chip {
-    @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-semibold;
+    @apply inline-flex h-8 items-center gap-1 rounded-full pl-2 pr-2.5 font-display text-sm font-semibold tabular-nums;
+  }
+
+  /* Uppercase eyebrow */
+  .eyebrow {
+    @apply text-[11px] font-bold uppercase leading-[14px] tracking-[0.12em] text-berkut-sky-ink;
+  }
+
+  /* Choice tile (exercise answers) */
+  .tile {
+    @apply flex min-h-[56px] w-full items-center justify-center gap-2 rounded-tile bg-berkut-raised px-4 py-3 text-center text-base font-semibold leading-[22px] text-berkut-ink shadow-[inset_0_0_0_1.5px_rgb(var(--bk-line-strong))] transition hover:shadow-[inset_0_0_0_1.5px_rgb(var(--bk-sky-ink))];
+  }
+  .tile-kk {
+    @apply font-display text-lg font-medium leading-6;
+  }
+  .tile-selected {
+    @apply bg-berkut-sky-soft shadow-[inset_0_0_0_2px_rgb(var(--bk-sky-ink))] hover:shadow-[inset_0_0_0_2px_rgb(var(--bk-sky-ink))];
+  }
+  .tile-correct {
+    @apply bg-berkut-success-soft text-berkut-success shadow-[inset_0_0_0_2px_rgb(var(--bk-success))] hover:shadow-[inset_0_0_0_2px_rgb(var(--bk-success))];
+  }
+  .tile-wrong {
+    @apply bg-berkut-danger-soft text-berkut-danger shadow-[inset_0_0_0_2px_rgb(var(--bk-danger))] hover:shadow-[inset_0_0_0_2px_rgb(var(--bk-danger))];
+  }
+  .tile-dimmed {
+    @apply opacity-40;
+  }
+
+  /* Text field */
+  .field {
+    @apply min-h-[48px] w-full rounded-tile border-0 bg-berkut-raised px-4 text-base text-berkut-ink shadow-[inset_0_0_0_1.5px_rgb(var(--bk-line-strong))] outline-none placeholder:text-berkut-muted focus:shadow-[inset_0_0_0_2px_rgb(var(--bk-focus))];
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
   }
 }
 
@@ -65,9 +191,6 @@ body {
   height: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: rgb(var(--bk-line));
   border-radius: 8px;
-}
-.dark ::-webkit-scrollbar-thumb {
-  background: #33335e;
 }

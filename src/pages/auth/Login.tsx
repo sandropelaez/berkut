@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getSupabase, isSupabaseConfigured } from "@/core/supabase";
 import GoogleButton from "@/components/GoogleButton";
 import { useStore } from "@/store/useStore";
+import { SunMark } from "@/components/ui";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -104,11 +105,12 @@ export function AuthShell({
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-md">
-        <Link to="/" className="flex items-center justify-center gap-2 font-extrabold text-xl mb-6">
-          <span className="text-2xl">🦅</span> Berkut
+        <Link to="/" className="flex items-center justify-center gap-2.5 mb-6">
+          <SunMark size={36} />
+          <span className="font-display font-semibold text-xl tracking-tight">Berkut</span>
         </Link>
         <div className="card">
-          <h1 className="text-2xl font-extrabold mb-4 text-center">{title}</h1>
+          <h1 className="text-[22px] leading-7 mb-5 text-center">{title}</h1>
           {children}
         </div>
       </div>
@@ -132,17 +134,17 @@ export function Field({
   helper?: string;
 }) {
   return (
-    <label className="block text-sm font-semibold">
+    <label className="flex flex-col gap-1.5 text-sm font-semibold">
       {label}
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required={required}
-        className="mt-1 w-full rounded-xl border-2 border-berkut-border dark:border-berkut-border-dark bg-white dark:bg-berkut-card-dark px-3 py-2 outline-none focus:border-berkut-primary"
+        className="field font-normal"
       />
       {helper && (
-        <span className="block mt-1 font-normal text-xs text-berkut-muted dark:text-berkut-muted-dark">
+        <span className="block font-medium text-[13px] text-berkut-muted">
           {helper}
         </span>
       )}
@@ -171,12 +173,12 @@ export function Banner({
 }) {
   const cls =
     tone === "success"
-      ? "bg-berkut-success/10 border-berkut-success text-emerald-800 dark:text-emerald-200"
+      ? "bg-berkut-success-soft text-berkut-success"
       : tone === "error"
-        ? "bg-berkut-error/10 border-berkut-error text-rose-800 dark:text-rose-200"
-        : "bg-berkut-gold/10 border-berkut-gold text-amber-900 dark:text-amber-100";
+        ? "bg-berkut-danger-soft text-berkut-danger"
+        : "bg-berkut-gold-soft text-berkut-ink";
   return (
-    <div className={`text-sm border rounded-xl px-3 py-2 mb-4 ${cls}`}>
+    <div role={tone === "error" ? "alert" : "status"} className={`text-sm font-medium rounded-tile px-4 py-3 mb-4 ${cls}`}>
       {children}
     </div>
   );
