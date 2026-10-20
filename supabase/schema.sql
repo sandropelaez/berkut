@@ -114,6 +114,33 @@ create policy "profiles update self"
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
 
+-- The policies above let a user write every column of their own row, so this
+-- trigger stops anon/authenticated from changing `role` (added in 002) unless
+-- they are a super_admin. Same function as migrations/015_lock_profile_role.sql;
+-- to_jsonb() keeps it valid before the role column exists.
+create or replace function public.guard_profile_role() returns trigger
+language plpgsql set search_path = public as $$
+begin
+  -- Not security definer: current_user must be the caller's role.
+  if current_user not in ('anon', 'authenticated') then
+    return new;
+  end if;
+
+  if (tg_op = 'INSERT' and coalesce(to_jsonb(new)->>'role', 'user') <> 'user')
+     or (tg_op = 'UPDATE' and to_jsonb(new)->'role' is distinct from to_jsonb(old)->'role') then
+    if not public.is_super_admin() then
+      raise exception 'only a super_admin can change user_profiles.role'
+        using errcode = '42501';  -- insufficient_privilege → HTTP 403 from PostgREST
+    end if;
+  end if;
+
+  return new;
+end; $$;
+
+drop trigger if exists guard_profile_role on public.user_profiles;
+create trigger guard_profile_role before insert or update on public.user_profiles
+  for each row execute function public.guard_profile_role();
+
 -- user_progress
 drop policy if exists "progress read self"   on public.user_progress;
 drop policy if exists "progress upsert self" on public.user_progress;
