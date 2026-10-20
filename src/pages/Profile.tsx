@@ -14,10 +14,7 @@ const BADGE_META: Record<BadgeId, { name: string; emoji: string; desc: string }>
 
 export default function Profile() {
   const displayName = useStore((s) => s.displayName);
-  const xp = useStore((s) => s.xpTotal);
-  const xpWeekly = useStore((s) => s.xpWeekly);
   const streak = useStore((s) => s.streakCount);
-  const gems = useStore((s) => s.gems);
   const badges = useStore((s) => s.badges);
   const progress = useStore((s) => s.progress);
 
@@ -40,11 +37,8 @@ export default function Profile() {
             </Link>
           </div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
-          <Stat label="Total XP" value={xp} />
-          <Stat label="This week" value={xpWeekly} />
+        <div className="grid grid-cols-3 gap-3 mt-6">
           <Stat label="Streak" value={`${streak}🔥`} />
-          <Stat label="Gems" value={`${gems}💎`} />
           <Stat label="Lessons done" value={completedLessons} />
           <Stat label="Perfect" value={`${perfectLessons}★`} />
         </div>

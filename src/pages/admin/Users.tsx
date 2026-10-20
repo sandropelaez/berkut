@@ -7,10 +7,7 @@ interface UserRow {
   display_name: string;
   email?: string | null;
   role: string;
-  xp_total: number;
-  xp_weekly: number;
   streak_count: number;
-  league: string;
   last_active_at: string | null;
   created_at: string;
 }
@@ -56,7 +53,6 @@ export default function AdminUsers() {
               <th className="py-2">Name</th>
               <th>Email</th>
               <th>Role</th>
-              <th>XP</th>
               <th>Streak</th>
               <th>Active</th>
               <th></th>
@@ -65,14 +61,14 @@ export default function AdminUsers() {
           <tbody className="divide-y divide-berkut-border dark:divide-berkut-border-dark">
             {loading && (
               <tr>
-                <td className="py-3 text-berkut-muted dark:text-berkut-muted-dark" colSpan={7}>
+                <td className="py-3 text-berkut-muted dark:text-berkut-muted-dark" colSpan={6}>
                   Loading…
                 </td>
               </tr>
             )}
             {!loading && users.length === 0 && (
               <tr>
-                <td className="py-3 text-berkut-muted dark:text-berkut-muted-dark" colSpan={7}>
+                <td className="py-3 text-berkut-muted dark:text-berkut-muted-dark" colSpan={6}>
                   No users.
                 </td>
               </tr>
@@ -90,7 +86,6 @@ export default function AdminUsers() {
                     <span className="text-berkut-muted dark:text-berkut-muted-dark text-xs">user</span>
                   )}
                 </td>
-                <td>{u.xp_total}</td>
                 <td>{u.streak_count}🔥</td>
                 <td className="text-berkut-muted dark:text-berkut-muted-dark text-xs">
                   {u.last_active_at ? new Date(u.last_active_at).toLocaleDateString() : "—"}

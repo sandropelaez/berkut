@@ -38,7 +38,7 @@ A Duolingo-style progression from absolute beginner (A1.1) to upper-intermediate
 | C | **Cultural Card** (ungated) | reading + 2-3 vocab | Context, motivation |
 | T | **Teach card** (`TEACH`, ungraded) | title, short explanation, table, tappable examples, tip | Introduce a rule before drilling it |
 
-Every lesson is 10-15 exercises ≈ 3-5 minutes. Hearts/XP/streak unchanged.
+Every lesson is 10-15 exercises ≈ 3-5 minutes. Streaks unchanged.
 
 ## Course map (40 units)
 
