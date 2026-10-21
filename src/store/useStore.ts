@@ -7,10 +7,6 @@ import type {
   UserProgress,
 } from "@/core/types";
 import { newSrsItem, reviewSrs } from "@/core/srs";
-import { XP } from "@/core/scoring";
-
-const HEARTS_MAX = 3;
-const HEART_REGEN_MS = 30 * 60 * 1000;
 
 export interface UserState {
   hydrated: boolean;
@@ -25,16 +21,6 @@ export interface UserState {
   darkMode: boolean;
   setDarkMode: (v: boolean) => void;
 
-  xpTotal: number;
-  xpWeekly: number;
-  gems: number;
-
-  hearts: number;
-  heartsLastRegen: number;
-  spendHeart: () => void;
-  refillHearts: () => void;
-  ensureHeartRegen: () => void;
-
   streakCount: number;
   lastActiveDate: string | null;
   bumpStreak: () => boolean; // returns true if today is a new streak day
@@ -42,9 +28,8 @@ export interface UserState {
   progress: Record<string, UserProgress>;
   recordLesson: (
     lessonId: string,
-    score: number,
     perfectRun: boolean,
-  ) => { xpAwarded: number; firstCompletion: boolean };
+  ) => { firstCompletion: boolean };
 
   srs: Record<string, SrsItem>;
   ensureSrs: (vocabIds: string[]) => void;
@@ -59,6 +44,10 @@ export interface UserState {
   noteSpeakingCompleted: () => void;
   staySignedIn: boolean;
   setStaySignedIn: (v: boolean) => void;
+  // Account whose server progress this local state was last merged with.
+  // Guards against carrying one account's progress into another.
+  syncedUserId: string | null;
+  setSyncedUserId: (id: string | null) => void;
   reset: () => void;
 }
 
@@ -94,30 +83,6 @@ export const useStore = create<UserState>()(
         }
       },
 
-      xpTotal: 0,
-      xpWeekly: 0,
-      gems: 0,
-
-      hearts: HEARTS_MAX,
-      heartsLastRegen: Date.now(),
-      spendHeart: () =>
-        set((s) => ({ hearts: Math.max(0, s.hearts - 1) })),
-      refillHearts: () =>
-        set({ hearts: HEARTS_MAX, heartsLastRegen: Date.now() }),
-      ensureHeartRegen: () => {
-        const s = get();
-        if (s.hearts >= HEARTS_MAX) return;
-        const elapsed = Date.now() - s.heartsLastRegen;
-        const regen = Math.floor(elapsed / HEART_REGEN_MS);
-        if (regen > 0) {
-          const newHearts = Math.min(HEARTS_MAX, s.hearts + regen);
-          set({
-            hearts: newHearts,
-            heartsLastRegen: s.heartsLastRegen + regen * HEART_REGEN_MS,
-          });
-        }
-      },
-
       streakCount: 0,
       lastActiveDate: null,
       bumpStreak: () => {
@@ -126,40 +91,29 @@ export const useStore = create<UserState>()(
         if (last === today) return false;
         const newStreak =
           last && diffDays(last, today) === 1 ? get().streakCount + 1 : 1;
-        set({
-          streakCount: newStreak,
-          lastActiveDate: today,
-          xpTotal: get().xpTotal + XP.STREAK_DAY,
-          xpWeekly: get().xpWeekly + XP.STREAK_DAY,
-        });
+        set({ streakCount: newStreak, lastActiveDate: today });
         if (newStreak >= 7) get().awardBadge("week_warrior");
         return true;
       },
 
       progress: {},
-      recordLesson: (lessonId, score, perfectRun) => {
+      recordLesson: (lessonId, perfectRun) => {
         const prev = get().progress[lessonId];
         const firstCompletion = !prev?.completed;
-        const lessonXp = XP.COMPLETE_LESSON + (perfectRun ? XP.PERFECT_LESSON : 0);
-        const xpAwarded = score + (firstCompletion ? lessonXp : 0);
         set((s) => ({
           progress: {
             ...s.progress,
             [lessonId]: {
               lessonId,
               completed: true,
-              score: Math.max(prev?.score ?? 0, score),
               perfectRun: prev?.perfectRun || perfectRun,
               completedAt: Date.now(),
             },
           },
-          xpTotal: s.xpTotal + xpAwarded,
-          xpWeekly: s.xpWeekly + xpAwarded,
-          gems: s.gems + (firstCompletion ? 5 : 0),
         }));
         if (firstCompletion) get().awardBadge("first_lesson");
         if (perfectRun) get().awardBadge("perfect_round");
-        return { xpAwarded, firstCompletion };
+        return { firstCompletion };
       },
 
       srs: {},
@@ -216,13 +170,11 @@ export const useStore = create<UserState>()(
         }
       },
 
+      syncedUserId: null,
+      setSyncedUserId: (id) => set({ syncedUserId: id }),
+
       reset: () =>
         set({
-          xpTotal: 0,
-          xpWeekly: 0,
-          gems: 0,
-          hearts: HEARTS_MAX,
-          heartsLastRegen: Date.now(),
           streakCount: 0,
           lastActiveDate: null,
           progress: {},
@@ -230,6 +182,7 @@ export const useStore = create<UserState>()(
           badges: {} as Record<BadgeId, number>,
           scriptsUsed: ["CYRILLIC"],
           speakingCompleted: 0,
+          syncedUserId: null,
         }),
     }),
     {

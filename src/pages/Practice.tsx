@@ -6,6 +6,7 @@ import { dueItems } from "@/core/srs";
 import ScriptText from "@/components/ScriptText";
 import { speakKazakh } from "@/core/tts";
 import { answersMatch } from "@/core/scoring";
+import { ChoiceTile, optionState, SpokenPrompt, SunMark } from "@/components/ui";
 
 export default function Practice() {
   const srsMap = useStore((s) => s.srs);
@@ -49,12 +50,12 @@ export default function Practice() {
 
   if (!due.length) {
     return (
-      <div className="mx-auto max-w-md px-4 sm:pl-32 py-10 text-center">
-        <h1 className="text-2xl font-extrabold">Daily Review</h1>
+      <div className="mx-auto max-w-md px-4 py-10 text-center">
+        <h1 className="text-[26px] leading-8">Daily review</h1>
         <p className="text-berkut-muted dark:text-berkut-muted-dark mt-3">
           Nothing due right now. Complete a lesson to seed your review queue.
         </p>
-        <Link to="/" className="btn-primary mt-6 inline-flex">
+        <Link to="/" className="btn-primary mt-8 w-full">
           Back to lessons
         </Link>
       </div>
@@ -86,13 +87,13 @@ export default function Practice() {
 
   if (done) {
     return (
-      <div className="mx-auto max-w-md px-4 sm:pl-32 py-10 text-center">
-        <div className="text-6xl">🌟</div>
-        <h1 className="text-2xl font-extrabold mt-3">Review complete!</h1>
+      <div className="mx-auto max-w-md px-4 py-10 text-center">
+        <SunMark size={88} className="mx-auto" />
+        <h1 className="text-[26px] leading-8 mt-4">Review complete</h1>
         <p className="text-berkut-muted dark:text-berkut-muted-dark mt-2">
           Words you got wrong are queued for tomorrow.
         </p>
-        <Link to="/" className="btn-primary mt-6 inline-flex">
+        <Link to="/" className="btn-primary mt-8 w-full">
           Back home
         </Link>
       </div>
@@ -103,40 +104,30 @@ export default function Practice() {
   ensureSrs(due.map((v) => v.id));
 
   return (
-    <div className="mx-auto max-w-2xl px-4 sm:pl-32 py-6">
-      <div className="text-sm font-semibold text-berkut-muted dark:text-berkut-muted-dark">
-        Review {idx + 1} / {due.length}
-      </div>
-      <h1 className="text-3xl font-extrabold mt-2">What does this mean?</h1>
+    <div className="mx-auto max-w-content px-4 py-6">
+      <span className="eyebrow tabular-nums">
+        Review {idx + 1} of {due.length}
+      </span>
+      <h1 className="text-[26px] leading-8 mt-2">What does this mean?</h1>
 
-      <div className="mt-8 card text-center">
-        <button
-          onClick={() => speakKazakh(current.kazakh)}
-          className="text-5xl font-extrabold kk hover:opacity-75"
-          title="Hear pronunciation"
-        >
+      <div className="mt-6">
+        <SpokenPrompt onSpeak={() => speakKazakh(current.kazakh)}>
           <ScriptText>{current.kazakh}</ScriptText>
-          <span className="text-base ml-2">🔊</span>
-        </button>
+        </SpokenPrompt>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-8">
         {distractors.map((v) => {
           const selected = picked === v.english;
           const isCorrect = answersMatch(v.english, current.english);
-          const cls = !picked
-            ? "btn-outline"
-            : selected
-              ? isCorrect
-                ? "btn-success"
-                : "btn-error"
-              : isCorrect
-                ? "btn-success"
-                : "btn-outline opacity-50";
           return (
-            <button key={v.id} onClick={() => check(v.english)} className={cls}>
+            <ChoiceTile
+              key={v.id}
+              onClick={() => check(v.english)}
+              state={optionState(picked ? "checked" : "answering", selected, isCorrect)}
+            >
               {v.english}
-            </button>
+            </ChoiceTile>
           );
         })}
       </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useStore } from "@/store/useStore";
 import { isSupabaseConfigured, getSupabase } from "@/core/supabase";
+import { flushProgress, stopProgressSync } from "@/core/progressSync";
 import { useNavigate } from "react-router-dom";
 
 export default function Settings() {
@@ -18,6 +19,15 @@ export default function Settings() {
   async function handleLogout() {
     const sb = getSupabase();
     if (sb) {
+      // Local progress is wiped below; make sure the server has it first.
+      const saved = await flushProgress();
+      if (
+        !saved &&
+        !confirm("Some progress hasn't been saved to your account yet (are you offline?). Log out anyway and lose it?")
+      ) {
+        return;
+      }
+      stopProgressSync();
       await sb.auth.signOut({ scope: "local" });
     }
     reset();
@@ -43,6 +53,7 @@ export default function Settings() {
       } catch {
         // best-effort; localStorage will still be wiped
       }
+      stopProgressSync();
       await sb.auth.signOut();
     }
     reset();
@@ -50,8 +61,8 @@ export default function Settings() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 sm:pl-32 py-6 space-y-5">
-      <h1 className="text-2xl font-extrabold mb-2">Settings</h1>
+    <div className="mx-auto max-w-content px-4 py-6 space-y-5">
+      <h1 className="text-[26px] leading-8 mb-2">Settings</h1>
 
       <section className="card space-y-3">
         <h2 className="font-bold">Profile</h2>
@@ -61,7 +72,7 @@ export default function Settings() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             onBlur={() => setDisplayName(name)}
-            className="mt-1 w-full rounded-xl border-2 border-berkut-border dark:border-berkut-border-dark bg-white dark:bg-berkut-card-dark px-3 py-2 outline-none focus:border-berkut-primary"
+            className="mt-1.5 field font-normal"
           />
         </label>
       </section>
@@ -145,14 +156,14 @@ function ScriptToggle({
       onClick={onClick}
       className={`p-4 rounded-2xl border-2 text-left transition active:scale-[0.99] ${
         active
-          ? "border-berkut-primary bg-berkut-primary/10"
-          : "border-berkut-border dark:border-berkut-border-dark hover:border-berkut-primary"
+          ? "border-berkut-sky-ink bg-berkut-sky-soft"
+          : "border-berkut-line-strong hover:border-berkut-sky-ink"
       }`}
     >
       <div className="text-xs uppercase tracking-wide text-berkut-muted dark:text-berkut-muted-dark">
         {title}
       </div>
-      <div className="text-2xl font-extrabold kk mt-1">{sample}</div>
+      <div className="font-display text-2xl font-medium mt-1">{sample}</div>
     </button>
   );
 }
@@ -172,11 +183,11 @@ function Toggle({
       <span
         onClick={() => onChange(!checked)}
         className={`relative w-12 h-7 rounded-full transition ${
-          checked ? "bg-berkut-primary" : "bg-berkut-border dark:bg-berkut-border-dark"
+          checked ? "bg-berkut-sky" : "bg-berkut-line-strong"
         }`}
       >
         <span
-          className={`absolute top-0.5 left-0.5 h-6 w-6 rounded-full bg-white shadow transition-transform ${
+          className={`absolute top-0.5 left-0.5 h-6 w-6 rounded-full bg-berkut-raised shadow transition-transform ${
             checked ? "translate-x-5" : ""
           }`}
         />

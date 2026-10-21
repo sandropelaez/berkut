@@ -8,7 +8,6 @@ import Home from "@/pages/Home";
 import LessonPlayer from "@/pages/LessonPlayer";
 import LessonComplete from "@/pages/LessonComplete";
 import Practice from "@/pages/Practice";
-import Leaderboard from "@/pages/Leaderboard";
 import Profile from "@/pages/Profile";
 import Settings from "@/pages/Settings";
 import Welcome from "@/pages/Welcome";
@@ -31,18 +30,11 @@ import AdminReports from "@/pages/admin/Reports";
 import { useStore } from "@/store/useStore";
 
 export default function App() {
-  const ensureHeartRegen = useStore((s) => s.ensureHeartRegen);
   const darkMode = useStore((s) => s.darkMode);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
   }, [darkMode]);
-
-  useEffect(() => {
-    ensureHeartRegen();
-    const id = setInterval(ensureHeartRegen, 60_000);
-    return () => clearInterval(id);
-  }, [ensureHeartRegen]);
 
   return (
     <Routes>
@@ -82,7 +74,6 @@ export default function App() {
         <Route path="/lesson/:id" element={<RequireAuth><LessonPlayer /></RequireAuth>} />
         <Route path="/lesson/:id/complete" element={<RequireAuth><LessonComplete /></RequireAuth>} />
         <Route path="/practice" element={<RequireAuth><Practice /></RequireAuth>} />
-        <Route path="/leaderboard" element={<RequireAuth><Leaderboard /></RequireAuth>} />
         <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
         <Route path="/settings" element={<RequireAuth><Settings /></RequireAuth>} />
 

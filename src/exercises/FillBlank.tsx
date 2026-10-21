@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { FillBlankPrompt } from "@/core/types";
 import ScriptText from "@/components/ScriptText";
 import { answersMatch } from "@/core/scoring";
+import { ChoiceTile, optionState } from "@/components/ui";
 
 export default function FillBlank({
   prompt,
@@ -24,19 +25,19 @@ export default function FillBlank({
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-extrabold">Fill in the blank</h2>
+      <h2 className="font-sans text-[17px] leading-[26px] font-medium tracking-normal text-berkut-muted">Fill in the blank</h2>
       {prompt.hintEn && (
         <p className="text-sm text-berkut-muted dark:text-berkut-muted-dark italic">
           ({prompt.hintEn})
         </p>
       )}
-      <div className="card text-center text-2xl font-bold kk leading-relaxed">
+      <div className="card text-center font-display font-medium text-2xl leading-[1.7]">
         <ScriptText>{before}</ScriptText>
         <span
           className={`inline-block min-w-[80px] mx-1 px-3 py-1 rounded-lg border-b-4 ${
             picked
-              ? "border-berkut-primary bg-berkut-primary/10"
-              : "border-berkut-muted/40 bg-berkut-muted/10"
+              ? "border-berkut-sky bg-berkut-sky-soft"
+              : "border-berkut-line-strong bg-berkut-sunk"
           }`}
         >
           {picked ? <ScriptText>{picked}</ScriptText> : "____"}
@@ -48,22 +49,10 @@ export default function FillBlank({
         {prompt.options.map((opt) => {
           const isCorrect = answersMatch(opt, prompt.correctAns);
           const selected = picked === opt;
-          const cls =
-            phase === "answering"
-              ? "btn-outline kk"
-              : `kk ${
-                  selected
-                    ? isCorrect
-                      ? "btn-success"
-                      : "btn-error"
-                    : isCorrect
-                      ? "btn-success"
-                      : "btn-outline opacity-40"
-                }`;
           return (
-            <button key={opt} onClick={() => choose(opt)} className={cls}>
+            <ChoiceTile key={opt} lang="kk" onClick={() => choose(opt)} state={optionState(phase, selected, isCorrect)}>
               <ScriptText>{opt}</ScriptText>
-            </button>
+            </ChoiceTile>
           );
         })}
       </div>

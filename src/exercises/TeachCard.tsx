@@ -1,6 +1,7 @@
 import type { TeachPrompt } from "@/core/types";
 import ScriptText from "@/components/ScriptText";
 import { speakKazakh } from "@/core/tts";
+import { BulbIcon, SpeakerIcon } from "@/components/ui";
 
 // Renders a string with **bold** and *italic* spans. Every segment goes
 // through ScriptText so inline Kazakh follows the learner's script preference
@@ -12,7 +13,7 @@ function Rich({ text }: { text: string }) {
       {parts.map((part, i) => {
         if (part.startsWith("**") && part.endsWith("**") && part.length > 4) {
           return (
-            <strong key={i} className="text-berkut-primary font-extrabold">
+            <strong key={i} className="text-berkut-sky-ink font-semibold">
               <ScriptText>{part.slice(2, -2)}</ScriptText>
             </strong>
           );
@@ -36,11 +37,11 @@ export default function TeachCard({ prompt }: { prompt: TeachPrompt }) {
   return (
     <div className="space-y-5">
       <div className="flex items-center gap-2">
-        <span className="chip bg-berkut-primary/10 text-berkut-primary text-xs uppercase tracking-wide">
-          💡 Learn
+        <span className="chip bg-berkut-sky-soft text-berkut-sky-ink font-sans text-[11px] font-bold uppercase tracking-[0.12em]">
+          <BulbIcon className="h-4 w-4" /> Learn
         </span>
       </div>
-      <h2 className="text-2xl font-extrabold">
+      <h2 className="text-[22px] leading-8">
         <Rich text={prompt.title} />
       </h2>
 
@@ -86,11 +87,11 @@ export default function TeachCard({ prompt }: { prompt: TeachPrompt }) {
             <button
               key={i}
               onClick={() => speakKazakh(plain(ex.kk))}
-              className="card !p-3 text-left flex items-center gap-3 hover:border-berkut-primary transition"
+              className="card !p-3 text-left flex items-center gap-3 transition hover:bg-berkut-sky-soft/60"
             >
-              <span className="text-base">🔊</span>
+              <span className="grid h-9 w-9 flex-none place-items-center rounded-full bg-berkut-sky-soft text-berkut-sky-ink"><SpeakerIcon className="h-5 w-5" /></span>
               <span className="flex-1">
-                <span className="block text-lg font-bold">
+                <span className="block font-display font-medium text-lg">
                   <Rich text={ex.kk} />
                 </span>
                 <span className="block text-sm text-berkut-muted dark:text-berkut-muted-dark">
@@ -103,8 +104,8 @@ export default function TeachCard({ prompt }: { prompt: TeachPrompt }) {
       )}
 
       {prompt.tip && (
-        <div className="rounded-2xl border-2 border-amber-300 bg-amber-50 dark:bg-amber-500/10 dark:border-amber-500/40 p-4 text-base">
-          <span className="font-bold">Tip: </span>
+        <div className="rounded-sheet bg-berkut-gold-soft p-4 text-base">
+          <span className="font-bold text-berkut-gold-ink">Tip: </span>
           <Rich text={prompt.tip} />
         </div>
       )}

@@ -1,13 +1,3 @@
-// XP rules per §6.1.
-export const XP = {
-  CORRECT_FIRST: 10,
-  CORRECT_SECOND: 5,
-  COMPLETE_LESSON: 20,
-  PERFECT_LESSON: 30,
-  COMPLETE_UNIT: 100,
-  STREAK_DAY: 15,
-};
-
 export function normalize(s: string): string {
   return s
     .toLowerCase()

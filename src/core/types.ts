@@ -1,7 +1,5 @@
 export type Script = "CYRILLIC" | "LATIN";
 
-export type League = "BRONZE" | "SILVER" | "GOLD" | "SAPPHIRE" | "DIAMOND";
-
 export type ExerciseType =
   | "MULTIPLE_CHOICE"
   | "TRANSLATE_EN_KK"
@@ -126,7 +124,6 @@ export interface SrsItem {
 export interface UserProgress {
   lessonId: string;
   completed: boolean;
-  score: number;
   perfectRun: boolean;
   completedAt?: number;
 }
