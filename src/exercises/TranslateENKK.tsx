@@ -4,6 +4,7 @@ import ScriptText from "@/components/ScriptText";
 import { arraysMatch } from "@/core/scoring";
 import { useStore } from "@/store/useStore";
 import { toScript } from "@/core/transliterate";
+import { Button } from "@/components/ui";
 
 export default function TranslateENKK({
   prompt,
@@ -42,16 +43,14 @@ export default function TranslateENKK({
 
   return (
     <div className="space-y-6">
-      <h2 className="font-sans text-[17px] leading-[26px] font-medium tracking-normal text-berkut-muted">
-        Translate this sentence
-      </h2>
-      <div className="card text-center">
-        <div className="text-xl font-semibold leading-8">{prompt.promptEn}</div>
+      <div className="flex flex-col gap-2">
+        <h2 className="text-prompt text-berkut-ink-muted">Translate this sentence</h2>
+        <p className="text-title-md">{prompt.promptEn}</p>
       </div>
 
-      <div className="min-h-[96px] rounded-sheet border-2 border-dashed border-berkut-line-strong/60 p-3 flex flex-wrap gap-2 items-start">
+      <div className="min-h-[96px] rounded-tile border-2 border-dashed border-berkut-line p-3 flex flex-wrap gap-2 items-start">
         {chosen.length === 0 ? (
-          <span className="p-2 text-berkut-muted">
+          <span className="p-2 text-small text-berkut-ink-muted">
             Tap tiles below to build the answer
           </span>
         ) : (
@@ -59,7 +58,8 @@ export default function TranslateENKK({
             <button
               key={`c-${p}-${i}`}
               onClick={() => unpickIdx(p)}
-              className="tile tile-kk tile-selected !w-auto !min-h-[48px] !text-base"
+              lang="kk"
+              className="tile tile-selected !w-auto !min-h-12 !px-4"
             >
               {toScript(tiles[i]!, script)}
             </button>
@@ -72,7 +72,8 @@ export default function TranslateENKK({
           <button
             key={`t-${i}`}
             onClick={() => pickTile(i)}
-            className="tile tile-kk !w-auto !min-h-[48px] !text-base"
+            lang="kk"
+            className="tile !w-auto !min-h-12 !px-4"
           >
             <ScriptText>{t}</ScriptText>
           </button>
@@ -80,13 +81,9 @@ export default function TranslateENKK({
       </div>
 
       {phase === "answering" && (
-        <button
-          onClick={check}
-          disabled={chosen.length === 0}
-          className="btn-primary w-full"
-        >
+        <Button size="lg" block onClick={check} disabled={chosen.length === 0}>
           Check
-        </button>
+        </Button>
       )}
     </div>
   );

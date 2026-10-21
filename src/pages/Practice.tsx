@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import { useStore } from "@/store/useStore";
 import { useContentStore } from "@/store/useContentStore";
 import { dueItems } from "@/core/srs";
-import ScriptText from "@/components/ScriptText";
+import { useKazakh } from "@/components/ScriptText";
 import { speakKazakh } from "@/core/tts";
 import { answersMatch } from "@/core/scoring";
-import { ChoiceTile, optionState, SpokenPrompt, SunMark } from "@/components/ui";
+import { ChoiceTile, Logo, optionState, ProgressBar, SpokenPrompt } from "@/components/ui";
 
 export default function Practice() {
   const srsMap = useStore((s) => s.srs);
@@ -16,6 +16,7 @@ export default function Practice() {
   const contentStatus = useContentStore((s) => s.status);
   const loadCourse = useContentStore((s) => s.loadCourse);
   const units = useContentStore((s) => s.units);
+  const kazakh = useKazakh();
 
   useEffect(() => {
     if (contentStatus === "idle") loadCourse("kk");
@@ -50,12 +51,12 @@ export default function Practice() {
 
   if (!due.length) {
     return (
-      <div className="mx-auto max-w-md px-4 py-10 text-center">
-        <h1 className="text-[26px] leading-8">Daily review</h1>
-        <p className="text-berkut-muted dark:text-berkut-muted-dark mt-3">
+      <div className="mx-auto max-w-content px-6 py-10">
+        <h1 className="text-title-lg">Daily review</h1>
+        <p className="text-body text-berkut-ink-muted mt-3">
           Nothing due right now. Complete a lesson to seed your review queue.
         </p>
-        <Link to="/" className="btn-primary mt-8 w-full">
+        <Link to="/" className="btn-primary btn-block mt-8">
           Back to lessons
         </Link>
       </div>
@@ -87,13 +88,13 @@ export default function Practice() {
 
   if (done) {
     return (
-      <div className="mx-auto max-w-md px-4 py-10 text-center">
-        <SunMark size={88} className="mx-auto" />
-        <h1 className="text-[26px] leading-8 mt-4">Review complete</h1>
-        <p className="text-berkut-muted dark:text-berkut-muted-dark mt-2">
+      <div className="mx-auto max-w-content px-6 py-10">
+        <Logo size={72} />
+        <h1 className="text-title-lg mt-6">Review complete</h1>
+        <p className="text-body text-berkut-ink-muted mt-2">
           Words you got wrong are queued for tomorrow.
         </p>
-        <Link to="/" className="btn-primary mt-8 w-full">
+        <Link to="/" className="btn-primary btn-block mt-8">
           Back home
         </Link>
       </div>
@@ -104,16 +105,23 @@ export default function Practice() {
   ensureSrs(due.map((v) => v.id));
 
   return (
-    <div className="mx-auto max-w-content px-4 py-6">
-      <span className="eyebrow tabular-nums">
-        Review {idx + 1} of {due.length}
-      </span>
-      <h1 className="text-[26px] leading-8 mt-2">What does this mean?</h1>
+    <div className="mx-auto max-w-content px-6 py-6">
+      <div className="flex items-center gap-3.5">
+        <div className="flex-1">
+          <ProgressBar value={idx} max={due.length} size="sm" label="Review progress" />
+        </div>
+        <span className="text-small font-semibold tabular-nums text-berkut-ink-muted">
+          {idx + 1}/{due.length}
+        </span>
+      </div>
+      <h1 className="text-title-lg mt-6">What does this mean?</h1>
 
       <div className="mt-6">
-        <SpokenPrompt onSpeak={() => speakKazakh(current.kazakh)}>
-          <ScriptText>{current.kazakh}</ScriptText>
-        </SpokenPrompt>
+        <SpokenPrompt
+          {...kazakh(current.kazakh)}
+          size={/\s/.test(current.kazakh.trim()) ? "sentence" : "word"}
+          onSpeak={() => speakKazakh(current.kazakh)}
+        />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-8">

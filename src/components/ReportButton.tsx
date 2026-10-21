@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { getSupabase } from "@/core/supabase";
-import { CheckIcon } from "@/components/ui";
+import { Button, Icon } from "@/components/ui";
 
 type Reason =
   | "wrong_translation"
@@ -83,7 +83,7 @@ export default function ReportButton({ exerciseId }: { exerciseId: string }) {
 
   if (alreadyReported && !open) {
     return (
-      <span className="text-[13px] text-berkut-muted whitespace-nowrap">
+      <span className="text-caption text-berkut-ink-muted whitespace-nowrap">
         Reported · thanks
       </span>
     );
@@ -98,7 +98,7 @@ export default function ReportButton({ exerciseId }: { exerciseId: string }) {
           setState("idle");
           setComment("");
         }}
-        className="py-3 text-[13px] font-medium text-berkut-muted hover:text-berkut-danger underline-offset-2 hover:underline whitespace-nowrap"
+        className="py-3 text-caption text-berkut-ink-muted hover:text-berkut-danger underline-offset-2 hover:underline whitespace-nowrap"
         title="Report a mistake in this exercise"
       >
         Report a mistake
@@ -112,18 +112,18 @@ export default function ReportButton({ exerciseId }: { exerciseId: string }) {
           onClick={() => !busy && setOpen(false)}
         >
           <div
-            className="bg-berkut-raised rounded-t-sheet sm:rounded-sheet p-5 pb-[calc(20px+env(safe-area-inset-bottom))] sm:pb-5 w-full max-w-md shadow-sheet"
+            className="bg-berkut-surface-raised rounded-t-sheet sm:rounded-sheet p-6 pb-[calc(24px+env(safe-area-inset-bottom))] sm:pb-6 w-full max-w-md shadow-sheet"
             onClick={(e) => e.stopPropagation()}
           >
             {state === "sent" ? (
               <div className="text-center py-4">
-                <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-berkut-success text-berkut-on-success"><CheckIcon /></span>
-                <p className="font-bold mt-3">Thanks! We'll review this.</p>
+                <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-berkut-success-soft text-berkut-success"><Icon name="check" /></span>
+                <p className="text-label mt-3">Thanks! We'll review this.</p>
               </div>
             ) : (
               <>
-                <h2 className="text-lg leading-6">What's wrong with this exercise?</h2>
-                <p className="text-sm text-berkut-muted dark:text-berkut-muted-dark mt-1">
+                <h2 className="text-title-sm">What's wrong with this exercise?</h2>
+                <p className="text-small text-berkut-ink-muted mt-1">
                   Your report helps us improve. Reviewed by Berkut's content team.
                 </p>
 
@@ -131,10 +131,10 @@ export default function ReportButton({ exerciseId }: { exerciseId: string }) {
                   {REASON_ORDER.map((r) => (
                     <label
                       key={r}
-                      className={`flex items-center gap-3 px-3 py-2 rounded-xl border-2 cursor-pointer transition ${
+                      className={`flex items-center gap-3 px-4 py-2.5 rounded-tile cursor-pointer transition-[background-color,box-shadow] ${
                         reason === r
-                          ? "border-berkut-sky-ink bg-berkut-sky-soft"
-                          : "border-berkut-line-strong hover:border-berkut-sky-ink"
+                          ? "bg-berkut-turquoise-soft text-berkut-turquoise-ink shadow-[inset_0_0_0_2px_rgb(var(--bk-turquoise-ink))]"
+                          : "bg-berkut-surface hover:shadow-[inset_0_0_0_2px_rgb(var(--bk-line))]"
                       }`}
                     >
                       <input
@@ -143,9 +143,9 @@ export default function ReportButton({ exerciseId }: { exerciseId: string }) {
                         value={r}
                         checked={reason === r}
                         onChange={() => setReason(r)}
-                        className="accent-berkut-sky-ink"
+                        className="accent-berkut-turquoise-ink"
                       />
-                      <span className="text-sm font-semibold">{REASON_LABELS[r]}</span>
+                      <span className="text-small font-semibold">{REASON_LABELS[r]}</span>
                     </label>
                   ))}
                 </div>
@@ -155,30 +155,20 @@ export default function ReportButton({ exerciseId }: { exerciseId: string }) {
                   onChange={(e) => setComment(e.target.value.slice(0, 500))}
                   placeholder="Optional details (max 500 chars)"
                   rows={3}
-                  className="mt-4 field py-3 text-sm"
+                  className="mt-4 field py-3 text-[15px]"
                 />
 
                 {state === "error" && errorMsg && (
-                  <p className="text-sm text-berkut-danger font-bold mt-2">{errorMsg}</p>
+                  <p className="text-small font-semibold text-berkut-danger mt-2">{errorMsg}</p>
                 )}
 
                 <div className="flex gap-2 justify-end mt-4">
-                  <button
-                    type="button"
-                    onClick={() => setOpen(false)}
-                    className="btn-secondary btn-sm"
-                    disabled={busy}
-                  >
+                  <Button variant="secondary" onClick={() => setOpen(false)} disabled={busy}>
                     Cancel
-                  </button>
-                  <button
-                    type="button"
-                    onClick={submit}
-                    className="btn-primary btn-sm"
-                    disabled={busy}
-                  >
+                  </Button>
+                  <Button onClick={submit} disabled={busy}>
                     {busy ? "Sending…" : "Submit"}
-                  </button>
+                  </Button>
                 </div>
               </>
             )}

@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "@/core/useAuth";
+import { Logo } from "@/components/ui";
 
 const links = [
   { to: "/admin", end: true, label: "Overview", icon: "📊" },
@@ -17,7 +18,7 @@ export default function AdminLayout() {
     <div className="min-h-screen flex flex-col sm:flex-row">
       <aside className="sm:w-64 sm:min-h-screen border-r border-berkut-border dark:border-berkut-border-dark bg-white dark:bg-berkut-card-dark p-4">
         <NavLink to="/" className="flex items-center gap-2 font-extrabold text-xl mb-6">
-          <span className="text-2xl">🦅</span> Berkut <span className="text-xs text-berkut-muted dark:text-berkut-muted-dark uppercase tracking-wider">admin</span>
+          <Logo size={28} wordmark /> <span className="text-xs text-berkut-muted dark:text-berkut-muted-dark uppercase tracking-wider">admin</span>
         </NavLink>
         <nav className="flex flex-row sm:flex-col gap-1 overflow-x-auto">
           {links.map((l) => (

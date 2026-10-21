@@ -32,12 +32,12 @@ export default function ForgotPassword() {
       ) : (
         <form onSubmit={submit} className="space-y-3">
           <Field label="Email" type="email" value={email} onChange={setEmail} required />
-          <button type="submit" disabled={busy} className="btn-primary w-full">
+          <button type="submit" disabled={busy} className="btn-primary btn-block">
             {busy ? "Sending…" : "Send reset link"}
           </button>
         </form>
       )}
-      <Link to="/auth/login" className="block text-center text-sm text-berkut-primary hover:underline mt-4">
+      <Link to="/auth/login" className="block text-center text-small text-berkut-turquoise-ink hover:underline mt-4">
         Back to sign in
       </Link>
     </AuthShell>

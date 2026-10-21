@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getSupabase, isSupabaseConfigured } from "@/core/supabase";
 import GoogleButton from "@/components/GoogleButton";
 import { useStore } from "@/store/useStore";
-import { SunMark } from "@/components/ui";
+import { Field as InputField, Logo } from "@/components/ui";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -62,16 +62,16 @@ export default function Login() {
             type="checkbox"
             checked={staySignedIn}
             onChange={(e) => setStaySignedIn(e.target.checked)}
-            className="accent-berkut-primary h-4 w-4"
+            className="accent-berkut-turquoise h-4 w-4"
           />
           <span>Stay signed in</span>
-          <span className="text-xs text-berkut-muted dark:text-berkut-muted-dark ml-auto">
+          <span className="text-caption text-berkut-ink-muted ml-auto">
             (don't sign me out for 30 days)
           </span>
         </label>
 
-        {error && <p className="text-sm text-berkut-error font-bold">{error}</p>}
-        <button type="submit" disabled={busy} className="btn-primary w-full">
+        {error && <p className="text-small font-semibold text-berkut-danger">{error}</p>}
+        <button type="submit" disabled={busy} className="btn-primary btn-block">
           {busy ? "Signing in…" : "Sign in"}
         </button>
       </form>
@@ -80,13 +80,13 @@ export default function Login() {
 
       <GoogleButton mode="signin" />
 
-      <div className="text-center text-sm mt-4 space-y-1">
-        <Link to="/auth/forgot" className="block text-berkut-primary hover:underline">
+      <div className="text-center text-small mt-5 space-y-2">
+        <Link to="/auth/forgot" className="block text-berkut-turquoise-ink hover:underline">
           Forgot your password?
         </Link>
-        <div className="text-berkut-muted dark:text-berkut-muted-dark">
+        <div className="text-berkut-ink-muted">
           New here?{" "}
-          <Link to="/auth/register" className="text-berkut-primary hover:underline font-semibold">
+          <Link to="/auth/register" className="text-berkut-turquoise-ink hover:underline font-semibold">
             Create an account
           </Link>
         </div>
@@ -103,14 +103,13 @@ export function AuthShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center px-6 py-8">
       <div className="w-full max-w-md">
-        <Link to="/" className="flex items-center justify-center gap-2.5 mb-6">
-          <SunMark size={36} />
-          <span className="font-display font-semibold text-xl tracking-tight">Berkut</span>
+        <Link to="/" className="flex items-center justify-center mb-8" aria-label="Berkut home">
+          <Logo size={40} wordmark />
         </Link>
         <div className="card">
-          <h1 className="text-[22px] leading-7 mb-5 text-center">{title}</h1>
+          <h1 className="text-title-md mb-6 text-center">{title}</h1>
           {children}
         </div>
       </div>
@@ -134,32 +133,25 @@ export function Field({
   helper?: string;
 }) {
   return (
-    <label className="flex flex-col gap-1.5 text-sm font-semibold">
-      {label}
-      <input
+    <div className="flex flex-col gap-2">
+      <InputField
+        label={label}
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required={required}
-        className="field font-normal"
       />
-      {helper && (
-        <span className="block font-medium text-[13px] text-berkut-muted">
-          {helper}
-        </span>
-      )}
-    </label>
+      {helper && <span className="text-caption text-berkut-ink-muted">{helper}</span>}
+    </div>
   );
 }
 
 export function Divider() {
   return (
     <div className="flex items-center gap-3 my-5">
-      <div className="flex-1 h-px bg-berkut-border dark:bg-berkut-border-dark" />
-      <span className="text-xs uppercase font-bold text-berkut-muted dark:text-berkut-muted-dark">
-        or
-      </span>
-      <div className="flex-1 h-px bg-berkut-border dark:bg-berkut-border-dark" />
+      <div className="flex-1 h-px bg-berkut-line" />
+      <span className="text-caption text-berkut-ink-muted">or</span>
+      <div className="flex-1 h-px bg-berkut-line" />
     </div>
   );
 }
@@ -176,9 +168,9 @@ export function Banner({
       ? "bg-berkut-success-soft text-berkut-success"
       : tone === "error"
         ? "bg-berkut-danger-soft text-berkut-danger"
-        : "bg-berkut-gold-soft text-berkut-ink";
+        : "bg-berkut-turquoise-soft text-berkut-ink";
   return (
-    <div role={tone === "error" ? "alert" : "status"} className={`text-sm font-medium rounded-tile px-4 py-3 mb-4 ${cls}`}>
+    <div role={tone === "error" ? "alert" : "status"} className={`text-small rounded-tile px-4 py-3 mb-4 ${cls}`}>
       {children}
     </div>
   );

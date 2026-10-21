@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useStore } from "@/store/useStore";
 import type { BadgeId } from "@/core/types";
-import { BoltIcon, FlameIcon, Ornament, SpeakerIcon, StarIcon, SunMark, TrophyIcon } from "@/components/ui";
+import { Icon } from "@/components/ui";
 
 const BADGE_META: Record<BadgeId, { name: string; desc: string }> = {
   first_lesson: { name: "Сәлем!", desc: "Complete your first lesson" },
@@ -25,15 +25,15 @@ export default function Profile() {
   const locked = (Object.keys(BADGE_META) as BadgeId[]).filter((b) => !badges[b]);
 
   return (
-    <div className="mx-auto max-w-content px-4 py-6">
-      <div className="card mb-6">
+    <div className="mx-auto max-w-content px-6 py-6">
+      <div className="card mb-8">
         <div className="flex items-center gap-4">
-          <div className="h-16 w-16 flex-none rounded-full bg-berkut-sky text-berkut-on-sky flex items-center justify-center font-display text-2xl font-semibold">
+          <div className="h-16 w-16 flex-none rounded-full bg-berkut-turquoise-soft text-berkut-turquoise-ink flex items-center justify-center text-title-lg">
             {displayName.charAt(0).toUpperCase()}
           </div>
           <div>
-            <h1 className="text-[22px] leading-7">{displayName}</h1>
-            <Link to="/settings" className="text-sm font-semibold text-berkut-sky-ink hover:underline">
+            <h1 className="text-title-md">{displayName}</h1>
+            <Link to="/settings" className="text-small font-semibold text-berkut-turquoise-ink hover:underline">
               Edit profile
             </Link>
           </div>
@@ -45,7 +45,7 @@ export default function Profile() {
         </div>
       </div>
 
-      <h2 className="text-[19px] leading-[26px] font-medium mb-3">Badges</h2>
+      <h2 className="text-title-sm mb-4">Badges</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {earned.map((id) => (
           <BadgeCard key={id} id={id} earned />
@@ -60,11 +60,9 @@ export default function Profile() {
 
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-tile bg-berkut-sunk p-3">
-      <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-berkut-muted">
-        {label}
-      </div>
-      <div className="font-display text-xl font-semibold tabular-nums mt-1">{value}</div>
+    <div className="rounded-tile bg-berkut-surface p-4">
+      <div className="text-small text-berkut-ink-muted">{label}</div>
+      <div className="text-title-md tabular-nums mt-1">{value}</div>
     </div>
   );
 }
@@ -76,32 +74,32 @@ function BadgeCard({ id, earned }: { id: BadgeId; earned: boolean }) {
       className={`card flex flex-col items-center text-center ${earned ? "" : "opacity-45"}`}
     >
       <BadgeMedal id={id} earned={earned} />
-      <div className="font-semibold mt-3">{meta.name}</div>
-      <div className="text-xs text-berkut-muted dark:text-berkut-muted-dark mt-1">
+      <div className="text-label mt-3">{meta.name}</div>
+      <div className="text-caption text-berkut-ink-muted mt-1">
         {meta.desc}
       </div>
     </div>
   );
 }
 
-// Each badge is a medallion: gold when earned, sunk when not.
+// Each badge is a medallion: sun gold when earned (a reward), surface when not.
 function BadgeMedal({ id, earned }: { id: BadgeId; earned: boolean }) {
   const glyph: Record<BadgeId, JSX.Element> = {
-    first_lesson: <SunMark size={30} className="!text-current" />,
-    week_warrior: <FlameIcon className="h-7 w-7" />,
-    polyglot_in_progress: <TrophyIcon className="h-7 w-7" />,
-    perfect_round: <StarIcon className="h-7 w-7" />,
-    script_switcher: <span className="font-display text-base font-semibold">Аа</span>,
-    voice_of_steppe: <SpeakerIcon className="h-7 w-7" />,
-    cultural_explorer: <Ornament id={`badge-${id}`} className="!h-4 w-9 !text-current" />,
+    first_lesson: <Icon name="flag" size={28} />,
+    week_warrior: <Icon name="flame" size={28} />,
+    polyglot_in_progress: <Icon name="trophy" size={28} />,
+    perfect_round: <Icon name="star" size={28} />,
+    script_switcher: <span className="text-title-sm">Аа</span>,
+    voice_of_steppe: <Icon name="speaker" size={28} />,
+    cultural_explorer: <Icon name="bulb" size={28} />,
   };
   return (
     <span
       className={`grid h-14 w-14 place-items-center rounded-full ${
-        earned ? "bg-berkut-gold text-berkut-on-gold shadow-[0_0_0_5px_rgb(var(--bk-gold-soft))]" : "bg-berkut-sunk text-berkut-muted"
+        earned ? "bg-berkut-sun text-berkut-on-sun shadow-[0_0_0_5px_rgb(var(--bk-sun-soft))]" : "bg-berkut-surface text-berkut-ink-muted"
       }`}
     >
-      {glyph[id] ?? <BoltIcon className="h-7 w-7" />}
+      {glyph[id] ?? <Icon name="bolt" size={28} />}
     </span>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { MatchPairsPrompt } from "@/core/types";
 import ScriptText from "@/components/ScriptText";
 import { speakKazakh } from "@/core/tts";
+import { ChoiceTile, type TileState } from "@/components/ui";
 
 interface Tile {
   id: string;
@@ -75,13 +76,11 @@ export default function MatchPairs({
     }
   }, [activeKK, activeEN, tiles, matched]);
 
-  function tileClass(t: Tile) {
-    if (matched.has(t.id)) return "tile-correct opacity-30 pointer-events-none";
-    const isActive = t.id === activeKK || t.id === activeEN;
-    const isWrong = wrongPair && (t.id === wrongPair[0] || t.id === wrongPair[1]);
-    if (isWrong) return "tile-wrong animate-shake";
-    if (isActive) return "tile-selected";
-    return "";
+  function tileState(t: Tile): TileState {
+    if (matched.has(t.id)) return "correct";
+    if (wrongPair && (t.id === wrongPair[0] || t.id === wrongPair[1])) return "wrong";
+    if (t.id === activeKK || t.id === activeEN) return "selected";
+    return "idle";
   }
 
   const left = tiles.filter((t) => t.side === "kk");
@@ -89,33 +88,40 @@ export default function MatchPairs({
 
   return (
     <div className="space-y-6">
-      <h2 className="font-sans text-[17px] leading-[26px] font-medium tracking-normal text-berkut-muted">Match the pairs</h2>
+      <h2 className="text-prompt text-berkut-ink-muted">Match the pairs</h2>
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-3">
           {left.map((t) => (
-            <button
+            <ChoiceTile
               key={t.id}
+              lang="kk"
+              align="start"
+              state={tileState(t)}
+              disabled={matched.has(t.id)}
               onClick={() => clickTile(t)}
-              className={`tile tile-kk !justify-start !text-left ${tileClass(t)}`}
+              className="disabled:opacity-60"
             >
               <ScriptText>{t.text}</ScriptText>
-            </button>
+            </ChoiceTile>
           ))}
         </div>
         <div className="space-y-3">
           {right.map((t) => (
-            <button
+            <ChoiceTile
               key={t.id}
+              align="start"
+              state={tileState(t)}
+              disabled={matched.has(t.id)}
               onClick={() => clickTile(t)}
-              className={`tile !justify-start !text-left ${tileClass(t)}`}
+              className="disabled:opacity-60"
             >
               {t.text}
-            </button>
+            </ChoiceTile>
           ))}
         </div>
       </div>
       {phase === "answering" && matched.size < prompt.pairs.length * 2 && (
-        <p className="text-[13px] font-medium text-center text-berkut-muted tabular-nums">
+        <p className="text-small text-center text-berkut-ink-muted tabular-nums">
           {matched.size / 2} of {prompt.pairs.length} matched
           {mistakes > 0 ? ` · ${mistakes} mistake${mistakes === 1 ? "" : "s"}` : ""}
         </p>

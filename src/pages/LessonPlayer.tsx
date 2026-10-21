@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useContentStore } from "@/store/useContentStore";
 import { useStore } from "@/store/useStore";
-import ProgressBar from "@/components/ProgressBar";
 import MultipleChoice from "@/exercises/MultipleChoice";
 import TranslateENKK from "@/exercises/TranslateENKK";
 import TranslateKKEN from "@/exercises/TranslateKKEN";
@@ -12,7 +11,8 @@ import TeachCard from "@/exercises/TeachCard";
 import { buildSession, requeueMistake, type SessionItem } from "@/core/session";
 import type { Exercise, Lesson } from "@/core/types";
 import ReportButton from "@/components/ReportButton";
-import { CheckIcon, CloseIcon, CrossIcon, ReviewIcon, SunLoader } from "@/components/ui";
+import ScriptText from "@/components/ScriptText";
+import { Button, Icon, LessonHeader, Loader } from "@/components/ui";
 
 type Phase = "answering" | "checked";
 
@@ -57,9 +57,9 @@ export default function LessonPlayer() {
 
   if (loadError) {
     return (
-      <div className="px-4 py-10 text-center">
-        <h1 className="text-xl">Lesson not found.</h1>
-        <Link to="/" className="btn-primary mt-4 inline-flex">
+      <div className="px-6 py-10 text-center">
+        <h1 className="text-title-md">Lesson not found.</h1>
+        <Link to="/" className="btn-primary mt-6">
           Back home
         </Link>
       </div>
@@ -69,7 +69,7 @@ export default function LessonPlayer() {
   if (!lesson || !queue.length) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <SunLoader label="Loading lesson…" />
+        <Loader label="Loading lesson…" />
       </div>
     );
   }
@@ -145,32 +145,26 @@ export default function LessonPlayer() {
   })();
 
   return (
-    <div className="min-h-screen flex flex-col bg-berkut-surface">
-      <header className="sticky top-0 z-10 bg-berkut-surface pt-[env(safe-area-inset-top)]">
-        <div className="mx-auto max-w-content px-2 h-14 flex items-center gap-2">
-          <button
-            onClick={() => navigate("/")}
-            className="grid h-12 w-12 flex-none place-items-center rounded-full text-berkut-muted hover:bg-berkut-sunk"
-            aria-label="Quit lesson"
-          >
-            <CloseIcon className="h-6 w-6" />
-          </button>
-          <div className="flex-1">
-            <ProgressBar value={idx + (phase === "checked" || isTeach ? 1 : 0)} max={total} />
-          </div>
-          <span className="w-2" aria-hidden="true" />
+    <div className="min-h-screen flex flex-col bg-berkut-bg">
+      <header className="sticky top-0 z-10 bg-berkut-bg pt-[env(safe-area-inset-top)]">
+        <div className="mx-auto max-w-content px-4 py-2">
+          <LessonHeader
+            step={idx + (phase === "checked" || isTeach ? 1 : 0)}
+            total={total}
+            onClose={() => navigate("/")}
+          />
         </div>
       </header>
 
-      <div className="flex-1 mx-auto w-full max-w-content px-4 pt-4 pb-8">
+      <div className="flex-1 mx-auto w-full max-w-content px-6 pt-6 pb-8">
         {item.kind === "mistake" && (
-          <span className="chip mb-4 bg-berkut-danger-soft text-berkut-danger font-sans text-[11px] font-bold uppercase tracking-[0.12em]">
-            <ReviewIcon className="h-4 w-4" /> Previous mistake
+          <span className="tag mb-5 bg-berkut-danger-soft text-berkut-danger">
+            <Icon name="review" size={16} /> Previous mistake
           </span>
         )}
         {item.kind === "review" && (
-          <span className="chip mb-4 bg-berkut-sky-soft text-berkut-sky-ink font-sans text-[11px] font-bold uppercase tracking-[0.12em]">
-            <ReviewIcon className="h-4 w-4" /> Mixed review
+          <span className="tag mb-5">
+            <Icon name="review" size={16} /> Mixed review
           </span>
         )}
         {/* Keyed by slot: an exercise can come back, and must start fresh. */}
@@ -178,12 +172,12 @@ export default function LessonPlayer() {
       </div>
 
       <footer
-        className={`sticky bottom-0 rounded-t-sheet sm:rounded-none shadow-sheet px-4 pt-4 pb-[calc(16px+env(safe-area-inset-bottom))] transition-colors ${
+        className={`sticky bottom-0 rounded-t-sheet sm:rounded-none shadow-sheet px-6 pt-5 pb-[calc(16px+env(safe-area-inset-bottom))] transition-colors ${
           feedback === "correct"
             ? "bg-berkut-success-soft text-berkut-success"
             : feedback === "wrong"
               ? "bg-berkut-danger-soft text-berkut-danger"
-              : "bg-berkut-raised"
+              : "bg-berkut-surface-raised"
         }`}
       >
         <div className="mx-auto max-w-content flex flex-col gap-3">
@@ -194,10 +188,10 @@ export default function LessonPlayer() {
                   feedback === "correct" ? "bg-berkut-success text-berkut-on-success" : "bg-berkut-danger text-berkut-on-danger"
                 }`}
               >
-                {feedback === "correct" ? <CheckIcon /> : <CrossIcon />}
+                <Icon name={feedback === "correct" ? "check" : "cross"} size={20} />
               </span>
-              <div className="flex-1 font-display text-lg font-semibold">
-                {feedback === "correct" ? "Дұрыс!" : "Not quite"}
+              <div className="flex-1 text-title-sm">
+                {feedback === "correct" ? <ScriptText>Дұрыс!</ScriptText> : "Not quite"}
               </div>
               <ReportButton exerciseId={exercise.id} />
             </div>
@@ -209,22 +203,19 @@ export default function LessonPlayer() {
               </div>
             )}
             {isTeach && (
-              <button onClick={nextExercise} className="btn-primary">
+              <Button size="lg" onClick={nextExercise}>
                 Got it
-              </button>
+              </Button>
             )}
             {feedback === "wrong" && retries === 0 && (
-              <button onClick={tryAgain} className="btn-secondary">
+              <Button variant="secondary" size="lg" onClick={tryAgain}>
                 Try again
-              </button>
+              </Button>
             )}
             {phase === "checked" && (
-              <button
-                onClick={nextExercise}
-                className={feedback === "correct" ? "btn-success" : feedback === "wrong" ? "btn-danger" : "btn-primary"}
-              >
+              <Button size="lg" onClick={nextExercise}>
                 Continue
-              </button>
+              </Button>
             )}
           </div>
         </div>

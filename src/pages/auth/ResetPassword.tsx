@@ -56,7 +56,7 @@ export default function ResetPassword() {
           required
         />
         {error && <Banner tone="error">{error}</Banner>}
-        <button type="submit" disabled={busy} className="btn-primary w-full">
+        <button type="submit" disabled={busy} className="btn-primary btn-block">
           {busy ? "Saving…" : "Update password"}
         </button>
       </form>
