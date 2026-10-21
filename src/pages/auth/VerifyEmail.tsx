@@ -43,7 +43,7 @@ export default function VerifyEmail() {
 
   return (
     <AuthShell title="Check your email">
-      <p className="text-sm text-berkut-muted dark:text-berkut-muted-dark mb-4">
+      <p className="text-small text-berkut-ink-muted mb-4">
         We just sent you a verification link. Click it on this device to finish
         creating your account. This page checks every few seconds and will
         redirect once you're verified.
@@ -52,11 +52,11 @@ export default function VerifyEmail() {
       <button
         onClick={resend}
         disabled={seconds > 0}
-        className="btn-outline w-full"
+        className="btn-secondary btn-block"
       >
         {seconds > 0 ? `Resend in ${seconds}s` : "Resend verification email"}
       </button>
-      <p className="mt-4 text-xs text-berkut-muted dark:text-berkut-muted-dark text-center">
+      <p className="mt-4 text-caption text-berkut-ink-muted text-center">
         Didn't receive it? Check your spam folder.
       </p>
     </AuthShell>

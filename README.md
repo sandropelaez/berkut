@@ -10,18 +10,34 @@ Cloudflare (DNS + CDN).
 
 ## Design system
 
-The UI follows the **Berkut** design system in Claude Design:
-https://claude.ai/artifact/U1YbRHJgVMHBtVbeT4Z7fq (tokens, components, brand book).
+The UI follows the **Berkut** design system in Claude Design, **Turquoise Sky**:
+https://claude.ai/artifact/2rsJnXzwS24mLoTrJBddQc (brand book, tokens, components, logos, icons).
 
-- Colours come from the flag of Kazakhstan: sky (`berkut-sky`) for the one primary action per
-  screen, sun gold (`berkut-gold`) only for rewards. Tokens live as CSS variables in
-  `src/index.css` (Day on `:root`, Steppe night on `.dark`) and are exposed to Tailwind as
-  `berkut-*` in `tailwind.config.js`.
-- Type: Unbounded for headings and Kazakh words (`font-display`), Onest for everything else.
-- Shared pieces (sun mark, ornament, icons, stat chips, choice tiles) are in
-  `src/components/ui.tsx`; component classes (`btn-*`, `card`, `tile-*`, `field`, `eyebrow`)
-  are in `src/index.css`.
-- Phone first: design at 375px, one column, primary action at the bottom. No emoji in the UI.
+- **Turquoise is action.** Flag turquoise (`berkut-turquoise`, #00aec7) fills the ONE primary
+  button per screen and every progress bar, always with `on-turquoise` text (never white).
+  Turquoise as text or a ring is `turquoise-ink`; its tint is `turquoise-soft`.
+- **Sun gold is for rewards only:** streaks, reward buttons and the logo's sun (`berkut-sun`).
+  Never for navigation.
+- `success` / `danger` mean correct / wrong; a choice tile's state is never colour alone
+  (correct carries a check, wrong a cross).
+- **Type:** one family, Commissioner (400–700), with the system's type styles as Tailwind
+  sizes: `text-display-xl`, `text-display-word`, `text-display-sentence`, `text-title-lg/md/sm`,
+  `text-lede`, `text-body`, `text-label`, `text-option`, `text-prompt`, `text-translit`,
+  `text-small`, `text-caption`. The Kazakh word is always the loudest thing on screen and
+  follows the learner's script choice.
+- **Themes:** Day (light) and Night (dark). Tokens are RGB-channel CSS variables in
+  `src/index.css` (Day on `:root`, Night on `.dark`, toggled in Settings), exposed to Tailwind
+  as `berkut-*` in `tailwind.config.js`. Use tokens, never hex.
+- **Shape:** buttons, chips and tags are pills; tiles and fields `rounded-tile` (20px); cards and
+  sheets `rounded-sheet` (28px) with `shadow-card` / `shadow-sheet`. Buttons are 52px (56px for
+  the lesson's bottom button), tiles 60px, icon buttons 44px, content at most 560px, 4px spacing.
+- **Components** (`src/components/ui.tsx`, mirroring the system's `index.d.ts`): `Button`,
+  `IconButton`, `ChoiceTile` + `optionState`, `SpokenPrompt`, `LessonHeader`, `ProgressBar`,
+  `StatChip`, `Tag`, `Field`, `Card`, `Logo`, `Icon` (2px-stroke set), plus a `Loader`. The
+  classes they render (`btn-*`, `tile-*`, `card`, `chip`, `tag`, `field`, `iconbtn`) are in
+  `src/index.css`.
+- Phone first: design at 375px, one column, primary action at the bottom. Sentence case, no
+  emoji in the UI.
 
 ## Admin section
 

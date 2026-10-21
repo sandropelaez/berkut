@@ -25,19 +25,19 @@ export default function FillBlank({
 
   return (
     <div className="space-y-6">
-      <h2 className="font-sans text-[17px] leading-[26px] font-medium tracking-normal text-berkut-muted">Fill in the blank</h2>
+      <h2 className="text-prompt text-berkut-ink-muted">Fill in the blank</h2>
       {prompt.hintEn && (
-        <p className="text-sm text-berkut-muted dark:text-berkut-muted-dark italic">
+        <p className="text-small text-berkut-ink-muted">
           ({prompt.hintEn})
         </p>
       )}
-      <div className="card text-center font-display font-medium text-2xl leading-[1.7]">
+      <div lang="kk" className="text-display-sentence !leading-[1.7]">
         <ScriptText>{before}</ScriptText>
         <span
-          className={`inline-block min-w-[80px] mx-1 px-3 py-1 rounded-lg border-b-4 ${
+          className={`inline-block min-w-[80px] mx-1 px-3 rounded-xl text-center ${
             picked
-              ? "border-berkut-sky bg-berkut-sky-soft"
-              : "border-berkut-line-strong bg-berkut-sunk"
+              ? "bg-berkut-turquoise-soft text-berkut-turquoise-ink shadow-[inset_0_-3px_0_rgb(var(--bk-turquoise-ink))]"
+              : "bg-berkut-surface text-berkut-ink-muted shadow-[inset_0_-3px_0_rgb(var(--bk-line))]"
           }`}
         >
           {picked ? <ScriptText>{picked}</ScriptText> : "____"}

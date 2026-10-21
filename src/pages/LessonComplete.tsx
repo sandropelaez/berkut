@@ -1,7 +1,8 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useContentStore } from "@/store/useContentStore";
+import { useStore } from "@/store/useStore";
 import ScriptText from "@/components/ScriptText";
-import { FlameIcon, Ornament, StarIcon, SunMark } from "@/components/ui";
+import { Icon, Logo, ProgressBar, StatChip } from "@/components/ui";
 
 interface LocState {
   mistakes: number;
@@ -13,6 +14,7 @@ interface LocState {
 export default function LessonComplete() {
   const { id } = useParams();
   const units = useContentStore((s) => s.units);
+  const streak = useStore((s) => s.streakCount);
   const found = id
     ? units.flatMap((u) => u.lessons).find((l) => l.id === id)
     : undefined;
@@ -25,11 +27,13 @@ export default function LessonComplete() {
 
   if (!found) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="max-w-md w-full text-center">
-          <SunMark size={96} className="mx-auto" />
-          <h1 className="text-[32px] leading-10 mt-5">Lesson complete</h1>
-          <Link to="/" className="btn-primary mt-8 w-full">
+      <div className="min-h-screen flex items-center justify-center px-6">
+        <div className="max-w-content w-full text-center">
+          <span className="inline-block">
+            <Logo size={96} />
+          </span>
+          <h1 className="text-display-xl mt-6">Lesson complete</h1>
+          <Link to="/" className="btn-primary btn-block mt-10">
             Back to your path
           </Link>
         </div>
@@ -43,49 +47,58 @@ export default function LessonComplete() {
     : 100;
 
   return (
-    <div className="min-h-screen flex flex-col px-4 pt-[calc(40px+env(safe-area-inset-top))] pb-[calc(24px+env(safe-area-inset-bottom))]">
-      <div className="mx-auto max-w-sm w-full flex-1 flex flex-col text-center">
+    <div className="min-h-screen flex flex-col px-6 pt-[calc(40px+env(safe-area-inset-top))] pb-[calc(24px+env(safe-area-inset-bottom))]">
+      <div className="mx-auto max-w-content w-full flex-1 flex flex-col">
         <div className="flex-1 flex flex-col justify-center">
-        <SunMark size={112} className="mx-auto" />
-        <h1 className="text-[32px] leading-10 mt-5">{state.perfect ? "Жарайсың!" : "Lesson complete"}</h1>
-        <p className="text-berkut-muted mt-2">
-          {state.perfect ? "A perfect run. " : ""}
-          <ScriptText>{found.titleKk}</ScriptText> · {found.titleEn}
-        </p>
+          <Logo size={72} />
+          <h1 className="text-display-xl mt-6">
+            {state.perfect ? <ScriptText>Жарайсың!</ScriptText> : "Lesson complete"}
+          </h1>
+          <p className="text-lede text-berkut-ink-muted mt-3">
+            {state.perfect ? "A perfect run. " : ""}
+            <ScriptText>{found.titleKk}</ScriptText> · {found.titleEn}
+          </p>
 
-        <Ornament id="complete" className="my-8" />
-
-        <div className="grid grid-cols-2 gap-3">
-          <Stat label="Accuracy" value={`${accuracy}%`} highlight />
-          <Stat label="Mistakes" value={state.mistakes} />
-        </div>
-
-        {state.newStreakDay && (
-          <div className="mt-6 flex items-center gap-3 rounded-sheet bg-berkut-gold-soft p-4 text-left font-semibold">
-            <FlameIcon className="h-6 w-6 text-berkut-gold-ink" /> Streak extended
+          <div className="card mt-8 flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-4">
+              <Stat label="Accuracy" value={`${Math.max(0, accuracy)}%`} />
+              <Stat label="Mistakes" value={state.mistakes} />
+            </div>
+            <ProgressBar value={Math.max(0, accuracy)} max={100} tone="success" label="Accuracy" />
           </div>
-        )}
-        {state.perfect && state.firstCompletion && (
-          <div className="mt-3 flex items-center gap-3 rounded-sheet bg-berkut-gold-soft p-4 text-left font-semibold">
-            <StarIcon className="h-6 w-6 text-berkut-gold-ink" /> Perfect Round badge unlocked
-          </div>
-        )}
 
+          {(state.newStreakDay || (state.perfect && state.firstCompletion)) && (
+            <div className="mt-6 flex flex-col gap-3">
+              {state.newStreakDay && (
+                <div className="flex items-center gap-3 text-label">
+                  <StatChip value={streak} /> Streak extended
+                </div>
+              )}
+              {state.perfect && state.firstCompletion && (
+                <div className="flex items-center gap-3 text-label">
+                  <span className="grid h-chip w-chip place-items-center rounded-full bg-berkut-sun-soft text-berkut-sun">
+                    <Icon name="star" size={18} />
+                  </span>
+                  Perfect Round badge unlocked
+                </div>
+              )}
+            </div>
+          )}
         </div>
-        <div className="mt-8 grid gap-3">
-          <Link to="/" className="btn-primary w-full">Continue</Link>
-          <Link to="/practice" className="btn-secondary w-full">Review words</Link>
+        <div className="mt-10 grid gap-3">
+          <Link to="/" className="btn-primary btn-block">Continue</Link>
+          <Link to="/practice" className="btn-secondary btn-block">Review words</Link>
         </div>
       </div>
     </div>
   );
 }
 
-function Stat({ label, value, highlight }: { label: string; value: string | number; highlight?: boolean }) {
+function Stat({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className={`rounded-tile p-3 ${highlight ? "bg-berkut-gold text-berkut-on-gold" : "bg-berkut-raised shadow-card"}`}>
-      <div className={`text-[11px] font-bold uppercase tracking-[0.1em] ${highlight ? "" : "text-berkut-muted"}`}>{label}</div>
-      <div className="font-display text-xl font-semibold tabular-nums mt-1">{value}</div>
+    <div>
+      <div className="text-small text-berkut-ink-muted">{label}</div>
+      <div className="text-title-lg tabular-nums mt-1">{value}</div>
     </div>
   );
 }

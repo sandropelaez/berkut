@@ -3,66 +3,64 @@
 @tailwind utilities;
 
 /*
- * Berkut design system tokens (Claude Design: "Berkut").
+ * Berkut design system tokens (Claude Design: "Berkut", Turquoise Sky).
  * Colours are RGB channels so Tailwind's opacity modifiers work; see tailwind.config.js.
- * Day theme on :root, Steppe night on .dark (toggled in Settings).
+ * Day theme on :root, Night on .dark (toggled in Settings).
  */
 :root {
   color-scheme: light;
-  --bk-surface: 244 247 249;
+  --bk-bg: 255 255 255;
+  --bk-surface: 242 247 248;
   --bk-surface-raised: 255 255 255;
-  --bk-surface-sunk: 233 239 243;
-  --bk-line: 220 229 235;
-  --bk-line-strong: 122 144 158;
-  --bk-ink: 12 30 43;
-  --bk-ink-muted: 84 102 115;
-  --bk-sky: 0 175 202;
-  --bk-sky-hover: 0 153 178;
-  --bk-on-sky: 4 32 42;
-  --bk-sky-ink: 0 112 138;
-  --bk-sky-soft: 227 246 250;
-  --bk-gold: 254 197 12;
-  --bk-on-gold: 42 31 0;
-  --bk-gold-ink: 138 100 0;
-  --bk-gold-soft: 255 245 209;
-  --bk-success: 31 122 77;
+  --bk-line: 220 231 234;
+  --bk-ink: 14 23 38;
+  --bk-ink-muted: 91 102 118;
+  --bk-turquoise: 0 174 199;
+  --bk-turquoise-hover: 0 153 176;
+  --bk-on-turquoise: 4 38 46;
+  --bk-turquoise-ink: 0 107 125;
+  --bk-turquoise-soft: 224 245 248;
+  --bk-sun: 242 177 0;
+  --bk-on-sun: 14 23 38;
+  --bk-sun-ink: 138 97 0;
+  --bk-sun-soft: 255 244 209;
+  --bk-success: 17 107 60;
   --bk-on-success: 255 255 255;
-  --bk-success-soft: 226 244 234;
-  --bk-danger: 184 50 60;
+  --bk-success-soft: 228 244 235;
+  --bk-danger: 194 54 61;
   --bk-on-danger: 255 255 255;
   --bk-danger-soft: 251 231 232;
-  --bk-focus: 0 112 138;
-  --bk-shadow-card: 0 1px 2px rgba(12, 30, 43, 0.06), 0 6px 20px rgba(12, 30, 43, 0.06);
-  --bk-shadow-sheet: 0 -8px 32px rgba(12, 30, 43, 0.1);
+  --bk-focus: 0 107 125;
+  --bk-shadow-card: 0 1px 2px rgba(4, 38, 46, 0.06), 0 8px 24px rgba(4, 38, 46, 0.06);
+  --bk-shadow-sheet: 0 -8px 40px rgba(4, 38, 46, 0.12);
 }
 
 .dark {
   color-scheme: dark;
-  --bk-surface: 8 19 28;
-  --bk-surface-raised: 15 32 44;
-  --bk-surface-sunk: 5 13 19;
-  --bk-line: 30 52 67;
-  --bk-line-strong: 86 117 138;
-  --bk-ink: 234 242 246;
-  --bk-ink-muted: 147 168 182;
-  --bk-sky: 25 185 210;
-  --bk-sky-hover: 60 198 220;
-  --bk-on-sky: 4 32 42;
-  --bk-sky-ink: 94 211 230;
-  --bk-sky-soft: 13 47 59;
-  --bk-gold: 255 203 46;
-  --bk-on-gold: 42 31 0;
-  --bk-gold-ink: 255 214 92;
-  --bk-gold-soft: 46 37 8;
-  --bk-success: 76 201 138;
-  --bk-on-success: 4 32 42;
-  --bk-success-soft: 15 46 32;
-  --bk-danger: 255 122 128;
-  --bk-on-danger: 42 6 9;
-  --bk-danger-soft: 58 20 24;
-  --bk-focus: 94 211 230;
-  --bk-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.5);
-  --bk-shadow-sheet: 0 -8px 32px rgba(0, 0, 0, 0.55);
+  --bk-bg: 11 22 27;
+  --bk-surface: 21 35 42;
+  --bk-surface-raised: 17 30 36;
+  --bk-line: 36 54 62;
+  --bk-ink: 238 244 246;
+  --bk-ink-muted: 157 175 183;
+  --bk-turquoise: 0 174 199;
+  --bk-turquoise-hover: 30 192 216;
+  --bk-on-turquoise: 4 38 46;
+  --bk-turquoise-ink: 79 207 227;
+  --bk-turquoise-soft: 14 51 64;
+  --bk-sun: 245 188 31;
+  --bk-on-sun: 14 23 38;
+  --bk-sun-ink: 245 200 74;
+  --bk-sun-soft: 51 41 10;
+  --bk-success: 91 208 143;
+  --bk-on-success: 4 34 26;
+  --bk-success-soft: 17 48 31;
+  --bk-danger: 255 138 133;
+  --bk-on-danger: 42 6 7;
+  --bk-danger-soft: 58 23 25;
+  --bk-focus: 79 207 227;
+  --bk-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+  --bk-shadow-sheet: 0 -8px 40px rgba(0, 0, 0, 0.55);
 }
 
 html,
@@ -72,27 +70,22 @@ body,
 }
 
 body {
-  font-family: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: "Commissioner", system-ui, -apple-system, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
-  background-color: rgb(var(--bk-surface));
+  background-color: rgb(var(--bk-bg));
   color: rgb(var(--bk-ink));
 }
 
-/*
- * ScriptText marks every Kazakh span with .kk; it inherits its parent's face so
- * Kazakh inside running text stays in Onest. Set the display face (Unbounded)
- * on the container with font-display where a word is the subject.
- */
+/* ScriptText marks every Kazakh span with .kk; it takes its size from the container's type style. */
 .kk {
   font-family: inherit;
 }
 
-/* Headings use the display face; weights stay at or under 600 for an even, quiet colour. */
+/* Titles are 600 with negative tracking; pages pick the size with text-title-* / text-display-*. */
 h1,
 h2,
 h3 {
-  font-family: "Unbounded", "Onest", system-ui, sans-serif;
   font-weight: 600;
   letter-spacing: -0.01em;
   text-wrap: balance;
@@ -103,76 +96,93 @@ h3 {
   outline-offset: 2px;
 }
 
+/*
+ * Component classes, mirroring the system's components/bundle.css (bk-btn, bk-tile, …).
+ * The React components in src/components/ui.tsx render these; links styled as
+ * buttons use them directly.
+ */
 @layer components {
-  /* Button: 48px, radius-md. One primary (sky) per screen. */
+  /* Button: pill, control-height, label type. One primary (turquoise) per screen. */
   .btn {
-    @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-tile px-6 text-base font-semibold leading-5 no-underline transition active:translate-y-px active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-45 disabled:active:transform-none;
+    @apply inline-flex min-h-control items-center justify-center gap-2 rounded-full px-8 text-label no-underline transition-[background-color,transform] duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-45 disabled:active:translate-y-0;
   }
   .btn-primary {
-    @apply btn bg-berkut-sky text-berkut-on-sky hover:bg-berkut-sky-hover;
+    @apply btn bg-berkut-turquoise text-berkut-on-turquoise [&:not(:disabled)]:hover:bg-berkut-turquoise-hover;
   }
   .btn-secondary {
-    @apply btn bg-berkut-raised text-berkut-ink shadow-[inset_0_0_0_1.5px_rgb(var(--bk-line-strong))] hover:shadow-[inset_0_0_0_1.5px_rgb(var(--bk-sky-ink))];
+    @apply btn bg-berkut-surface text-berkut-ink [&:not(:disabled)]:hover:bg-berkut-turquoise-soft;
   }
+  .btn-ghost {
+    @apply btn bg-transparent px-5 text-berkut-turquoise-ink [&:not(:disabled)]:hover:bg-berkut-turquoise-soft;
+  }
+  .btn-reward {
+    @apply btn bg-berkut-sun text-berkut-on-sun;
+  }
+  /* Legacy names (admin and destructive actions): quiet fills, never a second primary. */
   .btn-outline {
     @apply btn-secondary;
   }
-  .btn-gold {
-    @apply btn bg-berkut-gold text-berkut-on-gold;
-  }
   .btn-success {
-    @apply btn bg-berkut-success text-berkut-on-success;
+    @apply btn bg-berkut-success-soft text-berkut-success;
   }
   .btn-error,
   .btn-danger {
-    @apply btn bg-berkut-danger text-berkut-on-danger;
+    @apply btn bg-berkut-danger-soft text-berkut-danger;
   }
-  .btn-ghost {
-    @apply btn px-3 text-berkut-sky-ink hover:bg-berkut-sky-soft;
+  /* After the variants so they win over the base size. */
+  .btn-lg {
+    @apply min-h-control-lg text-[18px];
   }
-  /* After the variants so it wins over their base size. */
-  .btn-sm {
-    @apply min-h-[40px] px-4 text-[15px];
+  .btn-block {
+    @apply flex w-full;
   }
 
-  /* Card: raised surface, radius-lg, one shadow. */
+  /* Icon button: 44px round. */
+  .iconbtn {
+    @apply grid h-icon-button w-icon-button flex-none place-items-center rounded-full bg-berkut-surface p-0 text-berkut-ink hover:bg-berkut-turquoise-soft;
+  }
+  .iconbtn-accent {
+    @apply bg-berkut-turquoise-soft text-berkut-turquoise-ink;
+  }
+
+  /* Card: raised surface, radius-xl, one shadow. */
   .card {
-    @apply rounded-sheet bg-berkut-raised p-4 shadow-card sm:p-5;
+    @apply rounded-sheet bg-berkut-surface-raised p-6 shadow-card;
   }
 
-  /* Stat chip */
+  /* Pill shape for stat chips; StatChip adds the sun colours, admin badges their own. */
   .chip {
-    @apply inline-flex h-8 items-center gap-1 rounded-full pl-2 pr-2.5 font-display text-sm font-semibold tabular-nums;
+    @apply inline-flex h-chip items-center gap-1.5 rounded-full px-3.5 text-[15px] font-semibold leading-5 tabular-nums;
   }
 
-  /* Uppercase eyebrow */
-  .eyebrow {
-    @apply text-[11px] font-bold uppercase leading-[14px] tracking-[0.12em] text-berkut-sky-ink;
+  /* Tag: level, topic and count metadata. */
+  .tag {
+    @apply inline-flex h-8 items-center gap-1.5 rounded-full bg-berkut-turquoise-soft px-3.5 text-small text-berkut-turquoise-ink;
   }
 
   /* Choice tile (exercise answers) */
   .tile {
-    @apply flex min-h-[56px] w-full items-center justify-center gap-2 rounded-tile bg-berkut-raised px-4 py-3 text-center text-base font-semibold leading-[22px] text-berkut-ink shadow-[inset_0_0_0_1.5px_rgb(var(--bk-line-strong))] transition hover:shadow-[inset_0_0_0_1.5px_rgb(var(--bk-sky-ink))];
+    @apply flex min-h-tile w-full items-center justify-center gap-2 rounded-tile bg-berkut-surface px-5 py-2 text-center text-option text-berkut-ink transition-[background-color,box-shadow] duration-150 hover:shadow-[inset_0_0_0_2px_rgb(var(--bk-line))];
   }
-  .tile-kk {
-    @apply font-display text-lg font-medium leading-6;
+  .tile-start {
+    @apply justify-start text-left;
   }
   .tile-selected {
-    @apply bg-berkut-sky-soft shadow-[inset_0_0_0_2px_rgb(var(--bk-sky-ink))] hover:shadow-[inset_0_0_0_2px_rgb(var(--bk-sky-ink))];
+    @apply bg-berkut-turquoise-soft font-semibold text-berkut-turquoise-ink shadow-[inset_0_0_0_2px_rgb(var(--bk-turquoise-ink))] hover:shadow-[inset_0_0_0_2px_rgb(var(--bk-turquoise-ink))];
   }
   .tile-correct {
-    @apply bg-berkut-success-soft text-berkut-success shadow-[inset_0_0_0_2px_rgb(var(--bk-success))] hover:shadow-[inset_0_0_0_2px_rgb(var(--bk-success))];
+    @apply bg-berkut-success-soft font-semibold text-berkut-success shadow-[inset_0_0_0_2px_rgb(var(--bk-success))] hover:shadow-[inset_0_0_0_2px_rgb(var(--bk-success))];
   }
   .tile-wrong {
-    @apply bg-berkut-danger-soft text-berkut-danger shadow-[inset_0_0_0_2px_rgb(var(--bk-danger))] hover:shadow-[inset_0_0_0_2px_rgb(var(--bk-danger))];
+    @apply animate-shake bg-berkut-danger-soft font-semibold text-berkut-danger shadow-[inset_0_0_0_2px_rgb(var(--bk-danger))] hover:shadow-[inset_0_0_0_2px_rgb(var(--bk-danger))];
   }
   .tile-dimmed {
-    @apply opacity-40;
+    @apply opacity-45;
   }
 
-  /* Text field */
+  /* Text field: surface fill; the focus outline swaps to a 2px inset ring. */
   .field {
-    @apply min-h-[48px] w-full rounded-tile border-0 bg-berkut-raised px-4 text-base text-berkut-ink shadow-[inset_0_0_0_1.5px_rgb(var(--bk-line-strong))] outline-none placeholder:text-berkut-muted focus:shadow-[inset_0_0_0_2px_rgb(var(--bk-focus))];
+    @apply min-h-control w-full rounded-tile border-0 bg-berkut-surface px-5 text-[17px] font-normal leading-[22px] text-berkut-ink outline-none placeholder:text-berkut-ink-muted focus:shadow-[inset_0_0_0_2px_rgb(var(--bk-focus))] focus-visible:outline-none;
   }
 }
 

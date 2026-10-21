@@ -3,6 +3,7 @@ import { useStore } from "@/store/useStore";
 import { isSupabaseConfigured, getSupabase } from "@/core/supabase";
 import { flushProgress, stopProgressSync } from "@/core/progressSync";
 import { useNavigate } from "react-router-dom";
+import { Button, ChoiceTile, Field } from "@/components/ui";
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -61,25 +62,22 @@ export default function Settings() {
   }
 
   return (
-    <div className="mx-auto max-w-content px-4 py-6 space-y-5">
-      <h1 className="text-[26px] leading-8 mb-2">Settings</h1>
+    <div className="mx-auto max-w-content px-6 py-6 space-y-6">
+      <h1 className="text-title-lg mb-2">Settings</h1>
 
-      <section className="card space-y-3">
-        <h2 className="font-bold">Profile</h2>
-        <label className="block text-sm font-semibold">
-          Display name
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            onBlur={() => setDisplayName(name)}
-            className="mt-1.5 field font-normal"
-          />
-        </label>
+      <section className="card space-y-4">
+        <h2 className="text-title-sm">Profile</h2>
+        <Field
+          label="Display name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          onBlur={() => setDisplayName(name)}
+        />
       </section>
 
-      <section className="card space-y-3">
-        <h2 className="font-bold">Script</h2>
-        <p className="text-sm text-berkut-muted dark:text-berkut-muted-dark">
+      <section className="card space-y-4">
+        <h2 className="text-title-sm">Script</h2>
+        <p className="text-small text-berkut-ink-muted">
           Kazakh is transitioning from Cyrillic to Latin. Pick whichever you're learning.
         </p>
         <div className="grid grid-cols-2 gap-3">
@@ -98,8 +96,8 @@ export default function Settings() {
         </div>
       </section>
 
-      <section className="card space-y-3">
-        <h2 className="font-bold">Appearance</h2>
+      <section className="card space-y-4">
+        <h2 className="text-title-sm">Appearance</h2>
         <Toggle
           checked={darkMode}
           onChange={setDarkMode}
@@ -108,33 +106,31 @@ export default function Settings() {
       </section>
 
       <section className="card space-y-3">
-        <h2 className="font-bold">Account</h2>
+        <h2 className="text-title-sm mb-4">Account</h2>
         {isSupabaseConfigured() ? (
           <>
-            <button onClick={handleLogout} className="btn-outline w-full">
+            <Button variant="secondary" block onClick={handleLogout}>
               Log out
-            </button>
-            <button
-              onClick={handleDelete}
-              className="btn-error w-full"
-            >
+            </Button>
+            <button onClick={handleDelete} className="btn-danger btn-block">
               Delete account
             </button>
           </>
         ) : (
-          <p className="text-sm text-berkut-muted dark:text-berkut-muted-dark">
+          <p className="text-small text-berkut-ink-muted">
             Cloud accounts are disabled. Add Supabase env vars in Vercel to enable
             sign-in and cross-device sync.
           </p>
         )}
-        <button
+        <Button
+          variant="secondary"
+          block
           onClick={() => {
             if (confirm("Reset all local progress? This can't be undone.")) reset();
           }}
-          className="btn-outline w-full"
         >
           Reset local progress
-        </button>
+        </Button>
       </section>
     </div>
   );
@@ -152,19 +148,10 @@ function ScriptToggle({
   sample: string;
 }) {
   return (
-    <button
-      onClick={onClick}
-      className={`p-4 rounded-2xl border-2 text-left transition active:scale-[0.99] ${
-        active
-          ? "border-berkut-sky-ink bg-berkut-sky-soft"
-          : "border-berkut-line-strong hover:border-berkut-sky-ink"
-      }`}
-    >
-      <div className="text-xs uppercase tracking-wide text-berkut-muted dark:text-berkut-muted-dark">
-        {title}
-      </div>
-      <div className="font-display text-2xl font-medium mt-1">{sample}</div>
-    </button>
+    <ChoiceTile align="start" state={active ? "selected" : "idle"} onClick={onClick} className="!py-4">
+      <span className="block text-small font-medium text-berkut-ink-muted">{title}</span>
+      <span lang="kk" className="mt-1 block text-title-md">{sample}</span>
+    </ChoiceTile>
   );
 }
 
@@ -179,15 +166,15 @@ function Toggle({
 }) {
   return (
     <label className="flex items-center justify-between cursor-pointer">
-      <span className="font-semibold">{label}</span>
+      <span className="text-label">{label}</span>
       <span
         onClick={() => onChange(!checked)}
-        className={`relative w-12 h-7 rounded-full transition ${
-          checked ? "bg-berkut-sky" : "bg-berkut-line-strong"
+        className={`relative w-12 h-7 rounded-full transition-colors ${
+          checked ? "bg-berkut-turquoise" : "bg-berkut-line"
         }`}
       >
         <span
-          className={`absolute top-0.5 left-0.5 h-6 w-6 rounded-full bg-berkut-raised shadow transition-transform ${
+          className={`absolute top-0.5 left-0.5 h-6 w-6 rounded-full bg-white shadow transition-transform ${
             checked ? "translate-x-5" : ""
           }`}
         />

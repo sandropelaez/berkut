@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { TranslateKKENPrompt } from "@/core/types";
-import ScriptText from "@/components/ScriptText";
+import { useKazakh } from "@/components/ScriptText";
 import { speakKazakh } from "@/core/tts";
 import { answersMatch } from "@/core/scoring";
 import { ChoiceTile, optionState, SpokenPrompt } from "@/components/ui";
@@ -15,6 +15,7 @@ export default function TranslateKKEN({
   onAnswer: (correct: boolean) => void;
 }) {
   const [picked, setPicked] = useState<string | null>(null);
+  const kazakh = useKazakh();
 
   function choose(option: string) {
     if (phase !== "answering") return;
@@ -24,11 +25,12 @@ export default function TranslateKKEN({
 
   return (
     <div className="space-y-6">
-      <h2 className="font-sans text-[17px] leading-[26px] font-medium tracking-normal text-berkut-muted">Translate to English</h2>
-
-      <SpokenPrompt onSpeak={() => speakKazakh(prompt.promptKk)} size="sentence">
-        <ScriptText>{prompt.promptKk}</ScriptText>
-      </SpokenPrompt>
+      <SpokenPrompt
+        {...kazakh(prompt.promptKk)}
+        instruction="Translate to English"
+        size="sentence"
+        onSpeak={() => speakKazakh(prompt.promptKk)}
+      />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {prompt.options.map((opt) => {

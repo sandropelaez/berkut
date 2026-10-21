@@ -1,7 +1,7 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/core/useAuth";
 import { isSupabaseConfigured } from "@/core/supabase";
-import { SunLoader } from "@/components/ui";
+import { Loader } from "@/components/ui";
 
 // RequireAuth gates a route on a valid Supabase session.
 //
@@ -21,7 +21,7 @@ export default function RequireAuth({ children }: { children: React.ReactNode })
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <SunLoader />
+        <Loader />
       </div>
     );
   }

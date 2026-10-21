@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getSupabase } from "@/core/supabase";
+import { Loader } from "@/components/ui";
 
 export default function AuthCallback() {
   const navigate = useNavigate();
@@ -37,8 +38,8 @@ export default function AuthCallback() {
     <div className="min-h-screen flex items-center justify-center px-6 text-center">
       {error ? (
         <div className="max-w-md">
-          <h1 className="text-xl font-extrabold text-berkut-error">Sign-in failed</h1>
-          <p className="text-berkut-muted dark:text-berkut-muted-dark mt-2">{error}</p>
+          <h1 className="text-title-md text-berkut-danger">Sign-in failed</h1>
+          <p className="text-body text-berkut-ink-muted mt-2">{error}</p>
           <button
             onClick={() => navigate("/auth/login")}
             className="btn-primary mt-6"
@@ -47,10 +48,7 @@ export default function AuthCallback() {
           </button>
         </div>
       ) : (
-        <div>
-          <div className="text-4xl">⏳</div>
-          <p className="mt-2 font-bold">Signing you in…</p>
-        </div>
+        <Loader label="Signing you in…" />
       )}
     </div>
   );

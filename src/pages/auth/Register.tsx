@@ -4,6 +4,7 @@ import { getSupabase, isSupabaseConfigured } from "@/core/supabase";
 import GoogleButton from "@/components/GoogleButton";
 import { AuthShell, Banner, Divider, Field } from "./Login";
 import { useStore } from "@/store/useStore";
+import { ChoiceTile } from "@/components/ui";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -95,48 +96,39 @@ export default function Register() {
           helper="At least 10 characters with a letter and a digit"
         />
 
-        <fieldset className="text-sm font-semibold">
-          Script preference
-          <div className="mt-2 grid grid-cols-2 gap-2">
+        <fieldset>
+          <legend className="text-small text-berkut-ink-muted">Script preference</legend>
+          <div className="mt-2 grid grid-cols-2 gap-3">
             {(["CYRILLIC", "LATIN"] as const).map((s) => (
-              <button
-                type="button"
-                key={s}
-                onClick={() => setLocalScript(s)}
-                className={`px-3 py-2 rounded-xl border-2 font-bold transition ${
-                  scriptPref === s
-                    ? "border-berkut-sky-ink bg-berkut-sky-soft"
-                    : "border-berkut-border dark:border-berkut-border-dark"
-                }`}
-              >
+              <ChoiceTile key={s} state={scriptPref === s ? "selected" : "idle"} onClick={() => setLocalScript(s)}>
                 {s === "CYRILLIC" ? "Cyrillic" : "Latin"}
-              </button>
+              </ChoiceTile>
             ))}
           </div>
         </fieldset>
 
-        <label className="flex items-start gap-2 text-sm font-medium">
+        <label className="flex items-start gap-2 text-small">
           <input
             type="checkbox"
             checked={terms}
             onChange={(e) => setTerms(e.target.checked)}
-            className="mt-1"
+            className="mt-1 accent-berkut-turquoise"
           />
           <span>
             I agree to the{" "}
-            <a href="https://berkutai.com/terms" className="text-berkut-primary hover:underline">
+            <a href="https://berkutai.com/terms" className="text-berkut-turquoise-ink hover:underline">
               Terms
             </a>{" "}
             and{" "}
-            <a href="https://berkutai.com/privacy" className="text-berkut-primary hover:underline">
+            <a href="https://berkutai.com/privacy" className="text-berkut-turquoise-ink hover:underline">
               Privacy Policy
             </a>
           </span>
         </label>
 
-        {error && <p className="text-sm text-berkut-error font-bold">{error}</p>}
+        {error && <p className="text-small font-semibold text-berkut-danger">{error}</p>}
 
-        <button type="submit" disabled={busy} className="btn-primary w-full">
+        <button type="submit" disabled={busy} className="btn-primary btn-block">
           {busy ? "Creating account…" : "Create account"}
         </button>
       </form>
@@ -144,9 +136,9 @@ export default function Register() {
       <Divider />
       <GoogleButton mode="signup" />
 
-      <div className="text-center text-sm mt-4 text-berkut-muted dark:text-berkut-muted-dark">
+      <div className="text-center text-small mt-5 text-berkut-ink-muted">
         Already have an account?{" "}
-        <Link to="/auth/login" className="text-berkut-primary hover:underline font-semibold">
+        <Link to="/auth/login" className="text-berkut-turquoise-ink hover:underline font-semibold">
           Sign in
         </Link>
       </div>
