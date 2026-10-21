@@ -9,9 +9,10 @@ import TranslateKKEN from "@/exercises/TranslateKKEN";
 import MatchPairs from "@/exercises/MatchPairs";
 import FillBlank from "@/exercises/FillBlank";
 import TeachCard from "@/exercises/TeachCard";
+import { buildSession, requeueMistake, type SessionItem } from "@/core/session";
 import type { Exercise, Lesson } from "@/core/types";
 import ReportButton from "@/components/ReportButton";
-import { CheckIcon, CloseIcon, CrossIcon, SunLoader } from "@/components/ui";
+import { CheckIcon, CloseIcon, CrossIcon, ReviewIcon, SunLoader } from "@/components/ui";
 
 type Phase = "answering" | "checked";
 
@@ -27,11 +28,14 @@ export default function LessonPlayer() {
 
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loadError, setLoadError] = useState(false);
+  // The lesson's exercises plus echoes, a closing review and re-asked mistakes.
+  const [queue, setQueue] = useState<SessionItem[]>([]);
   const [idx, setIdx] = useState(0);
   const [phase, setPhase] = useState<Phase>("answering");
   const [feedback, setFeedback] = useState<"correct" | "wrong" | null>(null);
   const [mistakes, setMistakes] = useState(0);
   const [retries, setRetries] = useState(0);
+  const [missed, setMissed] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -43,6 +47,7 @@ export default function LessonPlayer() {
         return;
       }
       setLesson(l);
+      setQueue(buildSession(l));
       ensureSrs(l.vocab.map((v) => v.id));
     });
     return () => {
@@ -61,7 +66,7 @@ export default function LessonPlayer() {
     );
   }
 
-  if (!lesson) {
+  if (!lesson || !queue.length) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <SunLoader label="Loading lesson…" />
@@ -69,10 +74,11 @@ export default function LessonPlayer() {
     );
   }
 
-  const exercise: Exercise | undefined = lesson.exercises[idx];
-  if (!exercise) return null;
+  const item: SessionItem | undefined = queue[idx];
+  if (!item) return null;
+  const exercise: Exercise = item.exercise;
 
-  const total = lesson.exercises.length;
+  const total = queue.length;
   // Teach cards are ungraded: no answer phase, just read and continue.
   const isTeach = exercise.type === "TEACH";
 
@@ -83,11 +89,17 @@ export default function LessonPlayer() {
 
     for (const vid of vocabIds) reviewVocab(vid, correct);
 
-    if (!correct) setMistakes((m) => m + 1);
+    if (!correct) {
+      setMistakes((m) => m + 1);
+      setMissed(true);
+    }
   }
 
   function nextExercise() {
-    if (idx + 1 >= total) {
+    // Anything missed — even if fixed on the retry — comes back later.
+    const next = missed ? requeueMistake(queue, idx) : queue;
+    if (next !== queue) setQueue(next);
+    if (idx + 1 >= next.length) {
       const perfect = mistakes === 0;
       const result = recordLesson(lesson!.id, perfect);
       const newDay = bumpStreak();
@@ -105,6 +117,7 @@ export default function LessonPlayer() {
       setPhase("answering");
       setFeedback(null);
       setRetries(0);
+      setMissed(false);
     }
   }
 
@@ -150,7 +163,18 @@ export default function LessonPlayer() {
       </header>
 
       <div className="flex-1 mx-auto w-full max-w-content px-4 pt-4 pb-8">
-        {ExerciseEl}
+        {item.kind === "mistake" && (
+          <span className="chip mb-4 bg-berkut-danger-soft text-berkut-danger font-sans text-[11px] font-bold uppercase tracking-[0.12em]">
+            <ReviewIcon className="h-4 w-4" /> Previous mistake
+          </span>
+        )}
+        {item.kind === "review" && (
+          <span className="chip mb-4 bg-berkut-sky-soft text-berkut-sky-ink font-sans text-[11px] font-bold uppercase tracking-[0.12em]">
+            <ReviewIcon className="h-4 w-4" /> Mixed review
+          </span>
+        )}
+        {/* Keyed by slot: an exercise can come back, and must start fresh. */}
+        <div key={item.key}>{ExerciseEl}</div>
       </div>
 
       <footer

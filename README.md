@@ -53,6 +53,11 @@ bootstrap `UPDATE`, re-run the migration.
   Translate EN→KK, Translate KK→EN, Listening (Web Speech TTS), Match Pairs,
   Fill-in-the-Blank — plus ungraded **teach cards** that explain a rule
   before it's practised.
+- **In-lesson repetition** (`src/core/session.ts`), Duolingo-style: every
+  exercise comes back a few exercises later in another format (KK→EN as
+  EN→KK tiles, fill-in-the-blank as the whole sentence…), lessons close with
+  a mixed review, and missed exercises are re-asked later in the lesson.
+  Built from each lesson's own content — no extra authoring.
 - **Streaks**, **badges**, **dual-script toggle**, **dark mode**. (Hearts, XP,
   gems and the league were removed for now; the `user_profiles` columns remain.)
 - **SRS** with the SM-2 algorithm (§7).
