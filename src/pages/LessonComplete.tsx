@@ -30,7 +30,7 @@ export default function LessonComplete() {
       <div className="min-h-screen flex items-center justify-center px-6">
         <div className="max-w-content w-full text-center">
           <span className="inline-block">
-            <Logo size={96} />
+            <Logo size={72} />
           </span>
           <h1 className="text-display-xl mt-6">Lesson complete</h1>
           <Link to="/" className="btn-primary btn-block mt-10">

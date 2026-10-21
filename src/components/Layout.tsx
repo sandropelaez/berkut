@@ -26,7 +26,7 @@ export default function Layout() {
         <header className="sticky top-0 z-30 bg-berkut-bg/90 backdrop-blur pt-[env(safe-area-inset-top)]">
           <div className="mx-auto max-w-content sm:max-w-none sm:pl-56 sm:pr-6 px-4 h-14 flex items-center gap-2">
             <NavLink to="/" className="flex items-center gap-2 sm:hidden" aria-label="Berkut home">
-              <Logo size={30} wordmark />
+              <Logo size={28} wordmark />
             </NavLink>
             <div className="ml-auto flex items-center gap-1.5">
               <StatChip value={streak} />
@@ -55,7 +55,7 @@ export default function Layout() {
       {!hideChrome && (
         <nav aria-label="Main" className="hidden sm:flex fixed inset-y-0 left-0 z-40 w-52 flex-col gap-1 bg-berkut-surface-raised px-3 py-5 shadow-card">
           <NavLink to="/" className="mb-5 flex items-center px-3" aria-label="Berkut home">
-            <Logo size={34} wordmark />
+            <Logo size={30} wordmark />
           </NavLink>
           {TABS.map((t) => (
             <SideTab key={t.to} {...t} />

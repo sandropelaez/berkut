@@ -31,6 +31,8 @@ https://claude.ai/artifact/2rsJnXzwS24mLoTrJBddQc (brand book, tokens, component
 - **Shape:** buttons, chips and tags are pills; tiles and fields `rounded-tile` (20px); cards and
   sheets `rounded-sheet` (28px) with `shadow-card` / `shadow-sheet`. Buttons are 52px (56px for
   the lesson's bottom button), tiles 60px, icon buttons 44px, content at most 560px, 4px spacing.
+- **Logo:** the soaring golden eagle (`Logo`, theme-aware; `size` is its height, never under 24px).
+  The favicon is the system's app icon: the eagle on an `ink` rounded square.
 - **Components** (`src/components/ui.tsx`, mirroring the system's `index.d.ts`): `Button`,
   `IconButton`, `ChoiceTile` + `optionState`, `SpokenPrompt`, `LessonHeader`, `ProgressBar`,
   `StatChip`, `Tag`, `Field`, `Card`, `Logo`, `Icon` (2px-stroke set), plus a `Loader`. The

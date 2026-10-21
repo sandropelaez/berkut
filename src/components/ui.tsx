@@ -10,6 +10,7 @@ const cx = (...parts: Array<string | false | null | undefined>) => parts.filter(
 
 // ---------------------------------------------------------------------------
 // Icons: 24px grid, 2px round stroke (check and cross 2.5); flame, bolt and star are solid.
+// chart, users, key, book, flag, list and trend are the admin navigation icons.
 
 export type IconName =
   | "home"
@@ -26,11 +27,19 @@ export type IconName =
   | "shield"
   | "flame"
   | "bolt"
-  | "star";
+  | "star"
+  | "chart"
+  | "users"
+  | "key"
+  | "book"
+  | "flag"
+  | "list"
+  | "trend";
 
 export const iconNames: IconName[] = [
   "home", "review", "trophy", "user", "settings", "speaker", "check", "cross",
   "bulb", "lock", "close", "shield", "flame", "bolt", "star",
+  "chart", "users", "key", "book", "flag", "list", "trend",
 ];
 
 const STROKE: Partial<Record<IconName, string>> = {
@@ -44,6 +53,13 @@ const STROKE: Partial<Record<IconName, string>> = {
   settings: "M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1",
   shield: "M12 3 4.5 6v5.5c0 4.5 3.2 8 7.5 9.5 4.3-1.5 7.5-5 7.5-9.5V6L12 3Z",
   bulb: "M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3Z",
+  chart: "M4 20h16M7 16.5V12M12 16.5V7M17 16.5v-6",
+  users: "M12.5 8a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0ZM2.5 20.5a6.5 6.5 0 0 1 13 0M15.5 4.7a3.5 3.5 0 0 1 0 6.6M18 14.2a6.5 6.5 0 0 1 3.5 6.3",
+  key: "M12.5 15a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM11.2 11.8 20 3M16.5 6.5l3 3M14 9.2l2 2",
+  book: "M12 6.5C10.4 5 7.9 4.5 4 4.5v14c3.9 0 6.4.5 8 2 1.6-1.5 4.1-2 8-2v-14c-3.9 0-6.4.5-8 2ZM12 6.5v14",
+  flag: "M5 21V3.5M5 4h12.5L15 8.5l2.5 4.5H5",
+  list: "M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01",
+  trend: "M3 17l6-6 4 4 8-8M15 7h6v6",
 };
 
 const SOLID: Partial<Record<IconName, string>> = {
@@ -108,7 +124,9 @@ export function Icon({ name, size = 24, title, className }: IconProps) {
 }
 
 // ---------------------------------------------------------------------------
-// Logo: a turquoise disc carrying a sun disc. Never recolour, outline or add rays.
+// Logo: the soaring golden eagle. Turquoise wings, sun-gold head; the body is
+// turquoise-ink in Day and light ink in Night. Wide (100:62): `size` is its height.
+// Never recolour, outline, rotate, flip or crop it, or use it under 24px tall.
 
 export interface LogoProps {
   size?: number;
@@ -117,25 +135,32 @@ export interface LogoProps {
 }
 
 export function Logo({ size = 36, wordmark = false, title = "Berkut" }: LogoProps) {
+  const body = "fill-berkut-turquoise-ink dark:fill-berkut-ink";
   const mark = (
     <svg
-      viewBox="0 0 36 36"
-      width={size}
+      viewBox="0 22 100 62"
+      width={Math.round((size * 100) / 62)}
       height={size}
       className="block flex-none"
       role={wordmark ? undefined : "img"}
       aria-label={wordmark ? undefined : title}
       aria-hidden={wordmark ? true : undefined}
     >
-      <circle cx="18" cy="18" r="18" className="fill-berkut-turquoise" />
-      <circle cx="18" cy="18" r="7" className="fill-berkut-sun" />
+      <g className="fill-berkut-turquoise stroke-berkut-turquoise" strokeWidth={1.2} strokeLinejoin="round">
+        <path d="M44 44 C32 38 18 34 8 35 L2 38 L11 41 L1 44 L11 46 L3 50 L13 50 L7 56 L17 54 C26 56 36 58 44 58 Z" />
+        <path d="M56 44 C68 38 82 34 92 35 L98 38 L89 41 L99 44 L89 46 L97 50 L87 50 L93 56 L83 54 C74 56 64 58 56 58 Z" />
+      </g>
+      <path className={body} d="M44 66 L39 79 L44 77 L47 81 L50 77 L53 81 L56 77 L61 79 L56 66 Z" />
+      <path className={body} d="M50 36 C55 36 57 41 56 46 C58 54 57 62 55 68 L45 68 C43 62 42 54 44 46 C43 41 45 36 50 36 Z" />
+      <path className="fill-berkut-sun" d="M45 42 C44 34 47 28 52 28 C55 28 57 28.5 59 30.5 L58.6 37 C57.6 39.5 55.5 42 53 44 Z" />
+      <path className="fill-berkut-ink" d="M59 30.5 L62.5 32 C64.5 33.3 64.8 36.2 63.4 38 C62.6 36.8 60.8 36.2 58.6 36.6 C58.6 34.5 58.8 32.5 59 30.5 Z" />
     </svg>
   );
   if (!wordmark) return mark;
   return (
     <span
       className="inline-flex items-center gap-[0.5em] font-semibold tracking-[-0.02em] text-berkut-ink"
-      style={{ fontSize: Math.round(size * 0.56) }}
+      style={{ fontSize: Math.round(size * 0.72) }}
     >
       {mark}
       <span>{title}</span>

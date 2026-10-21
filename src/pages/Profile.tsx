@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useStore } from "@/store/useStore";
 import type { BadgeId } from "@/core/types";
-import { Icon, Logo } from "@/components/ui";
+import { Icon } from "@/components/ui";
 
 const BADGE_META: Record<BadgeId, { name: string; desc: string }> = {
   first_lesson: { name: "Сәлем!", desc: "Complete your first lesson" },
@@ -85,7 +85,7 @@ function BadgeCard({ id, earned }: { id: BadgeId; earned: boolean }) {
 // Each badge is a medallion: sun gold when earned (a reward), surface when not.
 function BadgeMedal({ id, earned }: { id: BadgeId; earned: boolean }) {
   const glyph: Record<BadgeId, JSX.Element> = {
-    first_lesson: <span aria-hidden="true"><Logo size={28} /></span>,
+    first_lesson: <Icon name="flag" size={28} />,
     week_warrior: <Icon name="flame" size={28} />,
     polyglot_in_progress: <Icon name="trophy" size={28} />,
     perfect_round: <Icon name="star" size={28} />,
