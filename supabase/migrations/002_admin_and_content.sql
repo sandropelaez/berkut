@@ -220,7 +220,6 @@ drop policy if exists "profiles admin read" on public.user_profiles;
 create policy "profiles admin read" on public.user_profiles for select
   using (public.is_admin() or auth.uid() = user_id);
 
+-- No admin UPDATE policy: it let content_editors edit any user's row through
+-- PostgREST. Admin edits go through api/admin.ts (service role); see 016.
 drop policy if exists "profiles admin update" on public.user_profiles;
-create policy "profiles admin update" on public.user_profiles for update
-  using (public.is_admin() or auth.uid() = user_id)
-  with check (public.is_admin() or auth.uid() = user_id);

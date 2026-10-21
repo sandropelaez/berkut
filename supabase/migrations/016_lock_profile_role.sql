@@ -7,7 +7,9 @@
 -- {"role":"super_admin"} using the anon key and their own JWT, and
 -- api/_lib/admin.ts would then treat them as a super_admin.
 --
--- This trigger rejects a role change (or an INSERT with a role other than
+-- This migration also drops "profiles admin update" (see the end of the file).
+--
+-- The trigger rejects a role change (or an INSERT with a role other than
 -- 'user') made as the PostgREST client roles `anon` / `authenticated`, unless
 -- the caller is already a super_admin. service_role (api/admin.ts grants and
 -- revokes through it), postgres (SQL editor, the 002 bootstrap) and
@@ -38,6 +40,19 @@ end; $$;
 drop trigger if exists guard_profile_role on public.user_profiles;
 create trigger guard_profile_role before insert or update on public.user_profiles
   for each row execute function public.guard_profile_role();
+
+-- "profiles admin update" (002) let any is_admin() caller, content_editor
+-- included, edit every user's row straight through PostgREST. Nothing in the
+-- app uses it: admin edits go through api/admin.ts with the service role.
+-- Users editing their own row is "profiles update self", re-asserted here so
+-- dropping the admin policy can't take self-updates (api/progress.ts) with it.
+drop policy if exists "profiles admin update" on public.user_profiles;
+
+drop policy if exists "profiles update self" on public.user_profiles;
+create policy "profiles update self"
+  on public.user_profiles for update
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
 
 -- Check: any non-'user' role that a non-bootstrap account may have granted
 -- itself before this fix. Review the rows by hand; not changed here.

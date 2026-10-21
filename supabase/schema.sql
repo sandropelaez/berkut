@@ -116,7 +116,7 @@ create policy "profiles update self"
 
 -- The policies above let a user write every column of their own row, so this
 -- trigger stops anon/authenticated from changing `role` (added in 002) unless
--- they are a super_admin. Same function as migrations/015_lock_profile_role.sql;
+-- they are a super_admin. Same function as migrations/016_lock_profile_role.sql;
 -- to_jsonb() keeps it valid before the role column exists.
 create or replace function public.guard_profile_role() returns trigger
 language plpgsql set search_path = public as $$

@@ -1,11 +1,12 @@
--- Verification for migrations/015_lock_profile_role.sql.
+-- Verification for migrations/016_lock_profile_role.sql.
 -- Each case runs in a transaction that is rolled back, so this is safe to run
--- on any database that has 015 applied (including prod, from the SQL editor).
+-- on any database that has 016 applied (including prod, from the SQL editor).
 -- Replace the uuids with real ones: :attacker = any ordinary user,
 -- :super = a super_admin. In psql:
---   psql ... -v attacker="'<uuid>'" -v super="'<uuid>'" -f 015_lock_profile_role.sql
+--   psql ... -v attacker="'<uuid>'" -v super="'<uuid>'" -f 016_lock_profile_role.sql
 -- Expected: cases 1-3 fail with "only a super_admin can change user_profiles.role",
--- cases 4-7 succeed.
+-- cases 4, 5 and 7 succeed (UPDATE 1), and cases 6 and 8 match no rows (UPDATE 0)
+-- because no admin can edit another user's row through PostgREST any more.
 
 \set ON_ERROR_STOP 0
 
@@ -47,16 +48,24 @@ update public.user_profiles set role = 'admin' where user_id = :attacker;
 update public.user_profiles set role = 'user' where user_id = :attacker;
 rollback;
 
-\echo '6. super_admin changes another user''s role via PostgREST -> must SUCCEED (UPDATE 1)'
+\echo '6. super_admin edits another user''s row via PostgREST -> must match nothing (UPDATE 0)'
 begin;
 set local role authenticated;
 select set_config('request.jwt.claims', json_build_object('sub', :super, 'role', 'authenticated')::text, true);
-update public.user_profiles set role = 'content_editor' where user_id = :attacker;
+update public.user_profiles set role = 'content_editor', display_name = 'Edited' where user_id = :attacker;
 rollback;
 
 \echo '7. postgres / SQL editor (002 bootstrap) changes a role -> must SUCCEED (UPDATE 1)'
 begin;
 update public.user_profiles set role = 'admin' where user_id = :attacker;
+rollback;
+
+\echo '8. content_editor edits another user''s row via PostgREST -> must match nothing (UPDATE 0)'
+begin;
+update public.user_profiles set role = 'content_editor' where user_id = :attacker;  -- as postgres
+set local role authenticated;
+select set_config('request.jwt.claims', json_build_object('sub', :attacker, 'role', 'authenticated')::text, true);
+update public.user_profiles set display_name = 'Edited', streak_count = 999 where user_id = :super;
 rollback;
 
 \echo 'final state (should be unchanged):'
