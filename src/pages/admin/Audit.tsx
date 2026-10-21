@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { adminFetch } from "@/admin/api";
+import { Card, StatusBadge } from "@/components/ui";
 
 interface AuditRow {
   id: number;
@@ -22,61 +23,46 @@ export default function AdminAudit() {
   }, []);
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-extrabold">Audit log</h1>
-      <p className="text-sm text-berkut-muted dark:text-berkut-muted-dark">
-        Every admin write logged here. Append-only.
-      </p>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-title-lg">Audit log</h1>
+        <p className="mt-1 text-small text-berkut-ink-muted">Every admin change, in order. Append-only.</p>
+      </div>
 
-      <div className="card divide-y divide-berkut-border dark:divide-berkut-border-dark">
-        {rows.length === 0 && (
-          <p className="py-3 text-berkut-muted dark:text-berkut-muted-dark text-sm">
-            No events yet.
-          </p>
-        )}
+      <Card className="divide-y divide-berkut-line py-2">
+        {rows.length === 0 && <p className="py-6 text-center text-berkut-ink-muted">No events yet.</p>}
         {rows.map((r) => (
-          <div key={r.id} className="py-3">
+          <div key={r.id} className="py-1">
             <button
+              type="button"
               onClick={() => setExpanded(expanded === r.id ? null : r.id)}
-              className="w-full text-left flex items-center gap-3 text-sm"
+              aria-expanded={expanded === r.id}
+              className="-mx-3 flex w-[calc(100%+24px)] flex-wrap items-center gap-3 rounded-xl px-3 py-3 text-left text-[15px] leading-[22px] hover:bg-berkut-surface"
             >
-              <span className="chip bg-berkut-primary/10 text-berkut-primary text-xs">
-                {r.action}
+              <StatusBadge tone="info">{r.action}</StatusBadge>
+              <span className="min-w-0 flex-1 truncate text-berkut-ink-muted">
+                {r.actor_email ?? "Unknown"} → {r.target_type ?? "—"}/{r.target_id ?? "—"}
               </span>
-              <span className="text-berkut-muted dark:text-berkut-muted-dark flex-1">
-                {r.actor_email ?? "unknown"} → {r.target_type ?? "—"}/{r.target_id ?? "—"}
-              </span>
-              <span className="text-xs text-berkut-muted dark:text-berkut-muted-dark">
-                {new Date(r.created_at).toLocaleString()}
-              </span>
+              <span className="text-caption text-berkut-ink-muted">{new Date(r.created_at).toLocaleString()}</span>
             </button>
             {expanded === r.id && (
-              <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-3">
-                {r.before_state && (
-                  <div>
-                    <div className="text-xs uppercase font-bold text-berkut-muted dark:text-berkut-muted-dark mb-1">
-                      Before
-                    </div>
-                    <pre className="text-xs bg-berkut-bg dark:bg-berkut-bg-dark rounded-lg p-2 overflow-x-auto">
-                      {JSON.stringify(r.before_state, null, 2)}
-                    </pre>
-                  </div>
-                )}
-                {r.after_state && (
-                  <div>
-                    <div className="text-xs uppercase font-bold text-berkut-muted dark:text-berkut-muted-dark mb-1">
-                      After
-                    </div>
-                    <pre className="text-xs bg-berkut-bg dark:bg-berkut-bg-dark rounded-lg p-2 overflow-x-auto">
-                      {JSON.stringify(r.after_state, null, 2)}
-                    </pre>
-                  </div>
-                )}
+              <div className="grid grid-cols-1 gap-3 pb-3 md:grid-cols-2">
+                {r.before_state && <StateBlock title="Before" value={r.before_state} />}
+                {r.after_state && <StateBlock title="After" value={r.after_state} />}
               </div>
             )}
           </div>
         ))}
-      </div>
+      </Card>
+    </div>
+  );
+}
+
+function StateBlock({ title, value }: { title: string; value: unknown }) {
+  return (
+    <div className="space-y-1">
+      <div className="text-small text-berkut-ink-muted">{title}</div>
+      <pre className="overflow-x-auto rounded-xl bg-berkut-surface p-3 text-xs">{JSON.stringify(value, null, 2)}</pre>
     </div>
   );
 }

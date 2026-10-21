@@ -2,6 +2,7 @@
 // step with the system's components/index.d.ts and bundle.css: same names, props,
 // states and markup. The classes they render live in src/index.css.
 import { useId, type ButtonHTMLAttributes, type HTMLAttributes, type InputHTMLAttributes, type ReactNode } from "react";
+import { NavLink } from "react-router-dom";
 import ProgressBar from "./ProgressBar";
 
 export { default as ProgressBar } from "./ProgressBar";
@@ -368,5 +369,152 @@ export function Card({ className, children, ...rest }: CardProps) {
     <div {...rest} className={cx("card", className)}>
       {children}
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Admin pieces (the system's Admin section): status badges, metrics, tables, nav.
+
+export type BadgeTone = "neutral" | "info" | "success" | "warning" | "danger";
+
+const BADGE_CLASS: Record<BadgeTone, string> = {
+  neutral: "",
+  info: "badge-info",
+  success: "badge-success",
+  warning: "badge-warning",
+  danger: "badge-danger",
+};
+
+export interface StatusBadgeProps {
+  tone?: BadgeTone;
+  icon?: IconName;
+  children: ReactNode;
+}
+
+/** Names a state: neutral settled, info notable, success done, warning needs attention, danger failed. */
+export function StatusBadge({ tone = "neutral", icon, children }: StatusBadgeProps) {
+  return (
+    <span className={cx("badge", BADGE_CLASS[tone])}>
+      {icon && <Icon name={icon} size={14} />}
+      {children}
+    </span>
+  );
+}
+
+export interface StatTileProps {
+  label: string;
+  value: ReactNode;
+  hint?: string;
+  tone?: "neutral" | "accent";
+}
+
+/** One metric. `accent` marks the one row of metrics the page is about. */
+export function StatTile({ label, value, hint, tone = "neutral" }: StatTileProps) {
+  return (
+    <div className={cx("flex flex-col gap-1 rounded-tile p-5", tone === "accent" ? "bg-berkut-turquoise-soft" : "bg-berkut-surface")}>
+      <div className={cx("text-small", tone === "accent" ? "text-berkut-turquoise-ink" : "text-berkut-ink-muted")}>{label}</div>
+      <div className="text-title-lg tabular-nums">{value}</div>
+      {hint && <div className="text-caption text-berkut-ink-muted">{hint}</div>}
+    </div>
+  );
+}
+
+export interface DataTableColumn {
+  key: string;
+  header: string;
+  align?: "start" | "end";
+}
+
+export interface DataTableProps {
+  columns: DataTableColumn[];
+  rows: Array<Record<string, ReactNode>>;
+  rowKey?: string;
+  onRowClick?: (row: Record<string, ReactNode>, index: number) => void;
+  empty?: ReactNode;
+  caption?: string;
+}
+
+/** Rows of records. With `onRowClick` a row is a link: hover fill, focusable, opens on Enter. */
+export function DataTable({ columns, rows, rowKey, onRowClick, empty = "Nothing here yet", caption }: DataTableProps) {
+  const alignClass = (align?: "start" | "end") => (align === "end" ? "text-right tabular-nums" : undefined);
+  return (
+    <table className="data-table">
+      {caption && <caption className="sr-only">{caption}</caption>}
+      <thead>
+        <tr>
+          {columns.map((column) => (
+            <th key={column.key} scope="col" className={alignClass(column.align)}>
+              {column.header}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.length ? (
+          rows.map((row, index) => (
+            <tr
+              key={rowKey && row[rowKey] != null ? String(row[rowKey]) : index}
+              className={onRowClick ? "cursor-pointer hover:[&>td]:bg-berkut-surface focus-visible:outline-offset-[-2px]" : undefined}
+              onClick={onRowClick ? () => onRowClick(row, index) : undefined}
+              tabIndex={onRowClick ? 0 : undefined}
+              onKeyDown={onRowClick ? (event) => event.key === "Enter" && onRowClick(row, index) : undefined}
+            >
+              {columns.map((column) => (
+                <td key={column.key} className={alignClass(column.align)}>
+                  {row[column.key]}
+                </td>
+              ))}
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan={columns.length} className="py-8 text-center text-berkut-ink-muted">
+              {empty}
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  );
+}
+
+export interface NavItemProps {
+  icon: IconName;
+  label: string;
+  /** A router path; the item highlights itself when it matches. */
+  to?: string;
+  /** Match `to` exactly rather than as a prefix. */
+  end?: boolean;
+  href?: string;
+  active?: boolean;
+  count?: number;
+  onClick?: () => void;
+}
+
+/** A sidebar link: icon, label and an optional count. */
+export function NavItem({ icon, label, to, end, href, active = false, count, onClick }: NavItemProps) {
+  const body = (
+    <>
+      <Icon name={icon} size={20} />
+      <span>{label}</span>
+      {count != null && <span className="ml-auto text-[13px] tabular-nums">{count}</span>}
+    </>
+  );
+  if (to) {
+    return (
+      <NavLink to={to} end={end} onClick={onClick} className={({ isActive }) => cx("nav-item", (isActive || active) && "nav-item-active")}>
+        {body}
+      </NavLink>
+    );
+  }
+  const shared = { className: cx("nav-item", active && "nav-item-active"), "aria-current": active ? ("page" as const) : undefined, onClick };
+  return href ? (
+    <a href={href} {...shared}>
+      {body}
+    </a>
+  ) : (
+    <button type="button" {...shared}>
+      {body}
+    </button>
   );
 }

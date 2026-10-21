@@ -35,22 +35,9 @@ export default {
           danger: v("danger"),
           "on-danger": v("on-danger"),
           "danger-soft": v("danger-soft"),
+          warning: v("warning"),
+          "warning-soft": v("warning-soft"),
           focus: v("focus"),
-
-          // Legacy names, still used by admin screens. Each pair resolves to
-          // one theme-aware token, so `x dark:x-dark` stays correct.
-          primary: v("turquoise-ink"),
-          "primary-dark": v("turquoise-ink"),
-          error: v("danger"),
-          gold: v("sun"),
-          "bg-dark": v("bg"),
-          card: v("surface-raised"),
-          "card-dark": v("surface-raised"),
-          border: v("line"),
-          "border-dark": v("line"),
-          "ink-dark": v("ink"),
-          muted: v("ink-muted"),
-          "muted-dark": v("ink-muted"),
         },
       },
       fontFamily: {
