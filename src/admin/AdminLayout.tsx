@@ -1,57 +1,51 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { useAuth } from "@/core/useAuth";
-import { Logo } from "@/components/ui";
+import { Logo, NavItem, type IconName } from "@/components/ui";
+import RoleBadge from "@/admin/RoleBadge";
 
-const links = [
-  { to: "/admin", end: true, label: "Overview", icon: "📊" },
-  { to: "/admin/users", label: "Users", icon: "👥" },
-  { to: "/admin/admins", label: "Admins", icon: "🔑" },
-  { to: "/admin/content", label: "Content", icon: "📚" },
-  { to: "/admin/reports", label: "Reports", icon: "🚩" },
-  { to: "/admin/audit", label: "Audit log", icon: "🗒" },
-  { to: "/admin/analytics", label: "Analytics", icon: "📈" },
+const links: Array<{ to: string; end?: boolean; label: string; icon: IconName }> = [
+  { to: "/admin", end: true, label: "Overview", icon: "chart" },
+  { to: "/admin/users", label: "Users", icon: "users" },
+  { to: "/admin/admins", label: "Admins", icon: "key" },
+  { to: "/admin/content", label: "Content", icon: "book" },
+  { to: "/admin/reports", label: "Reports", icon: "flag" },
+  { to: "/admin/audit", label: "Audit log", icon: "list" },
+  { to: "/admin/analytics", label: "Analytics", icon: "trend" },
 ];
 
 export default function AdminLayout() {
   const { user, role } = useAuth();
   return (
-    <div className="min-h-screen flex flex-col sm:flex-row">
-      <aside className="sm:w-64 sm:min-h-screen border-r border-berkut-border dark:border-berkut-border-dark bg-white dark:bg-berkut-card-dark p-4">
-        <NavLink to="/" className="flex items-center gap-2 font-extrabold text-xl mb-6">
-          <Logo size={28} wordmark /> <span className="text-xs text-berkut-muted dark:text-berkut-muted-dark uppercase tracking-wider">admin</span>
-        </NavLink>
-        <nav className="flex flex-row sm:flex-col gap-1 overflow-x-auto">
-          {links.map((l) => (
-            <NavLink
-              key={l.to}
-              to={l.to}
-              end={l.end}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition ${
-                  isActive
-                    ? "bg-berkut-primary/10 text-berkut-primary"
-                    : "text-berkut-muted dark:text-berkut-muted-dark hover:bg-black/5 dark:hover:bg-white/5"
-                }`
-              }
-            >
-              <span>{l.icon}</span>
-              <span>{l.label}</span>
-            </NavLink>
-          ))}
-        </nav>
-        <div className="mt-8 pt-4 border-t border-berkut-border dark:border-berkut-border-dark hidden sm:block">
-          <div className="text-xs text-berkut-muted dark:text-berkut-muted-dark">Signed in</div>
-          <div className="font-bold text-sm truncate">{user?.email}</div>
-          <div className="text-xs text-berkut-primary mt-1 font-semibold uppercase tracking-wide">
-            {role.replace("_", " ")}
+    <div className="min-h-screen flex flex-col sm:flex-row bg-berkut-bg">
+      <aside className="flex-none bg-berkut-surface-raised shadow-card sm:sticky sm:top-0 sm:h-screen sm:w-60 sm:overflow-y-auto">
+        <div className="flex flex-col gap-4 px-4 py-4 sm:gap-6 sm:py-6">
+          <Link to="/" className="flex items-center gap-3 px-2" aria-label="Back to Berkut">
+            <Logo size={28} wordmark />
+            <span className="text-small text-berkut-ink-muted">Admin</span>
+          </Link>
+          <nav aria-label="Admin" className="-mx-4 flex gap-1 overflow-x-auto px-4 sm:mx-0 sm:flex-col sm:px-0">
+            {links.map((l) => (
+              <div key={l.to} className="flex-none sm:flex-auto">
+                <NavItem to={l.to} end={l.end} label={l.label} icon={l.icon} />
+              </div>
+            ))}
+          </nav>
+          <div className="hidden flex-col gap-2 border-t border-berkut-line px-2 pt-5 sm:flex">
+            <span className="text-caption text-berkut-ink-muted">Signed in as</span>
+            <span className="truncate text-small font-semibold text-berkut-ink">{user?.email}</span>
+            <div>
+              <RoleBadge role={role} />
+            </div>
+            <Link to="/" className="mt-2 text-small font-semibold text-berkut-turquoise-ink hover:underline">
+              Back to the app
+            </Link>
           </div>
-          <NavLink to="/" className="block mt-3 text-xs text-berkut-muted dark:text-berkut-muted-dark hover:underline">
-            ← Back to app
-          </NavLink>
         </div>
       </aside>
-      <main className="flex-1 px-4 sm:px-8 py-6 max-w-6xl">
-        <Outlet />
+      <main className="flex-1 min-w-0 px-6 py-6 sm:px-8 sm:py-8">
+        <div className="mx-auto max-w-[1120px]">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

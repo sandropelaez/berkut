@@ -38,6 +38,10 @@ https://claude.ai/artifact/2rsJnXzwS24mLoTrJBddQc (brand book, tokens, component
   `StatChip`, `Tag`, `Field`, `Card`, `Logo`, `Icon` (2px-stroke set), plus a `Loader`. The
   classes they render (`btn-*`, `tile-*`, `card`, `chip`, `tag`, `field`, `iconbtn`) are in
   `src/index.css`.
+- **Admin** follows the system's Admin section: `NavItem` sidebar (chart, users, key, book, flag,
+  list and trend icons), `StatTile` metrics, `DataTable` lists and `StatusBadge` states
+  (`neutral` settled, `info` notable, `success` done, `warning` needs attention, `danger`
+  failed). `warning` (orange) is for admin states such as open reports; gold stays for rewards.
 - Phone first: design at 375px, one column, primary action at the bottom. Sentence case, no
   emoji in the UI.
 

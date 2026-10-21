@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { adminFetch } from "@/admin/api";
+import { Card, Field, StatusBadge } from "@/components/ui";
 
 interface Lesson {
   id: string;
@@ -68,72 +69,65 @@ export default function AdminLessonEditor() {
     load();
   }
 
-  if (!lesson) return <div>Loading…</div>;
+  if (!lesson) return <p className="text-small text-berkut-ink-muted">Loading…</p>;
 
   return (
     <div className="space-y-6">
-      <Link to="/admin/content" className="text-sm text-berkut-primary hover:underline">
-        ← Back to content
+      <Link to="/admin/content" className="text-small font-semibold text-berkut-turquoise-ink hover:underline">
+        Back to content
       </Link>
 
-      <div className="card space-y-3">
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-extrabold">Lesson · {lesson.id}</h1>
-          {savedAt && (
-            <span className="text-xs text-berkut-success font-bold">Saved {savedAt}</span>
-          )}
+      <Card className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h1 className="text-title-md">Lesson {lesson.id}</h1>
+          {savedAt && <StatusBadge tone="success" icon="check">Saved {savedAt}</StatusBadge>}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field
             label="Title (native)"
+            lang="kk"
             value={lesson.title_native}
-            onChange={(v) => setLesson({ ...lesson, title_native: v })}
-            onBlur={(v) => saveLesson({ title_native: v })}
+            onChange={(e) => setLesson({ ...lesson, title_native: e.target.value })}
+            onBlur={(e) => saveLesson({ title_native: e.target.value })}
           />
           <Field
             label="Title (English)"
             value={lesson.title_en}
-            onChange={(v) => setLesson({ ...lesson, title_en: v })}
-            onBlur={(v) => saveLesson({ title_en: v })}
+            onChange={(e) => setLesson({ ...lesson, title_en: e.target.value })}
+            onBlur={(e) => saveLesson({ title_en: e.target.value })}
           />
         </div>
-        {err && <p className="text-berkut-error font-bold text-sm">{err}</p>}
-      </div>
+        {err && <p className="text-small font-semibold text-berkut-danger">{err}</p>}
+      </Card>
 
-      <h2 className="text-lg font-bold">Exercises ({exercises.length})</h2>
+      <h2 className="text-title-sm">Exercises ({exercises.length})</h2>
       <div className="space-y-3">
         {exercises.map((ex) => (
-          <div key={ex.id} className="card">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <span className="text-xs uppercase tracking-wide font-bold text-berkut-muted dark:text-berkut-muted-dark">
-                  {ex.order}.
-                </span>
-                <span className="chip bg-berkut-primary/10 text-berkut-primary text-xs">
-                  {ex.type}
-                </span>
-                <span className="text-xs text-berkut-muted dark:text-berkut-muted-dark">
-                  {ex.id}
-                </span>
+          <Card key={ex.id} className="space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-small font-semibold tabular-nums text-berkut-ink-muted">{ex.order}.</span>
+                <StatusBadge tone="info">{ex.type}</StatusBadge>
+                <span className="text-caption text-berkut-ink-muted">{ex.id}</span>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-4">
                 <button
+                  type="button"
                   onClick={() => setShowJson(showJson === ex.id ? null : ex.id)}
-                  className="text-xs text-berkut-primary hover:underline font-bold"
+                  className="text-small font-semibold text-berkut-turquoise-ink hover:underline"
                 >
                   {showJson === ex.id ? "Hide JSON" : "Edit JSON"}
                 </button>
                 <button
+                  type="button"
                   onClick={() => deleteExercise(ex)}
-                  className="text-xs text-berkut-error hover:underline font-bold"
+                  className="text-small font-semibold text-berkut-danger hover:underline"
                 >
                   Delete
                 </button>
               </div>
             </div>
-            <pre className="text-xs bg-berkut-bg dark:bg-berkut-bg-dark rounded-lg p-2 overflow-x-auto">
-              {JSON.stringify(ex.prompt, null, 2)}
-            </pre>
+            <pre className="overflow-x-auto rounded-xl bg-berkut-surface p-3 text-xs">{JSON.stringify(ex.prompt, null, 2)}</pre>
             {showJson === ex.id && (
               <JsonEditor
                 value={ex.prompt}
@@ -144,34 +138,10 @@ export default function AdminLessonEditor() {
                 onCancel={() => setShowJson(null)}
               />
             )}
-          </div>
+          </Card>
         ))}
       </div>
     </div>
-  );
-}
-
-function Field({
-  label,
-  value,
-  onChange,
-  onBlur,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  onBlur?: (v: string) => void;
-}) {
-  return (
-    <label className="block text-sm font-semibold">
-      {label}
-      <input
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onBlur={(e) => onBlur?.(e.target.value)}
-        className="mt-1 w-full rounded-xl border-2 border-berkut-border dark:border-berkut-border-dark bg-white dark:bg-berkut-card-dark px-3 py-2 outline-none focus:border-berkut-primary"
-      />
-    </label>
   );
 }
 
@@ -188,28 +158,29 @@ function JsonEditor({
   const [err, setErr] = useState<string | null>(null);
 
   return (
-    <div className="mt-3 space-y-2">
+    <div className="space-y-3">
       <textarea
+        aria-label="Exercise JSON"
         value={text}
         onChange={(e) => setText(e.target.value)}
         rows={12}
-        className="w-full font-mono text-xs rounded-lg border-2 border-berkut-border dark:border-berkut-border-dark bg-white dark:bg-berkut-card-dark px-3 py-2"
+        className="field py-3 font-mono text-xs leading-5"
       />
-      {err && <p className="text-berkut-error font-bold text-xs">{err}</p>}
-      <div className="flex gap-2 justify-end">
-        <button onClick={onCancel} className="btn-outline text-xs">
+      {err && <p className="text-small font-semibold text-berkut-danger">{err}</p>}
+      <div className="flex justify-end gap-2">
+        <button type="button" onClick={onCancel} className="btn-secondary btn-sm">
           Cancel
         </button>
         <button
+          type="button"
           onClick={() => {
             try {
-              const parsed = JSON.parse(text);
-              onSave(parsed);
+              onSave(JSON.parse(text));
             } catch (e: any) {
               setErr(`Invalid JSON: ${e.message}`);
             }
           }}
-          className="btn-primary text-xs"
+          className="btn-primary btn-sm"
         >
           Save
         </button>

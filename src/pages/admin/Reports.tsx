@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { adminFetch } from "@/admin/api";
+import { Card, Icon, StatusBadge, type BadgeTone } from "@/components/ui";
 
 interface Report {
   id: number;
@@ -25,6 +26,13 @@ interface Report {
 
 type Filter = "open" | "resolved" | "dismissed" | "all";
 
+const FILTERS: Array<{ id: Filter; label: string }> = [
+  { id: "open", label: "Open" },
+  { id: "resolved", label: "Resolved" },
+  { id: "dismissed", label: "Dismissed" },
+  { id: "all", label: "All" },
+];
+
 const REASON_LABEL: Record<string, string> = {
   wrong_translation: "Wrong translation",
   grammar_error: "Grammar error",
@@ -36,10 +44,11 @@ const REASON_LABEL: Record<string, string> = {
   other: "Other",
 };
 
-const STATUS_COLOUR: Record<string, string> = {
-  open: "bg-berkut-error/20 text-rose-700 dark:text-rose-200",
-  resolved: "bg-berkut-success/20 text-emerald-700 dark:text-emerald-200",
-  dismissed: "bg-black/10 dark:bg-white/10 text-berkut-muted dark:text-berkut-muted-dark",
+// Open reports need attention (warning); resolved is done; dismissed is settled.
+const STATUS: Record<Report["status"], { label: string; tone: BadgeTone }> = {
+  open: { label: "Open", tone: "warning" },
+  resolved: { label: "Resolved", tone: "success" },
+  dismissed: { label: "Dismissed", tone: "neutral" },
 };
 
 export default function AdminReports() {
@@ -70,129 +79,129 @@ export default function AdminReports() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <h1 className="text-2xl font-extrabold">Reports</h1>
-        <div className="flex gap-2">
-          {(["open", "resolved", "dismissed", "all"] as Filter[]).map((f) => (
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-title-lg">Reports</h1>
+          <p className="mt-1 text-small text-berkut-ink-muted">
+            Problems learners reported in exercises. Resolve once fixed; dismiss if it isn't a problem.
+          </p>
+        </div>
+        <div className="flex gap-2" role="group" aria-label="Filter reports">
+          {FILTERS.map((f) => (
             <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`text-xs uppercase tracking-wide font-bold px-3 py-1.5 rounded-full ${
-                filter === f
-                  ? "bg-berkut-primary text-white"
-                  : "bg-black/5 dark:bg-white/5 text-berkut-muted dark:text-berkut-muted-dark"
+              key={f.id}
+              type="button"
+              onClick={() => setFilter(f.id)}
+              aria-pressed={filter === f.id}
+              className={`h-9 rounded-full px-4 text-small font-semibold transition-colors ${
+                filter === f.id
+                  ? "bg-berkut-turquoise-soft text-berkut-turquoise-ink"
+                  : "bg-berkut-surface text-berkut-ink-muted hover:text-berkut-ink"
               }`}
             >
-              {f}
+              {f.label}
             </button>
           ))}
         </div>
       </div>
-      <p className="text-sm text-berkut-muted dark:text-berkut-muted-dark">
-        User-submitted reports of exercise problems. Resolve once fixed, dismiss if false.
-      </p>
 
       {loading ? (
-        <div className="card text-berkut-muted dark:text-berkut-muted-dark">Loading…</div>
+        <p className="text-small text-berkut-ink-muted">Loading…</p>
       ) : reports.length === 0 ? (
-        <div className="card text-center py-8 text-berkut-muted dark:text-berkut-muted-dark">
-          <div className="text-3xl">✨</div>
-          <p className="mt-2">No {filter === "all" ? "" : filter} reports.</p>
-        </div>
+        <Card className="flex flex-col items-center gap-3 py-10 text-center">
+          <span className="grid h-12 w-12 place-items-center rounded-full bg-berkut-success-soft text-berkut-success">
+            <Icon name="check" />
+          </span>
+          <p className="text-body text-berkut-ink-muted">
+            No {filter === "all" ? "" : `${filter} `}reports.
+          </p>
+        </Card>
       ) : (
         <div className="space-y-3">
           {reports.map((r) => (
-            <div key={r.id} className="card">
-              <div className="flex items-start justify-between gap-3 flex-wrap">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className={`chip text-xs ${STATUS_COLOUR[r.status]}`}>{r.status}</span>
-                    <span className="chip bg-berkut-primary/10 text-berkut-primary text-xs">
-                      {REASON_LABEL[r.reason] ?? r.reason}
-                    </span>
-                    {r.exercise?.type && (
-                      <span className="chip bg-black/10 dark:bg-white/10 text-xs">
-                        {r.exercise.type}
-                      </span>
-                    )}
+            <Card key={r.id}>
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="min-w-0 flex-1 space-y-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <StatusBadge tone={STATUS[r.status].tone}>{STATUS[r.status].label}</StatusBadge>
+                    <StatusBadge tone="info">{REASON_LABEL[r.reason] ?? r.reason}</StatusBadge>
+                    {r.exercise?.type && <StatusBadge>{r.exercise.type}</StatusBadge>}
                     {r.exercise?.confidence && r.exercise.confidence !== "high" && (
-                      <span className="chip bg-berkut-gold/20 text-amber-700 dark:text-amber-200 text-xs">
-                        confidence: {r.exercise.confidence}
-                      </span>
+                      <StatusBadge tone="warning">{r.exercise.confidence} confidence</StatusBadge>
                     )}
-                    <span className="text-xs text-berkut-muted dark:text-berkut-muted-dark">
+                    <span className="text-caption text-berkut-ink-muted">
                       {new Date(r.created_at).toLocaleString()}
                     </span>
                   </div>
 
-                  <div className="mt-2 text-sm">
+                  <div className="text-[15px] leading-[22px]">
                     <p>
-                      <span className="text-berkut-muted dark:text-berkut-muted-dark">
-                        Exercise:
-                      </span>{" "}
-                      <code className="text-xs">{r.exercise_id}</code>
+                      <span className="text-berkut-ink-muted">Exercise </span>
+                      <code className="text-[13px]">{r.exercise_id}</code>
                       {r.lesson_id && (
                         <>
                           {" · "}
                           <Link
                             to={`/admin/content/lessons/${r.lesson_id}`}
-                            className="text-berkut-primary hover:underline"
+                            className="font-semibold text-berkut-turquoise-ink hover:underline"
                           >
-                            open lesson →
+                            Open lesson
                           </Link>
                         </>
                       )}
                     </p>
-                    <p className="text-xs text-berkut-muted dark:text-berkut-muted-dark">
-                      Reporter: {r.reporter_email ?? "anonymous"}
+                    <p className="text-caption text-berkut-ink-muted">
+                      Reported by {r.reporter_email ?? "an anonymous learner"}
                     </p>
                   </div>
 
+                  {r.comment && (
+                    <p className="rounded-tile bg-berkut-surface px-4 py-3 text-[15px] leading-[22px]">
+                      “{r.comment}”
+                    </p>
+                  )}
+
                   {r.exercise?.prompt && (
-                    <pre className="mt-2 text-xs bg-berkut-bg dark:bg-berkut-bg-dark rounded-lg p-2 overflow-x-auto">
+                    <pre className="overflow-x-auto rounded-xl bg-berkut-surface p-3 text-xs">
                       {JSON.stringify(r.exercise.prompt, null, 2)}
                     </pre>
                   )}
-
-                  {r.comment && (
-                    <blockquote className="mt-2 text-sm border-l-2 border-berkut-primary pl-3 italic">
-                      "{r.comment}"
-                    </blockquote>
-                  )}
                 </div>
 
-                <div className="flex flex-col gap-2 shrink-0">
-                  {r.status === "open" && (
+                <div className="flex shrink-0 flex-col gap-2">
+                  {r.status === "open" ? (
                     <>
                       <button
+                        type="button"
                         onClick={() => update(r.id, "resolved")}
                         disabled={busyId === r.id}
-                        className="btn-success text-xs"
+                        className="btn-success btn-sm"
                       >
-                        Resolve
+                        <Icon name="check" size={18} /> Resolve
                       </button>
                       <button
+                        type="button"
                         onClick={() => update(r.id, "dismissed")}
                         disabled={busyId === r.id}
-                        className="btn-outline text-xs"
+                        className="btn-secondary btn-sm"
                       >
                         Dismiss
                       </button>
                     </>
-                  )}
-                  {r.status !== "open" && (
+                  ) : (
                     <button
+                      type="button"
                       onClick={() => update(r.id, "open")}
                       disabled={busyId === r.id}
-                      className="btn-outline text-xs"
+                      className="btn-secondary btn-sm"
                     >
                       Reopen
                     </button>
                   )}
                 </div>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}

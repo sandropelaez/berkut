@@ -1,7 +1,7 @@
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 import { useStore } from "@/store/useStore";
 import { isAdminRole, useAuth } from "@/core/useAuth";
-import { Icon, Logo, StatChip, type IconName } from "@/components/ui";
+import { Icon, Logo, NavItem, StatChip, type IconName } from "@/components/ui";
 
 const TABS: TabProps[] = [
   { to: "/", label: "Learn", icon: "home" },
@@ -90,20 +90,5 @@ function Tab({ to, label, icon }: TabProps) {
 }
 
 function SideTab({ to, label, icon }: TabProps) {
-  return (
-    <NavLink
-      to={to}
-      end={to === "/"}
-      className={({ isActive }) =>
-        `flex h-12 items-center gap-3 rounded-full px-4 text-[15px] font-semibold transition ${
-          isActive
-            ? "bg-berkut-turquoise-soft text-berkut-turquoise-ink"
-            : "text-berkut-ink-muted hover:bg-berkut-surface hover:text-berkut-ink"
-        }`
-      }
-    >
-      <Icon name={icon} />
-      <span>{label}</span>
-    </NavLink>
-  );
+  return <NavItem to={to} end={to === "/"} label={label} icon={icon} />;
 }
