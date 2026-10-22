@@ -4,6 +4,7 @@ import { useContentStore } from "@/store/useContentStore";
 import { useStore } from "@/store/useStore";
 import ScriptText from "@/components/ScriptText";
 import { Icon, Loader, Tag } from "@/components/ui";
+import type { Unit, UserProgress } from "@/core/types";
 
 type NodeState = "current" | "open" | "done" | "perfect" | "locked";
 
@@ -51,16 +52,10 @@ export default function Home() {
     );
   }
 
-  // The first unlocked, unfinished lesson on the whole path is "current".
-  let currentId: string | null = null;
-  for (const unit of units) {
-    for (let i = 0; i < unit.lessons.length && !currentId; i++) {
-      const l = unit.lessons[i]!;
-      const prevDone = i === 0 || progress[unit.lessons[i - 1]!.id]?.completed;
-      if (!progress[l.id]?.completed && prevDone) currentId = l.id;
-    }
-    if (currentId) break;
-  }
+  const pathUnits = units.filter((u) => u.track !== "alphabet");
+  const alphabetUnits = units.filter((u) => u.track === "alphabet");
+  const pathCurrent = firstOpenLesson(pathUnits, progress);
+  const alphabetCurrent = firstOpenLesson(alphabetUnits, progress);
 
   return (
     <div className="mx-auto max-w-content px-6 pt-4 pb-8">
@@ -79,71 +74,134 @@ export default function Home() {
       </div>
 
       <div className="space-y-8">
-        {units.map((unit) => {
-          const total = unit.lessons.length;
-          const done = unit.lessons.filter((l) => progress[l.id]?.completed).length;
-          return (
-            <section key={unit.id} className="card">
-              <header className="mb-4 flex flex-col gap-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Tag>Unit {unit.id}</Tag>
-                  <Tag>{unit.cefrLevel}</Tag>
-                  {total > 0 && (
-                    <span className="ml-auto text-small font-semibold tabular-nums text-berkut-ink-muted">
-                      {done}/{total}
-                    </span>
-                  )}
-                </div>
-                <div className="flex flex-col gap-1">
-                  <h2 className="text-title-md">
-                    <ScriptText>{unit.titleKk}</ScriptText>
-                  </h2>
-                  <span className="text-small text-berkut-ink-muted">{unit.titleEn}</span>
-                </div>
-              </header>
-
-              {total === 0 ? (
-                <p className="text-small text-berkut-ink-muted">{unit.description ?? "Coming soon"}</p>
-              ) : (
-                <ol className="-mx-2 flex flex-col gap-1">
-                  {unit.lessons.map((lesson, idx) => {
-                    const p = progress[lesson.id];
-                    const prevDone = idx === 0 || progress[unit.lessons[idx - 1]!.id]?.completed;
-                    const state: NodeState = p?.completed
-                      ? p.perfectRun
-                        ? "perfect"
-                        : "done"
-                      : lesson.id === currentId
-                        ? "current"
-                        : prevDone
-                          ? "open"
-                          : "locked";
-                    return (
-                      <li key={lesson.id}>
-                        <LessonNode
-                          state={state}
-                          index={idx + 1}
-                          titleKk={<ScriptText>{lesson.titleKk}</ScriptText>}
-                          titleEn={lesson.titleEn}
-                          onClick={() => navigate(`/lesson/${lesson.id}`)}
-                        />
-                      </li>
-                    );
-                  })}
-                </ol>
-              )}
-
-              {unit.culturalNote && (
-                <aside className="mt-4 rounded-tile bg-berkut-surface p-5 flex flex-col gap-1">
-                  <span className="text-small font-semibold text-berkut-turquoise-ink">Cultural note</span>
-                  <p className="text-[15px] leading-[23px]">{unit.culturalNote}</p>
-                </aside>
-              )}
-            </section>
-          );
-        })}
+        {pathUnits.map((unit) => (
+          <UnitCard
+            key={unit.id}
+            unit={unit}
+            tags={[`Unit ${unit.id}`, unit.cefrLevel]}
+            progress={progress}
+            currentId={pathCurrent}
+            onOpen={(id) => navigate(`/lesson/${id}`)}
+          />
+        ))}
       </div>
+
+      {alphabetUnits.length > 0 && (
+        <section className="mt-12" aria-labelledby="alphabet-heading">
+          <div className="mb-6">
+            <h2 id="alphabet-heading" className="text-title-lg">
+              <ScriptText>Қатар оқу</ScriptText>
+            </h2>
+            <p className="text-small text-berkut-ink-muted mt-1">
+              Alongside your path · go at your own pace
+            </p>
+          </div>
+          <div className="space-y-8">
+            {alphabetUnits.map((unit) => (
+              <UnitCard
+                key={unit.id}
+                unit={unit}
+                tags={[unit.cefrLevel]}
+                progress={progress}
+                currentId={alphabetCurrent}
+                onOpen={(id) => navigate(`/lesson/${id}`)}
+              />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
+  );
+}
+
+type Progress = Record<string, UserProgress>;
+
+/** The first unlocked, unfinished lesson across `units` is "current". */
+function firstOpenLesson(units: Unit[], progress: Progress): string | null {
+  for (const unit of units) {
+    for (let i = 0; i < unit.lessons.length; i++) {
+      const l = unit.lessons[i]!;
+      const prevDone = i === 0 || progress[unit.lessons[i - 1]!.id]?.completed;
+      if (!progress[l.id]?.completed && prevDone) return l.id;
+    }
+  }
+  return null;
+}
+
+function UnitCard({
+  unit,
+  tags,
+  progress,
+  currentId,
+  onOpen,
+}: {
+  unit: Unit;
+  tags: string[];
+  progress: Progress;
+  currentId: string | null;
+  onOpen: (lessonId: string) => void;
+}) {
+  const total = unit.lessons.length;
+  const done = unit.lessons.filter((l) => progress[l.id]?.completed).length;
+  return (
+    <section className="card">
+      <header className="mb-4 flex flex-col gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          {tags.map((t) => (
+            <Tag key={t}>{t}</Tag>
+          ))}
+          {total > 0 && (
+            <span className="ml-auto text-small font-semibold tabular-nums text-berkut-ink-muted">
+              {done}/{total}
+            </span>
+          )}
+        </div>
+        <div className="flex flex-col gap-1">
+          <h2 className="text-title-md">
+            <ScriptText>{unit.titleKk}</ScriptText>
+          </h2>
+          <span className="text-small text-berkut-ink-muted">{unit.titleEn}</span>
+        </div>
+      </header>
+
+      {total === 0 ? (
+        <p className="text-small text-berkut-ink-muted">{unit.description ?? "Coming soon"}</p>
+      ) : (
+        <ol className="-mx-2 flex flex-col gap-1">
+          {unit.lessons.map((lesson, idx) => {
+            const p = progress[lesson.id];
+            const prevDone = idx === 0 || progress[unit.lessons[idx - 1]!.id]?.completed;
+            const state: NodeState = p?.completed
+              ? p.perfectRun
+                ? "perfect"
+                : "done"
+              : lesson.id === currentId
+                ? "current"
+                : prevDone
+                  ? "open"
+                  : "locked";
+            return (
+              <li key={lesson.id}>
+                <LessonNode
+                  state={state}
+                  index={idx + 1}
+                  titleKk={<ScriptText>{lesson.titleKk}</ScriptText>}
+                  titleEn={lesson.titleEn}
+                  onClick={() => onOpen(lesson.id)}
+                />
+              </li>
+            );
+          })}
+        </ol>
+      )}
+
+      {unit.culturalNote && (
+        <aside className="mt-4 rounded-tile bg-berkut-surface p-5 flex flex-col gap-1">
+          <span className="text-small font-semibold text-berkut-turquoise-ink">Cultural note</span>
+          <p className="text-[15px] leading-[23px]">{unit.culturalNote}</p>
+        </aside>
+      )}
+    </section>
   );
 }
 

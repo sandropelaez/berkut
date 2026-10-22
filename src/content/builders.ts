@@ -38,6 +38,8 @@ export interface ContentLesson {
 export interface ContentUnit {
   id: string;
   order: number;
+  /** "alphabet" units sit beside the path, not on it. Defaults to "path". */
+  track?: "path" | "alphabet";
   titleKk: string;
   titleEn: string;
   cefr: "A1" | "A2";
