@@ -239,6 +239,32 @@ Follows §12.3 of the spec.
 
 ---
 
+## Dependency updates
+
+Vercel patches the Node runtime and Supabase patches Postgres/Auth; the npm
+packages are ours to keep current. That runs on its own:
+
+- **Dependabot** ([`.github/dependabot.yml`](.github/dependabot.yml)) opens one
+  grouped PR of patch and minor bumps every Monday, and a PR as soon as a
+  security advisory lands.
+- **Auto-merge** (the `dependabot-auto-merge` job in
+  [`ci.yml`](.github/workflows/ci.yml)) squash-merges those patch and minor PRs
+  once typecheck, tests and build pass. Vercel deploys, and the smoke test runs
+  against the live site when the production deploy finishes.
+- **Major versions** are left out of Dependabot's weekly run (they usually need
+  code changes). A weekly Claude session runs `npm audit`, does the upgrade,
+  fixes what breaks and opens a PR for review.
+
+One-time GitHub settings this needs (**Settings** on the repo):
+
+1. **General → Pull Requests → Allow auto-merge**: on.
+2. **Code security → Dependabot alerts** and **Dependabot security updates**: on.
+3. **Branches → Add rule for `main` → Require status checks to pass** →
+   select `build-and-test`. Recommended, so nothing (Dependabot or a person)
+   merges on red.
+
+---
+
 ## Architecture notes (vs spec §8)
 
 | Spec §8 | This implementation |

@@ -11,6 +11,10 @@ name: Production smoke test
 on:
   push:
     branches: [main]
+  # Vercel reports each deployment back to GitHub. Merges made by the
+  # Dependabot auto-merge job don't fire `push` workflows (GitHub skips them for
+  # GITHUB_TOKEN pushes), so this is what smoke-tests those deploys.
+  deployment_status:
   workflow_dispatch:
   schedule:
     # Every 6 hours — catches Supabase free-tier pauses + cert/DNS regressions.
@@ -18,6 +22,11 @@ on:
 
 jobs:
   smoke:
+    # Only finished production deploys, not previews or in-progress statuses.
+    if: >-
+      github.event_name != 'deployment_status' ||
+      (github.event.deployment_status.state == 'success' &&
+       startsWith(github.event.deployment.environment, 'Production'))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

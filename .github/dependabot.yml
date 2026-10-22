@@ -1,0 +1,35 @@
+version: 2
+
+# Weekly bumps, grouped into one PR per ecosystem. Patch and minor bumps merge
+# themselves once CI passes (see the dependabot-auto-merge job in ci.yml).
+#
+# Major version bumps are ignored here: they usually need code changes, so a
+# weekly Claude session handles them. The ignore rule only applies to routine
+# version updates, so security advisories still get a PR straight away,
+# majors included.
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    groups:
+      npm-minor-and-patch:
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    commit-message:
+      prefix: deps
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: ci
