@@ -103,6 +103,8 @@ export interface Lesson {
 export interface Unit {
   id: number;
   order: number;
+  /** "alphabet" units are learnt alongside the path, not as a step on it. */
+  track?: "path" | "alphabet";
   titleKk: string;
   titleEn: string;
   cefrLevel: "A1" | "A2" | "B1";

@@ -18,15 +18,24 @@ const EXERCISE_TYPES = [
 
 // Legacy lessons in these units use orders 1–5 and are re-upserted (active,
 // same order) whenever older migrations are re-applied. lessons has a unique
-// (unit_id, "order"), so new lessons start above that range; the skill tree
-// numbers lessons by position, not by this value.
+// (unit_id, "order") that archived rows still hold, so new lessons start above
+// that range and take their order from the -bN in their id rather than their
+// position: dropping u2-b1 leaves u2-b3 at 13 instead of moving it onto the
+// archived row's 11. The skill tree numbers lessons by position, not by this.
 const LESSON_ORDER_BASE = 10;
+
+function lessonOrder(id: string): number {
+  const m = /-b(\d+)$/.exec(id);
+  if (!m) throw new Error(`lesson id ${id} should end in -b<number>`);
+  return LESSON_ORDER_BASE + Number(m[1]);
+}
 
 export function buildMigrationSql(units: ContentUnit[], header: string): string {
   validateUnits(units);
   const unitIds = units.map((u) => u.id);
-  const lessons = units.flatMap((u) => u.lessons.map((l, i) => ({ ...l, unitId: u.id, order: LESSON_ORDER_BASE + i + 1 })));
+  const lessons = units.flatMap((u) => u.lessons.map((l) => ({ ...l, unitId: u.id, order: lessonOrder(l.id) })));
   const lessonIds = lessons.map((l) => l.id);
+  const vocabIds = units.flatMap((u) => u.vocab.map(([id]) => `vb-${u.id}-${id}`));
   const exercises = lessons.flatMap(compileLesson);
   const out: string[] = [header.trimEnd(), ""];
 
@@ -35,16 +44,21 @@ export function buildMigrationSql(units: ContentUnit[], header: string): string 
     "alter table public.exercises drop constraint if exists exercises_type_check;",
     `alter table public.exercises add constraint exercises_type_check check (type in (${list(EXERCISE_TYPES)}));`,
     "",
+    "-- ─── Units can sit beside the path (the alphabet) instead of on it ──────",
+    "alter table public.units add column if not exists track text not null default 'path';",
+    "alter table public.units drop constraint if exists units_track_check;",
+    "alter table public.units add constraint units_track_check check (track in ('path', 'alphabet'));",
+    "",
     "-- ─── Units ───────────────────────────────────────────────────────────────",
-    'insert into public.units (id, language_code, "order", title_native, title_en, cefr_level, emoji, description, cultural_note, status) values',
+    'insert into public.units (id, language_code, "order", track, title_native, title_en, cefr_level, emoji, description, cultural_note, status) values',
     units
       .map(
         (u) =>
-          `  (${q(u.id)}, 'kk', ${u.order}, ${q(u.titleKk)}, ${q(u.titleEn)}, ${q(u.cefr)}, ${q(u.emoji)}, ${q(u.description)}, ${q(u.culturalNote)}, 'active')`,
+          `  (${q(u.id)}, 'kk', ${u.order}, ${q(u.track ?? "path")}, ${q(u.titleKk)}, ${q(u.titleEn)}, ${q(u.cefr)}, ${q(u.emoji)}, ${q(u.description)}, ${q(u.culturalNote)}, 'active')`,
       )
       .join(",\n"),
     "on conflict (id) do update set",
-    '  language_code=excluded.language_code, "order"=excluded."order",',
+    '  language_code=excluded.language_code, "order"=excluded."order", track=excluded.track,',
     "  title_native=excluded.title_native, title_en=excluded.title_en,",
     "  cefr_level=excluded.cefr_level, emoji=excluded.emoji,",
     "  description=excluded.description, cultural_note=excluded.cultural_note,",
@@ -55,11 +69,12 @@ export function buildMigrationSql(units: ContentUnit[], header: string): string 
     `update public.lessons set status = 'archived'`,
     `  where unit_id in (${list(unitIds)})`,
     `    and id not in (${list(lessonIds)});`,
-    "-- Old vocab moves to a hidden archived unit instead of being deleted.",
+    "-- Vocab no longer in the source (the pre-v1.6 rows, and words that moved",
+    "-- unit) goes to a hidden archived unit instead of being deleted.",
     `insert into public.units (id, language_code, "order", title_native, title_en, cefr_level, emoji, description, status) values`,
     `  ('u-legacy-a1', 'kk', 900, 'Ескі сөздер', 'Legacy A1 vocab (archived)', 'A1', '🗄️', 'Vocabulary from the pre-v1.6 A1 lessons, kept for reference. Not shown to learners.', 'archived')`,
     `on conflict (id) do update set status = excluded.status;`,
-    `update public.vocab set unit_id = 'u-legacy-a1' where unit_id in (${list(unitIds)}) and id not like 'vb-%';`,
+    `update public.vocab set unit_id = 'u-legacy-a1' where unit_id in (${list(unitIds)}) and id not in (${list(vocabIds)});`,
     "",
     "-- ─── Lessons ─────────────────────────────────────────────────────────────",
     'insert into public.lessons (id, unit_id, "order", title_native, title_en, status) values',

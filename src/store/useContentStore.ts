@@ -5,6 +5,7 @@ interface RawUnit {
   id: string;
   language_code: string;
   order: number;
+  track?: "path" | "alphabet";
   title_native: string;
   title_en: string;
   cefr_level: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
@@ -60,6 +61,7 @@ function toUnit(raw: RawUnit, lessonsAll: RawLesson[], vocabAll: RawVocab[]): Un
   return {
     id: parseInt(raw.id.replace(/^u/, ""), 10) || 0,
     order: raw.order,
+    track: raw.track === "alphabet" ? "alphabet" : "path",
     titleKk: raw.title_native,
     titleEn: raw.title_en,
     cefrLevel: (raw.cefr_level as any) ?? "A1",

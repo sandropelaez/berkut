@@ -68,8 +68,9 @@ bootstrap `UPDATE`, re-run the migration.
 ## What's included
 
 - **Skill tree** with a 7-unit A1.1 course for complete beginners
-  (greetings → alphabet & harmony → "I am" → plurals → possessives →
-  numbers/time/place → present tense), then A1.2–A2.2 content. See
+  (greetings → harmony → "I am" → plurals → possessives →
+  numbers/time/place → present tense), with the alphabet as a separate
+  section below the path, learnt alongside it, then A1.2–A2.2 content. See
   [`docs/curriculum.md`](docs/curriculum.md).
 - **Lesson player** with all 6 exercise types from §4: Multiple Choice,
   Translate EN→KK, Translate KK→EN, Listening (Web Speech TTS), Match Pairs,
