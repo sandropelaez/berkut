@@ -258,9 +258,8 @@ packages are ours to keep current. That runs on its own:
 
 One-time GitHub settings this needs (**Settings** on the repo):
 
-1. **General → Pull Requests → Allow auto-merge**: on.
-2. **Code security → Dependabot alerts** and **Dependabot security updates**: on.
-3. **Branches → Add rule for `main` → Require status checks to pass** →
+1. **Code security → Dependabot alerts** and **Dependabot security updates**: on.
+2. **Branches → Add rule for `main` → Require status checks to pass** →
    select `build-and-test`. Recommended, so nothing (Dependabot or a person)
    merges on red.
 
