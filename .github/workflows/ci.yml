@@ -32,8 +32,9 @@ jobs:
 
   # Merges Dependabot's patch and minor bumps once the job above has passed.
   # Majors, and updates whose type Dependabot can't tell (e.g. lockfile-only
-  # transitive fixes), stay open for a person. If branch protection requires
-  # other checks, --auto waits for those too.
+  # transitive fixes), stay open for a person. Merges directly rather than
+  # with --auto: `needs` already gates on green CI, and this way the repo
+  # doesn't need the "Allow auto-merge" setting.
   dependabot-auto-merge:
     needs: build-and-test
     if: >-
@@ -55,7 +56,7 @@ jobs:
         if: >-
           steps.meta.outputs.update-type == 'version-update:semver-patch' ||
           steps.meta.outputs.update-type == 'version-update:semver-minor'
-        run: gh pr merge --auto --squash "$PR_URL"
+        run: gh pr merge --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
