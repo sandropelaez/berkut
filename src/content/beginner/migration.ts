@@ -6,10 +6,12 @@ export const BEGINNER_MIGRATION_HEADER = `-- Berkut v1.6 — Beginner course rev
 -- Idempotent: safe to re-run.
 --
 -- Rebuilds the A1.1 path for complete beginners, following the sequence of
--- the beginner tutoring notes: greetings → alphabet & harmony → "I am"
--- endings → plurals → possessives & бар/жоқ → numbers, time & place →
--- present tense. Every lesson opens with ungraded TEACH cards that explain
--- the rule before the exercises practise it.
+-- the beginner tutoring notes: greetings → harmony → "I am" endings →
+-- plurals → possessives & бар/жоқ → numbers, time & place → present tense.
+-- The alphabet (u0, track='alphabet') sits beside that path: learners work
+-- through it alongside the units, and nothing on the path waits on it.
+-- Every lesson opens with ungraded TEACH cards that explain the rule before
+-- the exercises practise it.
 --
 -- The lessons these units previously held are archived (status='archived') and their
 -- vocab moves to the hidden u-legacy-a1 unit — nothing is deleted.`;

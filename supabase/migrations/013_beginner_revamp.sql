@@ -4,10 +4,12 @@
 -- Idempotent: safe to re-run.
 --
 -- Rebuilds the A1.1 path for complete beginners, following the sequence of
--- the beginner tutoring notes: greetings → alphabet & harmony → "I am"
--- endings → plurals → possessives & бар/жоқ → numbers, time & place →
--- present tense. Every lesson opens with ungraded TEACH cards that explain
--- the rule before the exercises practise it.
+-- the beginner tutoring notes: greetings → harmony → "I am" endings →
+-- plurals → possessives & бар/жоқ → numbers, time & place → present tense.
+-- The alphabet (u0, track='alphabet') sits beside that path: learners work
+-- through it alongside the units, and nothing on the path waits on it.
+-- Every lesson opens with ungraded TEACH cards that explain the rule before
+-- the exercises practise it.
 --
 -- The lessons these units previously held are archived (status='archived') and their
 -- vocab moves to the hidden u-legacy-a1 unit — nothing is deleted.
@@ -16,17 +18,23 @@
 alter table public.exercises drop constraint if exists exercises_type_check;
 alter table public.exercises add constraint exercises_type_check check (type in ('MULTIPLE_CHOICE', 'TRANSLATE_EN_KK', 'TRANSLATE_KK_EN', 'LISTENING', 'SPEAKING', 'MATCH_PAIRS', 'FILL_BLANK', 'TEACH'));
 
+-- ─── Units can sit beside the path (the alphabet) instead of on it ──────
+alter table public.units add column if not exists track text not null default 'path';
+alter table public.units drop constraint if exists units_track_check;
+alter table public.units add constraint units_track_check check (track in ('path', 'alphabet'));
+
 -- ─── Units ───────────────────────────────────────────────────────────────
-insert into public.units (id, language_code, "order", title_native, title_en, cefr_level, emoji, description, cultural_note, status) values
-  ('u1', 'kk', 1, 'Сәлем!', 'Greetings & Small Talk', 'A1', '👋', 'Say hello, introduce yourself, ask how someone is, and say goodbye.', 'Kazakh has two words for “you”: сіз (polite) and сен (friendly). Use сіз — and Сәлеметсіз бе! — with elders, strangers and at work; use сен and Сәлем! with friends, family and children. When in doubt, be polite: сіз is never rude.', 'active'),
-  ('u2', 'kk', 2, 'Әліпби', 'Alphabet & Sounds', 'A1', '🔤', '42 letters, the 9 uniquely Kazakh sounds, soft vs strong vowels, and stress.', 'Kazakh has changed scripts several times: Arabic script (reformed by Akhmet Baitursynuly into the simpler Töte alphabet), then Latin in the late 1920s, Cyrillic from around 1940 — and in 2017 Kazakhstan decided to move back to Latin. Berkut shows every word in both: switch scripts in Settings.', 'active'),
-  ('u3', 'kk', 3, 'Мен кіммін?', 'I am — Personal Endings', 'A1', '🪞', 'Pronouns, “I am / you are / we are” endings, and емес (not).', 'Kazakhs often introduce themselves by job, origin or family role: Мен дәрігермін (I''m a doctor), Мен қазақпын (I''m Kazakh). Even strangers are addressed with family words as a sign of respect — аға (elder brother) for an older man and апа (elder sister / auntie) for an older woman.', 'active'),
-  ('u4', 'kk', 4, 'Көпше түр', 'Plurals', 'A1', '🧮', '-лар/-лер, -дар/-дер, -тар/-тер — and when not to use them.', 'Алматы, Kazakhstan''s largest city, is named after apples (алма). Wild apple forests — the ancestors of the apples we eat today — still grow in the mountains above it, and the city''s old name Алма-Ата is often translated as “grandfather of apples”.', 'active'),
-  ('u5', 'kk', 5, 'Менің отбасым', 'My Family — my, your, I have', 'A1', '👨‍👩‍👧', 'Family words, my / your / his / our endings, and “I have / I don''t have” with бар and жоқ.', 'Kazakh has separate words for older and younger siblings: аға (older brother), әпке (older sister), іні (younger brother) — and two words for a younger sister: қарындас (a man''s younger sister) and сіңлі (a woman''s younger sister). Traditionally every Kazakh is expected to know their ancestors seven generations back — жеті ата.', 'active'),
-  ('u6', 'kk', 6, 'Сандар, уақыт, орын', 'Numbers, Time & Place', 'A1', '🕐', 'Count to 100, say your age, tell the time, name the days, and say where things are with -да/-де.', 'Kazakh weekday names come from Persian, counting from Saturday (сенбі): жексенбі (Sunday) is “day one”, дүйсенбі “day two”, сейсенбі “three”, сәрсенбі “four”, бейсенбі “five”. Friday, жұма, is named after Friday prayers.', 'active'),
-  ('u7', 'kk', 7, 'Не істейсің?', 'Everyday Verbs — Present Tense', 'A1', '☕', 'Everyday verbs in the present/future tense, word order, food & drink, negatives and yes/no questions.', 'Tea (шай) is at the heart of Kazakh hospitality — usually strong black tea with milk (сүтпен). The host pours only a little at a time and keeps refilling your cup; a cup filled to the brim can be a hint that it''s time to leave!', 'active')
+insert into public.units (id, language_code, "order", track, title_native, title_en, cefr_level, emoji, description, cultural_note, status) values
+  ('u0', 'kk', 0, 'alphabet', 'Әліпби', 'The Alphabet', 'A1', '🔤', '42 letters and the 9 sounds that are special to Kazakh.', 'Kazakh has changed scripts several times: Arabic script (reformed by Akhmet Baitursynuly into the simpler Töte alphabet), then Latin in the late 1920s, Cyrillic from around 1940 — and in 2017 Kazakhstan decided to move back to Latin. Berkut shows every word in both: switch scripts in Settings.', 'active'),
+  ('u1', 'kk', 1, 'path', 'Сәлем!', 'Greetings & Small Talk', 'A1', '👋', 'Say hello, introduce yourself, ask how someone is, and say goodbye.', 'Kazakh has two words for “you”: сіз (polite) and сен (friendly). Use сіз — and Сәлеметсіз бе! — with elders, strangers and at work; use сен and Сәлем! with friends, family and children. When in doubt, be polite: сіз is never rude.', 'active'),
+  ('u2', 'kk', 2, 'path', 'Үндестік', 'The Harmony Rule', 'A1', '🎶', 'Soft vs strong vowels, the three consonant groups, and where the stress falls.', 'Kazakh is a Turkic language, a close cousin of Kyrgyz, Tatar and Turkish. They all glue endings onto words and pick the ending by the same kind of harmony rule, so once it clicks here you''ll spot it across the whole family.', 'active'),
+  ('u3', 'kk', 3, 'path', 'Мен кіммін?', 'I am — Personal Endings', 'A1', '🪞', 'Pronouns, “I am / you are / we are” endings, and емес (not).', 'Kazakhs often introduce themselves by job, origin or family role: Мен дәрігермін (I''m a doctor), Мен қазақпын (I''m Kazakh). Even strangers are addressed with family words as a sign of respect — аға (elder brother) for an older man and апа (elder sister / auntie) for an older woman.', 'active'),
+  ('u4', 'kk', 4, 'path', 'Көпше түр', 'Plurals', 'A1', '🧮', '-лар/-лер, -дар/-дер, -тар/-тер — and when not to use them.', 'Алматы, Kazakhstan''s largest city, is named after apples (алма). Wild apple forests — the ancestors of the apples we eat today — still grow in the mountains above it, and the city''s old name Алма-Ата is often translated as “grandfather of apples”.', 'active'),
+  ('u5', 'kk', 5, 'path', 'Менің отбасым', 'My Family — my, your, I have', 'A1', '👨‍👩‍👧', 'Family words, my / your / his / our endings, and “I have / I don''t have” with бар and жоқ.', 'Kazakh has separate words for older and younger siblings: аға (older brother), әпке (older sister), іні (younger brother) — and two words for a younger sister: қарындас (a man''s younger sister) and сіңлі (a woman''s younger sister). Traditionally every Kazakh is expected to know their ancestors seven generations back — жеті ата.', 'active'),
+  ('u6', 'kk', 6, 'path', 'Сандар, уақыт, орын', 'Numbers, Time & Place', 'A1', '🕐', 'Count to 100, say your age, tell the time, name the days, and say where things are with -да/-де.', 'Kazakh weekday names come from Persian, counting from Saturday (сенбі): жексенбі (Sunday) is “day one”, дүйсенбі “day two”, сейсенбі “three”, сәрсенбі “four”, бейсенбі “five”. Friday, жұма, is named after Friday prayers.', 'active'),
+  ('u7', 'kk', 7, 'path', 'Не істейсің?', 'Everyday Verbs — Present Tense', 'A1', '☕', 'Everyday verbs in the present/future tense, word order, food & drink, negatives and yes/no questions.', 'Tea (шай) is at the heart of Kazakh hospitality — usually strong black tea with milk (сүтпен). The host pours only a little at a time and keeps refilling your cup; a cup filled to the brim can be a hint that it''s time to leave!', 'active')
 on conflict (id) do update set
-  language_code=excluded.language_code, "order"=excluded."order",
+  language_code=excluded.language_code, "order"=excluded."order", track=excluded.track,
   title_native=excluded.title_native, title_en=excluded.title_en,
   cefr_level=excluded.cefr_level, emoji=excluded.emoji,
   description=excluded.description, cultural_note=excluded.cultural_note,
@@ -35,26 +43,27 @@ on conflict (id) do update set
 -- ─── Retire the lessons and vocab these units used to hold ──────────────
 -- Archived (not deleted) so exercise reports and SRS history keep their rows.
 update public.lessons set status = 'archived'
-  where unit_id in ('u1', 'u2', 'u3', 'u4', 'u5', 'u6', 'u7')
-    and id not in ('u1-b1', 'u1-b2', 'u1-b3', 'u1-b4', 'u1-b5', 'u2-b1', 'u2-b2', 'u2-b3', 'u2-b4', 'u2-b5', 'u3-b1', 'u3-b2', 'u3-b3', 'u3-b4', 'u3-b5', 'u4-b1', 'u4-b2', 'u4-b3', 'u4-b4', 'u4-b5', 'u5-b1', 'u5-b2', 'u5-b3', 'u5-b4', 'u5-b5', 'u6-b1', 'u6-b2', 'u6-b3', 'u6-b4', 'u6-b5', 'u7-b1', 'u7-b2', 'u7-b3', 'u7-b4', 'u7-b5');
--- Old vocab moves to a hidden archived unit instead of being deleted.
+  where unit_id in ('u0', 'u1', 'u2', 'u3', 'u4', 'u5', 'u6', 'u7')
+    and id not in ('u0-b1', 'u0-b2', 'u0-b3', 'u1-b1', 'u1-b2', 'u1-b3', 'u1-b4', 'u1-b5', 'u2-b3', 'u2-b4', 'u3-b1', 'u3-b2', 'u3-b3', 'u3-b4', 'u3-b5', 'u4-b1', 'u4-b2', 'u4-b3', 'u4-b4', 'u4-b5', 'u5-b1', 'u5-b2', 'u5-b3', 'u5-b4', 'u5-b5', 'u6-b1', 'u6-b2', 'u6-b3', 'u6-b4', 'u6-b5', 'u7-b1', 'u7-b2', 'u7-b3', 'u7-b4', 'u7-b5');
+-- Vocab no longer in the source (the pre-v1.6 rows, and words that moved
+-- unit) goes to a hidden archived unit instead of being deleted.
 insert into public.units (id, language_code, "order", title_native, title_en, cefr_level, emoji, description, status) values
   ('u-legacy-a1', 'kk', 900, 'Ескі сөздер', 'Legacy A1 vocab (archived)', 'A1', '🗄️', 'Vocabulary from the pre-v1.6 A1 lessons, kept for reference. Not shown to learners.', 'archived')
 on conflict (id) do update set status = excluded.status;
-update public.vocab set unit_id = 'u-legacy-a1' where unit_id in ('u1', 'u2', 'u3', 'u4', 'u5', 'u6', 'u7') and id not like 'vb-%';
+update public.vocab set unit_id = 'u-legacy-a1' where unit_id in ('u0', 'u1', 'u2', 'u3', 'u4', 'u5', 'u6', 'u7') and id not in ('vb-u0-alem', 'vb-u0-ademi', 'vb-u0-dariger', 'vb-u0-til', 'vb-u0-kitap', 'vb-u0-bir', 'vb-u0-eki', 'vb-u0-ush', 'vb-u0-oner', 'vb-u0-ozen', 'vb-u0-uy', 'vb-u0-ul', 'vb-u0-uzyn', 'vb-u0-qar', 'vb-u0-aqsha', 'vb-u0-aga', 'vb-u0-agash', 'vb-u0-togyz', 'vb-u0-on', 'vb-u0-on-right', 'vb-u0-olen', 'vb-u0-aydahar', 'vb-u1-salem', 'vb-u1-salemetsiz', 'vb-u1-salemetsin', 'vb-u1-qayyrly', 'vb-u1-tan', 'vb-u1-kun', 'vb-u1-kesh', 'vb-u1-tun', 'vb-u1-atym', 'vb-u1-kim', 'vb-u1-qyanyshty', 'vb-u1-tanysqanyma', 'vb-u1-men-de', 'vb-u1-qalay', 'vb-u1-qalaysyz', 'vb-u1-qalaysyn', 'vb-u1-zhaqsy', 'vb-u1-zhaqsymyn', 'vb-u1-she', 'vb-u1-rakhmet', 'vb-u1-apta', 'vb-u1-sau-bol', 'vb-u1-sau-bolynyz', 'vb-u1-koriskenshe', 'vb-u1-qosh', 'vb-u1-iya', 'vb-u1-zhoq', 'vb-u2-bala', 'vb-u2-qala', 'vb-u2-ake', 'vb-u2-bolme', 'vb-u2-mektep', 'vb-u2-qys', 'vb-u2-qyz', 'vb-u2-qaz', 'vb-u2-qas', 'vb-u3-men', 'vb-u3-sen', 'vb-u3-siz', 'vb-u3-ol', 'vb-u3-biz', 'vb-u3-sender', 'vb-u3-sizder', 'vb-u3-olar', 'vb-u3-adam', 'vb-u3-bala', 'vb-u3-mugalim', 'vb-u3-inzhener', 'vb-u3-oqushy', 'vb-u3-khatshy', 'vb-u3-aspaz', 'vb-u3-ushqysh', 'vb-u3-qazaq', 'vb-u3-frantsuz', 'vb-u3-ariptes', 'vb-u3-meyirimdi', 'vb-u3-emes', 'vb-u3-bul', 'vb-u3-ana', 'vb-u3-ata', 'vb-u3-azhe', 'vb-u4-qala', 'vb-u4-dala', 'vb-u4-bolme', 'vb-u4-tereze', 'vb-u4-tau', 'vb-u4-alma', 'vb-u4-kompyuter', 'vb-u4-korshi', 'vb-u4-pater', 'vb-u4-ustel', 'vb-u4-telefon', 'vb-u4-qagaz', 'vb-u4-gul', 'vb-u4-soz', 'vb-u4-el', 'vb-u4-mysyq', 'vb-u4-it', 'vb-u4-zhurek', 'vb-u4-mektep', 'vb-u4-suret', 'vb-u4-dos', 'vb-u4-qaryndas', 'vb-u4-tuys', 'vb-u4-kop', 'vb-u5-otbasy', 'vb-u5-ana', 'vb-u5-ake', 'vb-u5-ata', 'vb-u5-azhe', 'vb-u5-aga', 'vb-u5-apke', 'vb-u5-ini', 'vb-u5-qaryndas', 'vb-u5-sinli', 'vb-u5-qyz', 'vb-u5-ul', 'vb-u5-ayel', 'vb-u5-ata-ana', 'vb-u5-menin', 'vb-u5-senin', 'vb-u5-sizdin', 'vb-u5-onyn', 'vb-u5-bizdin', 'vb-u5-bar', 'vb-u5-zhoq', 'vb-u5-ulken', 'vb-u5-zhumys', 'vb-u5-oryndyq', 'vb-u5-suraq', 'vb-u6-bir', 'vb-u6-eki', 'vb-u6-ush', 'vb-u6-tort', 'vb-u6-bes', 'vb-u6-alty', 'vb-u6-zheti', 'vb-u6-segiz', 'vb-u6-togyz', 'vb-u6-on', 'vb-u6-zhyirma', 'vb-u6-otyz', 'vb-u6-qyryq', 'vb-u6-elu', 'vb-u6-alpys', 'vb-u6-zhetpis', 'vb-u6-seksen', 'vb-u6-toqsan', 'vb-u6-zhuz', 'vb-u6-zhas', 'vb-u6-sagat', 'vb-u6-uyde', 'vb-u6-zhumysta', 'vb-u6-dalada', 'vb-u6-duysenbi', 'vb-u6-seysenbi', 'vb-u6-sarsenbi', 'vb-u6-beysenbi', 'vb-u6-zhuma', 'vb-u6-senbi', 'vb-u6-zheksenbi', 'vb-u6-apta', 'vb-u6-zhane', 'vb-u7-baru', 'vb-u7-kelu', 'vb-u7-ishu', 'vb-u7-zheu', 'vb-u7-turu', 'vb-u7-oyanu', 'vb-u7-isteu', 'vb-u7-zhasau', 'vb-u7-koru', 'vb-u7-zhazu', 'vb-u7-demalu', 'vb-u7-uyiqtau', 'vb-u7-pisiru', 'vb-u7-qarau', 'vb-u7-adette', 'vb-u7-kunde', 'vb-u7-bugin', 'vb-u7-erten', 'vb-u7-erte', 'vb-u7-shay', 'vb-u7-kofe', 'vb-u7-su', 'vb-u7-sut', 'vb-u7-tamaq', 'vb-u7-qara', 'vb-u7-kok', 'vb-u7-zhasyl', 'vb-u7-sabaq');
 
 -- ─── Lessons ─────────────────────────────────────────────────────────────
 insert into public.lessons (id, unit_id, "order", title_native, title_en, status) values
+  ('u0-b1', 'u0', 11, 'Ә, І, Ө, Ү, Ұ', 'Kazakh vowels', 'active'),
+  ('u0-b2', 'u0', 12, 'Қ, Ғ, Ң, Һ', 'Kazakh consonants', 'active'),
+  ('u0-b3', 'u0', 13, 'Шеберлік', 'Alphabet mastery', 'active'),
   ('u1-b1', 'u1', 11, 'Сәлеметсіз бе!', 'Saying hello', 'active'),
   ('u1-b2', 'u1', 12, 'Танысу', 'Introducing yourself', 'active'),
   ('u1-b3', 'u1', 13, 'Қалайсыз?', 'How are you?', 'active'),
   ('u1-b4', 'u1', 14, 'Сау болыңыз!', 'Goodbyes & polite words', 'active'),
   ('u1-b5', 'u1', 15, 'Диалог', 'Small-talk mastery', 'active'),
-  ('u2-b1', 'u2', 11, 'Ә, І, Ө, Ү, Ұ', 'Kazakh vowels', 'active'),
-  ('u2-b2', 'u2', 12, 'Қ, Ғ, Ң, Һ', 'Kazakh consonants', 'active'),
   ('u2-b3', 'u2', 13, 'Жіңішке және жуан', 'Soft & strong vowels', 'active'),
   ('u2-b4', 'u2', 14, 'Дауыссыздар', 'Consonant groups & stress', 'active'),
-  ('u2-b5', 'u2', 15, 'Шеберлік', 'Alphabet mastery', 'active'),
   ('u3-b1', 'u3', 11, 'Есімдіктер', 'Pronouns', 'active'),
   ('u3-b2', 'u3', 12, '-мын / -мін', 'I am: -мын / -мін', 'active'),
   ('u3-b3', 'u3', 13, '-бын/-бін, -пын/-пін', 'I am: -бын and -пын', 'active'),
@@ -87,6 +96,28 @@ on conflict (id) do update set
 
 -- ─── Vocab ───────────────────────────────────────────────────────────────
 insert into public.vocab (id, unit_id, native, english) values
+  ('vb-u0-alem', 'u0', 'әлем', 'world'),
+  ('vb-u0-ademi', 'u0', 'әдемі', 'beautiful'),
+  ('vb-u0-dariger', 'u0', 'дәрігер', 'doctor'),
+  ('vb-u0-til', 'u0', 'тіл', 'language / tongue'),
+  ('vb-u0-kitap', 'u0', 'кітап', 'book'),
+  ('vb-u0-bir', 'u0', 'бір', 'one'),
+  ('vb-u0-eki', 'u0', 'екі', 'two'),
+  ('vb-u0-ush', 'u0', 'үш', 'three'),
+  ('vb-u0-oner', 'u0', 'өнер', 'art'),
+  ('vb-u0-ozen', 'u0', 'өзен', 'river'),
+  ('vb-u0-uy', 'u0', 'үй', 'house / home'),
+  ('vb-u0-ul', 'u0', 'ұл', 'son / boy'),
+  ('vb-u0-uzyn', 'u0', 'ұзын', 'long'),
+  ('vb-u0-qar', 'u0', 'қар', 'snow'),
+  ('vb-u0-aqsha', 'u0', 'ақша', 'money'),
+  ('vb-u0-aga', 'u0', 'аға', 'elder brother'),
+  ('vb-u0-agash', 'u0', 'ағаш', 'tree'),
+  ('vb-u0-togyz', 'u0', 'тоғыз', 'nine'),
+  ('vb-u0-on', 'u0', 'он', 'ten'),
+  ('vb-u0-on-right', 'u0', 'оң', 'right (side)'),
+  ('vb-u0-olen', 'u0', 'өлең', 'song / poem'),
+  ('vb-u0-aydahar', 'u0', 'айдаһар', 'dragon'),
   ('vb-u1-salem', 'u1', 'сәлем', 'hi'),
   ('vb-u1-salemetsiz', 'u1', 'сәлеметсіз бе', 'hello (polite)'),
   ('vb-u1-salemetsin', 'u1', 'сәлеметсің бе', 'hello (friendly)'),
@@ -114,32 +145,15 @@ insert into public.vocab (id, unit_id, native, english) values
   ('vb-u1-qosh', 'u1', 'қош келдіңіз', 'welcome'),
   ('vb-u1-iya', 'u1', 'иә', 'yes'),
   ('vb-u1-zhoq', 'u1', 'жоқ', 'no'),
-  ('vb-u2-alem', 'u2', 'әлем', 'world'),
-  ('vb-u2-ademi', 'u2', 'әдемі', 'beautiful'),
-  ('vb-u2-dariger', 'u2', 'дәрігер', 'doctor'),
-  ('vb-u2-til', 'u2', 'тіл', 'language / tongue'),
-  ('vb-u2-kitap', 'u2', 'кітап', 'book'),
-  ('vb-u2-bir', 'u2', 'бір', 'one'),
-  ('vb-u2-eki', 'u2', 'екі', 'two'),
-  ('vb-u2-ush', 'u2', 'үш', 'three'),
-  ('vb-u2-oner', 'u2', 'өнер', 'art'),
-  ('vb-u2-ozen', 'u2', 'өзен', 'river'),
-  ('vb-u2-uy', 'u2', 'үй', 'house / home'),
-  ('vb-u2-ul', 'u2', 'ұл', 'son / boy'),
-  ('vb-u2-uzyn', 'u2', 'ұзын', 'long'),
-  ('vb-u2-qar', 'u2', 'қар', 'snow'),
+  ('vb-u2-bala', 'u2', 'бала', 'child'),
+  ('vb-u2-qala', 'u2', 'қала', 'city'),
+  ('vb-u2-ake', 'u2', 'әке', 'father'),
+  ('vb-u2-bolme', 'u2', 'бөлме', 'room'),
+  ('vb-u2-mektep', 'u2', 'мектеп', 'school'),
   ('vb-u2-qys', 'u2', 'қыс', 'winter'),
   ('vb-u2-qyz', 'u2', 'қыз', 'girl / daughter'),
   ('vb-u2-qaz', 'u2', 'қаз', 'goose'),
   ('vb-u2-qas', 'u2', 'қас', 'eyebrow'),
-  ('vb-u2-aqsha', 'u2', 'ақша', 'money'),
-  ('vb-u2-aga', 'u2', 'аға', 'elder brother'),
-  ('vb-u2-agash', 'u2', 'ағаш', 'tree'),
-  ('vb-u2-togyz', 'u2', 'тоғыз', 'nine'),
-  ('vb-u2-on', 'u2', 'он', 'ten'),
-  ('vb-u2-on-right', 'u2', 'оң', 'right (side)'),
-  ('vb-u2-olen', 'u2', 'өлең', 'song / poem'),
-  ('vb-u2-aydahar', 'u2', 'айдаһар', 'dragon'),
   ('vb-u3-men', 'u3', 'мен', 'I'),
   ('vb-u3-sen', 'u3', 'сен', 'you (friendly)'),
   ('vb-u3-siz', 'u3', 'сіз', 'you (polite)'),
@@ -281,8 +295,63 @@ on conflict (id) do update set
 -- ─── Exercises ───────────────────────────────────────────────────────────
 -- Drop exercises removed from the source since the last run, then upsert.
 delete from public.exercises
-  where lesson_id in ('u1-b1', 'u1-b2', 'u1-b3', 'u1-b4', 'u1-b5', 'u2-b1', 'u2-b2', 'u2-b3', 'u2-b4', 'u2-b5', 'u3-b1', 'u3-b2', 'u3-b3', 'u3-b4', 'u3-b5', 'u4-b1', 'u4-b2', 'u4-b3', 'u4-b4', 'u4-b5', 'u5-b1', 'u5-b2', 'u5-b3', 'u5-b4', 'u5-b5', 'u6-b1', 'u6-b2', 'u6-b3', 'u6-b4', 'u6-b5', 'u7-b1', 'u7-b2', 'u7-b3', 'u7-b4', 'u7-b5')
-    and id not in ('u1-b1-e1', 'u1-b1-e2', 'u1-b1-e3', 'u1-b1-e4', 'u1-b1-e5', 'u1-b1-e6', 'u1-b1-e7', 'u1-b1-e8', 'u1-b1-e9', 'u1-b1-e10', 'u1-b1-e11', 'u1-b1-e12', 'u1-b2-e1', 'u1-b2-e2', 'u1-b2-e3', 'u1-b2-e4', 'u1-b2-e5', 'u1-b2-e6', 'u1-b2-e7', 'u1-b2-e8', 'u1-b2-e9', 'u1-b2-e10', 'u1-b2-e11', 'u1-b2-e12', 'u1-b2-e13', 'u1-b3-e1', 'u1-b3-e2', 'u1-b3-e3', 'u1-b3-e4', 'u1-b3-e5', 'u1-b3-e6', 'u1-b3-e7', 'u1-b3-e8', 'u1-b3-e9', 'u1-b3-e10', 'u1-b3-e11', 'u1-b3-e12', 'u1-b3-e13', 'u1-b4-e1', 'u1-b4-e2', 'u1-b4-e3', 'u1-b4-e4', 'u1-b4-e5', 'u1-b4-e6', 'u1-b4-e7', 'u1-b4-e8', 'u1-b4-e9', 'u1-b4-e10', 'u1-b4-e11', 'u1-b4-e12', 'u1-b5-e1', 'u1-b5-e2', 'u1-b5-e3', 'u1-b5-e4', 'u1-b5-e5', 'u1-b5-e6', 'u1-b5-e7', 'u1-b5-e8', 'u1-b5-e9', 'u1-b5-e10', 'u1-b5-e11', 'u1-b5-e12', 'u1-b5-e13', 'u2-b1-e1', 'u2-b1-e2', 'u2-b1-e3', 'u2-b1-e4', 'u2-b1-e5', 'u2-b1-e6', 'u2-b1-e7', 'u2-b1-e8', 'u2-b1-e9', 'u2-b1-e10', 'u2-b1-e11', 'u2-b1-e12', 'u2-b1-e13', 'u2-b2-e1', 'u2-b2-e2', 'u2-b2-e3', 'u2-b2-e4', 'u2-b2-e5', 'u2-b2-e6', 'u2-b2-e7', 'u2-b2-e8', 'u2-b2-e9', 'u2-b2-e10', 'u2-b2-e11', 'u2-b2-e12', 'u2-b3-e1', 'u2-b3-e2', 'u2-b3-e3', 'u2-b3-e4', 'u2-b3-e5', 'u2-b3-e6', 'u2-b3-e7', 'u2-b3-e8', 'u2-b3-e9', 'u2-b3-e10', 'u2-b3-e11', 'u2-b3-e12', 'u2-b3-e13', 'u2-b4-e1', 'u2-b4-e2', 'u2-b4-e3', 'u2-b4-e4', 'u2-b4-e5', 'u2-b4-e6', 'u2-b4-e7', 'u2-b4-e8', 'u2-b4-e9', 'u2-b4-e10', 'u2-b4-e11', 'u2-b4-e12', 'u2-b4-e13', 'u2-b5-e1', 'u2-b5-e2', 'u2-b5-e3', 'u2-b5-e4', 'u2-b5-e5', 'u2-b5-e6', 'u2-b5-e7', 'u2-b5-e8', 'u2-b5-e9', 'u2-b5-e10', 'u2-b5-e11', 'u2-b5-e12', 'u3-b1-e1', 'u3-b1-e2', 'u3-b1-e3', 'u3-b1-e4', 'u3-b1-e5', 'u3-b1-e6', 'u3-b1-e7', 'u3-b1-e8', 'u3-b1-e9', 'u3-b1-e10', 'u3-b2-e1', 'u3-b2-e2', 'u3-b2-e3', 'u3-b2-e4', 'u3-b2-e5', 'u3-b2-e6', 'u3-b2-e7', 'u3-b2-e8', 'u3-b2-e9', 'u3-b2-e10', 'u3-b2-e11', 'u3-b2-e12', 'u3-b2-e13', 'u3-b3-e1', 'u3-b3-e2', 'u3-b3-e3', 'u3-b3-e4', 'u3-b3-e5', 'u3-b3-e6', 'u3-b3-e7', 'u3-b3-e8', 'u3-b3-e9', 'u3-b3-e10', 'u3-b3-e11', 'u3-b3-e12', 'u3-b3-e13', 'u3-b3-e14', 'u3-b4-e1', 'u3-b4-e2', 'u3-b4-e3', 'u3-b4-e4', 'u3-b4-e5', 'u3-b4-e6', 'u3-b4-e7', 'u3-b4-e8', 'u3-b4-e9', 'u3-b4-e10', 'u3-b4-e11', 'u3-b4-e12', 'u3-b4-e13', 'u3-b4-e14', 'u3-b5-e1', 'u3-b5-e2', 'u3-b5-e3', 'u3-b5-e4', 'u3-b5-e5', 'u3-b5-e6', 'u3-b5-e7', 'u3-b5-e8', 'u3-b5-e9', 'u3-b5-e10', 'u3-b5-e11', 'u3-b5-e12', 'u3-b5-e13', 'u4-b1-e1', 'u4-b1-e2', 'u4-b1-e3', 'u4-b1-e4', 'u4-b1-e5', 'u4-b1-e6', 'u4-b1-e7', 'u4-b1-e8', 'u4-b1-e9', 'u4-b1-e10', 'u4-b1-e11', 'u4-b2-e1', 'u4-b2-e2', 'u4-b2-e3', 'u4-b2-e4', 'u4-b2-e5', 'u4-b2-e6', 'u4-b2-e7', 'u4-b2-e8', 'u4-b2-e9', 'u4-b2-e10', 'u4-b2-e11', 'u4-b2-e12', 'u4-b3-e1', 'u4-b3-e2', 'u4-b3-e3', 'u4-b3-e4', 'u4-b3-e5', 'u4-b3-e6', 'u4-b3-e7', 'u4-b3-e8', 'u4-b3-e9', 'u4-b3-e10', 'u4-b3-e11', 'u4-b4-e1', 'u4-b4-e2', 'u4-b4-e3', 'u4-b4-e4', 'u4-b4-e5', 'u4-b4-e6', 'u4-b4-e7', 'u4-b4-e8', 'u4-b4-e9', 'u4-b4-e10', 'u4-b4-e11', 'u4-b4-e12', 'u4-b4-e13', 'u4-b5-e1', 'u4-b5-e2', 'u4-b5-e3', 'u4-b5-e4', 'u4-b5-e5', 'u4-b5-e6', 'u4-b5-e7', 'u4-b5-e8', 'u4-b5-e9', 'u4-b5-e10', 'u4-b5-e11', 'u4-b5-e12', 'u5-b1-e1', 'u5-b1-e2', 'u5-b1-e3', 'u5-b1-e4', 'u5-b1-e5', 'u5-b1-e6', 'u5-b1-e7', 'u5-b1-e8', 'u5-b1-e9', 'u5-b1-e10', 'u5-b1-e11', 'u5-b2-e1', 'u5-b2-e2', 'u5-b2-e3', 'u5-b2-e4', 'u5-b2-e5', 'u5-b2-e6', 'u5-b2-e7', 'u5-b2-e8', 'u5-b2-e9', 'u5-b2-e10', 'u5-b2-e11', 'u5-b2-e12', 'u5-b2-e13', 'u5-b2-e14', 'u5-b3-e1', 'u5-b3-e2', 'u5-b3-e3', 'u5-b3-e4', 'u5-b3-e5', 'u5-b3-e6', 'u5-b3-e7', 'u5-b3-e8', 'u5-b3-e9', 'u5-b3-e10', 'u5-b3-e11', 'u5-b3-e12', 'u5-b3-e13', 'u5-b3-e14', 'u5-b4-e1', 'u5-b4-e2', 'u5-b4-e3', 'u5-b4-e4', 'u5-b4-e5', 'u5-b4-e6', 'u5-b4-e7', 'u5-b4-e8', 'u5-b4-e9', 'u5-b4-e10', 'u5-b4-e11', 'u5-b4-e12', 'u5-b4-e13', 'u5-b5-e1', 'u5-b5-e2', 'u5-b5-e3', 'u5-b5-e4', 'u5-b5-e5', 'u5-b5-e6', 'u5-b5-e7', 'u5-b5-e8', 'u5-b5-e9', 'u5-b5-e10', 'u5-b5-e11', 'u5-b5-e12', 'u5-b5-e13', 'u5-b5-e14', 'u6-b1-e1', 'u6-b1-e2', 'u6-b1-e3', 'u6-b1-e4', 'u6-b1-e5', 'u6-b1-e6', 'u6-b1-e7', 'u6-b1-e8', 'u6-b1-e9', 'u6-b1-e10', 'u6-b1-e11', 'u6-b1-e12', 'u6-b2-e1', 'u6-b2-e2', 'u6-b2-e3', 'u6-b2-e4', 'u6-b2-e5', 'u6-b2-e6', 'u6-b2-e7', 'u6-b2-e8', 'u6-b2-e9', 'u6-b2-e10', 'u6-b2-e11', 'u6-b3-e1', 'u6-b3-e2', 'u6-b3-e3', 'u6-b3-e4', 'u6-b3-e5', 'u6-b3-e6', 'u6-b3-e7', 'u6-b3-e8', 'u6-b3-e9', 'u6-b3-e10', 'u6-b3-e11', 'u6-b3-e12', 'u6-b3-e13', 'u6-b3-e14', 'u6-b3-e15', 'u6-b4-e1', 'u6-b4-e2', 'u6-b4-e3', 'u6-b4-e4', 'u6-b4-e5', 'u6-b4-e6', 'u6-b4-e7', 'u6-b4-e8', 'u6-b4-e9', 'u6-b4-e10', 'u6-b4-e11', 'u6-b4-e12', 'u6-b4-e13', 'u6-b5-e1', 'u6-b5-e2', 'u6-b5-e3', 'u6-b5-e4', 'u6-b5-e5', 'u6-b5-e6', 'u6-b5-e7', 'u6-b5-e8', 'u6-b5-e9', 'u6-b5-e10', 'u6-b5-e11', 'u6-b5-e12', 'u7-b1-e1', 'u7-b1-e2', 'u7-b1-e3', 'u7-b1-e4', 'u7-b1-e5', 'u7-b1-e6', 'u7-b1-e7', 'u7-b1-e8', 'u7-b1-e9', 'u7-b1-e10', 'u7-b1-e11', 'u7-b2-e1', 'u7-b2-e2', 'u7-b2-e3', 'u7-b2-e4', 'u7-b2-e5', 'u7-b2-e6', 'u7-b2-e7', 'u7-b2-e8', 'u7-b2-e9', 'u7-b2-e10', 'u7-b2-e11', 'u7-b2-e12', 'u7-b3-e1', 'u7-b3-e2', 'u7-b3-e3', 'u7-b3-e4', 'u7-b3-e5', 'u7-b3-e6', 'u7-b3-e7', 'u7-b3-e8', 'u7-b3-e9', 'u7-b3-e10', 'u7-b3-e11', 'u7-b3-e12', 'u7-b3-e13', 'u7-b4-e1', 'u7-b4-e2', 'u7-b4-e3', 'u7-b4-e4', 'u7-b4-e5', 'u7-b4-e6', 'u7-b4-e7', 'u7-b4-e8', 'u7-b4-e9', 'u7-b4-e10', 'u7-b4-e11', 'u7-b4-e12', 'u7-b5-e1', 'u7-b5-e2', 'u7-b5-e3', 'u7-b5-e4', 'u7-b5-e5', 'u7-b5-e6', 'u7-b5-e7', 'u7-b5-e8', 'u7-b5-e9', 'u7-b5-e10', 'u7-b5-e11', 'u7-b5-e12', 'u7-b5-e13', 'u7-b5-e14');
+  where lesson_id in ('u0-b1', 'u0-b2', 'u0-b3', 'u1-b1', 'u1-b2', 'u1-b3', 'u1-b4', 'u1-b5', 'u2-b3', 'u2-b4', 'u3-b1', 'u3-b2', 'u3-b3', 'u3-b4', 'u3-b5', 'u4-b1', 'u4-b2', 'u4-b3', 'u4-b4', 'u4-b5', 'u5-b1', 'u5-b2', 'u5-b3', 'u5-b4', 'u5-b5', 'u6-b1', 'u6-b2', 'u6-b3', 'u6-b4', 'u6-b5', 'u7-b1', 'u7-b2', 'u7-b3', 'u7-b4', 'u7-b5')
+    and id not in ('u0-b1-e1', 'u0-b1-e2', 'u0-b1-e3', 'u0-b1-e4', 'u0-b1-e5', 'u0-b1-e6', 'u0-b1-e7', 'u0-b1-e8', 'u0-b1-e9', 'u0-b1-e10', 'u0-b1-e11', 'u0-b1-e12', 'u0-b1-e13', 'u0-b2-e1', 'u0-b2-e2', 'u0-b2-e3', 'u0-b2-e4', 'u0-b2-e5', 'u0-b2-e6', 'u0-b2-e7', 'u0-b2-e8', 'u0-b2-e9', 'u0-b2-e10', 'u0-b2-e11', 'u0-b2-e12', 'u0-b3-e1', 'u0-b3-e2', 'u0-b3-e3', 'u0-b3-e4', 'u0-b3-e5', 'u0-b3-e6', 'u0-b3-e7', 'u0-b3-e8', 'u0-b3-e9', 'u0-b3-e10', 'u0-b3-e11', 'u0-b3-e12', 'u1-b1-e1', 'u1-b1-e2', 'u1-b1-e3', 'u1-b1-e4', 'u1-b1-e5', 'u1-b1-e6', 'u1-b1-e7', 'u1-b1-e8', 'u1-b1-e9', 'u1-b1-e10', 'u1-b1-e11', 'u1-b1-e12', 'u1-b2-e1', 'u1-b2-e2', 'u1-b2-e3', 'u1-b2-e4', 'u1-b2-e5', 'u1-b2-e6', 'u1-b2-e7', 'u1-b2-e8', 'u1-b2-e9', 'u1-b2-e10', 'u1-b2-e11', 'u1-b2-e12', 'u1-b2-e13', 'u1-b3-e1', 'u1-b3-e2', 'u1-b3-e3', 'u1-b3-e4', 'u1-b3-e5', 'u1-b3-e6', 'u1-b3-e7', 'u1-b3-e8', 'u1-b3-e9', 'u1-b3-e10', 'u1-b3-e11', 'u1-b3-e12', 'u1-b3-e13', 'u1-b4-e1', 'u1-b4-e2', 'u1-b4-e3', 'u1-b4-e4', 'u1-b4-e5', 'u1-b4-e6', 'u1-b4-e7', 'u1-b4-e8', 'u1-b4-e9', 'u1-b4-e10', 'u1-b4-e11', 'u1-b4-e12', 'u1-b5-e1', 'u1-b5-e2', 'u1-b5-e3', 'u1-b5-e4', 'u1-b5-e5', 'u1-b5-e6', 'u1-b5-e7', 'u1-b5-e8', 'u1-b5-e9', 'u1-b5-e10', 'u1-b5-e11', 'u1-b5-e12', 'u1-b5-e13', 'u2-b3-e1', 'u2-b3-e2', 'u2-b3-e3', 'u2-b3-e4', 'u2-b3-e5', 'u2-b3-e6', 'u2-b3-e7', 'u2-b3-e8', 'u2-b3-e9', 'u2-b3-e10', 'u2-b3-e11', 'u2-b3-e12', 'u2-b3-e13', 'u2-b3-e14', 'u2-b3-e15', 'u2-b3-e16', 'u2-b4-e1', 'u2-b4-e2', 'u2-b4-e3', 'u2-b4-e4', 'u2-b4-e5', 'u2-b4-e6', 'u2-b4-e7', 'u2-b4-e8', 'u2-b4-e9', 'u2-b4-e10', 'u2-b4-e11', 'u2-b4-e12', 'u2-b4-e13', 'u2-b4-e14', 'u3-b1-e1', 'u3-b1-e2', 'u3-b1-e3', 'u3-b1-e4', 'u3-b1-e5', 'u3-b1-e6', 'u3-b1-e7', 'u3-b1-e8', 'u3-b1-e9', 'u3-b1-e10', 'u3-b2-e1', 'u3-b2-e2', 'u3-b2-e3', 'u3-b2-e4', 'u3-b2-e5', 'u3-b2-e6', 'u3-b2-e7', 'u3-b2-e8', 'u3-b2-e9', 'u3-b2-e10', 'u3-b2-e11', 'u3-b2-e12', 'u3-b2-e13', 'u3-b3-e1', 'u3-b3-e2', 'u3-b3-e3', 'u3-b3-e4', 'u3-b3-e5', 'u3-b3-e6', 'u3-b3-e7', 'u3-b3-e8', 'u3-b3-e9', 'u3-b3-e10', 'u3-b3-e11', 'u3-b3-e12', 'u3-b3-e13', 'u3-b3-e14', 'u3-b4-e1', 'u3-b4-e2', 'u3-b4-e3', 'u3-b4-e4', 'u3-b4-e5', 'u3-b4-e6', 'u3-b4-e7', 'u3-b4-e8', 'u3-b4-e9', 'u3-b4-e10', 'u3-b4-e11', 'u3-b4-e12', 'u3-b4-e13', 'u3-b4-e14', 'u3-b5-e1', 'u3-b5-e2', 'u3-b5-e3', 'u3-b5-e4', 'u3-b5-e5', 'u3-b5-e6', 'u3-b5-e7', 'u3-b5-e8', 'u3-b5-e9', 'u3-b5-e10', 'u3-b5-e11', 'u3-b5-e12', 'u3-b5-e13', 'u4-b1-e1', 'u4-b1-e2', 'u4-b1-e3', 'u4-b1-e4', 'u4-b1-e5', 'u4-b1-e6', 'u4-b1-e7', 'u4-b1-e8', 'u4-b1-e9', 'u4-b1-e10', 'u4-b1-e11', 'u4-b2-e1', 'u4-b2-e2', 'u4-b2-e3', 'u4-b2-e4', 'u4-b2-e5', 'u4-b2-e6', 'u4-b2-e7', 'u4-b2-e8', 'u4-b2-e9', 'u4-b2-e10', 'u4-b2-e11', 'u4-b2-e12', 'u4-b3-e1', 'u4-b3-e2', 'u4-b3-e3', 'u4-b3-e4', 'u4-b3-e5', 'u4-b3-e6', 'u4-b3-e7', 'u4-b3-e8', 'u4-b3-e9', 'u4-b3-e10', 'u4-b3-e11', 'u4-b4-e1', 'u4-b4-e2', 'u4-b4-e3', 'u4-b4-e4', 'u4-b4-e5', 'u4-b4-e6', 'u4-b4-e7', 'u4-b4-e8', 'u4-b4-e9', 'u4-b4-e10', 'u4-b4-e11', 'u4-b4-e12', 'u4-b4-e13', 'u4-b5-e1', 'u4-b5-e2', 'u4-b5-e3', 'u4-b5-e4', 'u4-b5-e5', 'u4-b5-e6', 'u4-b5-e7', 'u4-b5-e8', 'u4-b5-e9', 'u4-b5-e10', 'u4-b5-e11', 'u4-b5-e12', 'u5-b1-e1', 'u5-b1-e2', 'u5-b1-e3', 'u5-b1-e4', 'u5-b1-e5', 'u5-b1-e6', 'u5-b1-e7', 'u5-b1-e8', 'u5-b1-e9', 'u5-b1-e10', 'u5-b1-e11', 'u5-b2-e1', 'u5-b2-e2', 'u5-b2-e3', 'u5-b2-e4', 'u5-b2-e5', 'u5-b2-e6', 'u5-b2-e7', 'u5-b2-e8', 'u5-b2-e9', 'u5-b2-e10', 'u5-b2-e11', 'u5-b2-e12', 'u5-b2-e13', 'u5-b2-e14', 'u5-b3-e1', 'u5-b3-e2', 'u5-b3-e3', 'u5-b3-e4', 'u5-b3-e5', 'u5-b3-e6', 'u5-b3-e7', 'u5-b3-e8', 'u5-b3-e9', 'u5-b3-e10', 'u5-b3-e11', 'u5-b3-e12', 'u5-b3-e13', 'u5-b3-e14', 'u5-b4-e1', 'u5-b4-e2', 'u5-b4-e3', 'u5-b4-e4', 'u5-b4-e5', 'u5-b4-e6', 'u5-b4-e7', 'u5-b4-e8', 'u5-b4-e9', 'u5-b4-e10', 'u5-b4-e11', 'u5-b4-e12', 'u5-b4-e13', 'u5-b5-e1', 'u5-b5-e2', 'u5-b5-e3', 'u5-b5-e4', 'u5-b5-e5', 'u5-b5-e6', 'u5-b5-e7', 'u5-b5-e8', 'u5-b5-e9', 'u5-b5-e10', 'u5-b5-e11', 'u5-b5-e12', 'u5-b5-e13', 'u5-b5-e14', 'u6-b1-e1', 'u6-b1-e2', 'u6-b1-e3', 'u6-b1-e4', 'u6-b1-e5', 'u6-b1-e6', 'u6-b1-e7', 'u6-b1-e8', 'u6-b1-e9', 'u6-b1-e10', 'u6-b1-e11', 'u6-b1-e12', 'u6-b2-e1', 'u6-b2-e2', 'u6-b2-e3', 'u6-b2-e4', 'u6-b2-e5', 'u6-b2-e6', 'u6-b2-e7', 'u6-b2-e8', 'u6-b2-e9', 'u6-b2-e10', 'u6-b2-e11', 'u6-b3-e1', 'u6-b3-e2', 'u6-b3-e3', 'u6-b3-e4', 'u6-b3-e5', 'u6-b3-e6', 'u6-b3-e7', 'u6-b3-e8', 'u6-b3-e9', 'u6-b3-e10', 'u6-b3-e11', 'u6-b3-e12', 'u6-b3-e13', 'u6-b3-e14', 'u6-b3-e15', 'u6-b4-e1', 'u6-b4-e2', 'u6-b4-e3', 'u6-b4-e4', 'u6-b4-e5', 'u6-b4-e6', 'u6-b4-e7', 'u6-b4-e8', 'u6-b4-e9', 'u6-b4-e10', 'u6-b4-e11', 'u6-b4-e12', 'u6-b4-e13', 'u6-b5-e1', 'u6-b5-e2', 'u6-b5-e3', 'u6-b5-e4', 'u6-b5-e5', 'u6-b5-e6', 'u6-b5-e7', 'u6-b5-e8', 'u6-b5-e9', 'u6-b5-e10', 'u6-b5-e11', 'u6-b5-e12', 'u7-b1-e1', 'u7-b1-e2', 'u7-b1-e3', 'u7-b1-e4', 'u7-b1-e5', 'u7-b1-e6', 'u7-b1-e7', 'u7-b1-e8', 'u7-b1-e9', 'u7-b1-e10', 'u7-b1-e11', 'u7-b2-e1', 'u7-b2-e2', 'u7-b2-e3', 'u7-b2-e4', 'u7-b2-e5', 'u7-b2-e6', 'u7-b2-e7', 'u7-b2-e8', 'u7-b2-e9', 'u7-b2-e10', 'u7-b2-e11', 'u7-b2-e12', 'u7-b3-e1', 'u7-b3-e2', 'u7-b3-e3', 'u7-b3-e4', 'u7-b3-e5', 'u7-b3-e6', 'u7-b3-e7', 'u7-b3-e8', 'u7-b3-e9', 'u7-b3-e10', 'u7-b3-e11', 'u7-b3-e12', 'u7-b3-e13', 'u7-b4-e1', 'u7-b4-e2', 'u7-b4-e3', 'u7-b4-e4', 'u7-b4-e5', 'u7-b4-e6', 'u7-b4-e7', 'u7-b4-e8', 'u7-b4-e9', 'u7-b4-e10', 'u7-b4-e11', 'u7-b4-e12', 'u7-b5-e1', 'u7-b5-e2', 'u7-b5-e3', 'u7-b5-e4', 'u7-b5-e5', 'u7-b5-e6', 'u7-b5-e7', 'u7-b5-e8', 'u7-b5-e9', 'u7-b5-e10', 'u7-b5-e11', 'u7-b5-e12', 'u7-b5-e13', 'u7-b5-e14');
+
+-- u0-b1
+insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
+  ('u0-b1-e1', 'u0-b1', 1, 'TEACH', '{"type":"TEACH","title":"42 letters","body":["The Kazakh Cyrillic alphabet has **42 letters**. 33 are the same as Russian.","**9 letters are special to Kazakh**: Ә І Ң Ғ Ү Ұ Қ Ө Һ.","Ф, в, ц, ч, щ, ъ, ь, э, ё, ю, я appear mostly in borrowed words."],"tip":"Tap any example to hear it."}'::jsonb, 'active', 'high'),
+  ('u0-b1-e2', 'u0-b1', 2, 'TEACH', '{"type":"TEACH","title":"Ә and І","body":["**Ә** sounds like the *a* in *apple* or *man*.","**І** is a short *i*, like in *till*."],"examples":[{"kk":"сәлем","en":"hello"},{"kk":"әдемі","en":"beautiful"},{"kk":"дәрігер","en":"doctor"},{"kk":"тіл","en":"language / tongue"},{"kk":"кітап","en":"book"},{"kk":"бір","en":"one"}]}'::jsonb, 'active', 'high'),
+  ('u0-b1-e3', 'u0-b1', 3, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"тіл","options":["son","house","snow","language"],"correctAns":"language"}'::jsonb, 'active', 'high'),
+  ('u0-b1-e4', 'u0-b1', 4, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"кітап","options":["book","river","doctor","tree"],"correctAns":"book"}'::jsonb, 'active', 'high'),
+  ('u0-b1-e5', 'u0-b1', 5, 'LISTENING', '{"type":"LISTENING","audioKk":"әдемі","options":["адемі","әдеми","әдемі"],"correctAns":"әдемі"}'::jsonb, 'active', 'high'),
+  ('u0-b1-e6', 'u0-b1', 6, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"дәрігер","options":["doctor","teacher","world","child"],"correctAns":"doctor"}'::jsonb, 'active', 'high'),
+  ('u0-b1-e7', 'u0-b1', 7, 'TEACH', '{"type":"TEACH","title":"Ө, Ү and Ұ","body":["**Ө** — like the *ea* in *early*.","**Ү** — say *oo* with your tongue pushed forward (like German *ü*).","**Ұ** — a short *u*, like in *pull*, with the tongue pulled back."],"examples":[{"kk":"өнер","en":"art"},{"kk":"өзен","en":"river"},{"kk":"үй","en":"house"},{"kk":"үш","en":"three"},{"kk":"ұл","en":"son / boy"},{"kk":"ұзын","en":"long"}]}'::jsonb, 'active', 'high'),
+  ('u0-b1-e8', 'u0-b1', 8, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["","й"],"options":["ү","ұ","ө"],"correctAns":"ү","hintEn":"house — үй"}'::jsonb, 'active', 'high'),
+  ('u0-b1-e9', 'u0-b1', 9, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["","л"],"options":["ө","ү","ұ"],"correctAns":"ұ","hintEn":"son / boy — ұл"}'::jsonb, 'active', 'high'),
+  ('u0-b1-e10', 'u0-b1', 10, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["","зен"],"options":["о","ә","ө"],"correctAns":"ө","hintEn":"river — өзен"}'::jsonb, 'active', 'high'),
+  ('u0-b1-e11', 'u0-b1', 11, 'LISTENING', '{"type":"LISTENING","audioKk":"үш","options":["іш","үш","ұш"],"correctAns":"үш"}'::jsonb, 'active', 'high'),
+  ('u0-b1-e12', 'u0-b1', 12, 'MATCH_PAIRS', '{"type":"MATCH_PAIRS","pairs":[{"kazakh":"үй","english":"house"},{"kazakh":"ұл","english":"son"},{"kazakh":"өзен","english":"river"},{"kazakh":"бір","english":"one"},{"kazakh":"әдемі","english":"beautiful"}]}'::jsonb, 'active', 'high'),
+  ('u0-b1-e13', 'u0-b1', 13, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"өнер","options":["world","art","river","apricot"],"correctAns":"art"}'::jsonb, 'active', 'high')
+on conflict (id) do update set
+  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
+  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
+
+-- u0-b2
+insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
+  ('u0-b2-e1', 'u0-b2', 1, 'TEACH', '{"type":"TEACH","title":"Қ and Ғ","body":["**Қ** is a deep *k* made at the back of the throat.","**Ғ** is a soft, gargled *g* — close to the French *r*."],"examples":[{"kk":"қар","en":"snow"},{"kk":"қыс","en":"winter"},{"kk":"ақша","en":"money"},{"kk":"аға","en":"elder brother"},{"kk":"ағаш","en":"tree"},{"kk":"тоғыз","en":"nine"}]}'::jsonb, 'active', 'high'),
+  ('u0-b2-e2', 'u0-b2', 2, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"қар","options":["money","snow","winter","tree"],"correctAns":"snow"}'::jsonb, 'active', 'high'),
+  ('u0-b2-e3', 'u0-b2', 3, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"ағаш","options":["snow","river","tree","nine"],"correctAns":"tree"}'::jsonb, 'active', 'high'),
+  ('u0-b2-e4', 'u0-b2', 4, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["","ар"],"options":["қ","к","ғ"],"correctAns":"қ","hintEn":"snow — қар"}'::jsonb, 'active', 'high'),
+  ('u0-b2-e5', 'u0-b2', 5, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["а","а"],"options":["қ","ғ","г"],"correctAns":"ғ","hintEn":"elder brother — аға"}'::jsonb, 'active', 'high'),
+  ('u0-b2-e6', 'u0-b2', 6, 'LISTENING', '{"type":"LISTENING","audioKk":"ақша","options":["аша","ағша","ақша"],"correctAns":"ақша"}'::jsonb, 'active', 'high'),
+  ('u0-b2-e7', 'u0-b2', 7, 'TEACH', '{"type":"TEACH","title":"Ң and Һ","body":["**Ң** is the *ng* in *song* — never a separate *n* + *g*.","**Һ** is the English *h*. It''s rare: only a handful of words use it."],"examples":[{"kk":"өлең","en":"song / poem"},{"kk":"он","en":"ten"},{"kk":"оң","en":"right (side)"},{"kk":"айдаһар","en":"dragon"}],"tip":"**он** = ten, but **оң** = right. One letter changes the meaning!"}'::jsonb, 'active', 'high'),
+  ('u0-b2-e8', 'u0-b2', 8, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"он","questionEn":"What does this mean?","options":["ten","son","right","snow"],"correctAns":"ten"}'::jsonb, 'active', 'high'),
+  ('u0-b2-e9', 'u0-b2', 9, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"оң","questionEn":"What does this mean?","options":["song","nine","right (side)","ten"],"correctAns":"right (side)"}'::jsonb, 'active', 'high'),
+  ('u0-b2-e10', 'u0-b2', 10, 'MATCH_PAIRS', '{"type":"MATCH_PAIRS","pairs":[{"kazakh":"он","english":"ten"},{"kazakh":"оң","english":"right"},{"kazakh":"тоғыз","english":"nine"},{"kazakh":"ақша","english":"money"},{"kazakh":"айдаһар","english":"dragon"}]}'::jsonb, 'active', 'high'),
+  ('u0-b2-e11', 'u0-b2', 11, 'LISTENING', '{"type":"LISTENING","audioKk":"өлең","options":["өлен","олең","өлең"],"correctAns":"өлең"}'::jsonb, 'active', 'high'),
+  ('u0-b2-e12', 'u0-b2', 12, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"қыс","options":["snow","winter","girl","goose"],"correctAns":"winter"}'::jsonb, 'active', 'high')
+on conflict (id) do update set
+  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
+  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
+
+-- u0-b3
+insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
+  ('u0-b3-e1', 'u0-b3', 1, 'TEACH', '{"type":"TEACH","title":"Review","body":["9 Kazakh letters: **Ә І Ң Ғ Ү Ұ Қ Ө Һ**.","Vowels **ә і ө ү ұ** · consonants **қ ғ ң һ**."],"tip":"**он** = ten, **оң** = right: one letter changes the word."}'::jsonb, 'active', 'high'),
+  ('u0-b3-e2', 'u0-b3', 2, 'MATCH_PAIRS', '{"type":"MATCH_PAIRS","pairs":[{"kazakh":"қар","english":"snow"},{"kazakh":"ағаш","english":"tree"},{"kazakh":"үй","english":"house"},{"kazakh":"тіл","english":"language"},{"kazakh":"өзен","english":"river"}]}'::jsonb, 'active', 'high'),
+  ('u0-b3-e3', 'u0-b3', 3, 'MATCH_PAIRS', '{"type":"MATCH_PAIRS","pairs":[{"kazakh":"бір","english":"one"},{"kazakh":"екі","english":"two"},{"kazakh":"үш","english":"three"},{"kazakh":"тоғыз","english":"nine"},{"kazakh":"он","english":"ten"}]}'::jsonb, 'active', 'high'),
+  ('u0-b3-e4', 'u0-b3', 4, 'LISTENING', '{"type":"LISTENING","audioKk":"айдаһар","options":["айдағар","айдар","айдаһар"],"correctAns":"айдаһар"}'::jsonb, 'active', 'high'),
+  ('u0-b3-e5', 'u0-b3', 5, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["","ір"],"options":["б","п","м"],"correctAns":"б","hintEn":"one — бір"}'::jsonb, 'active', 'high'),
+  ('u0-b3-e6', 'u0-b3', 6, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"екі","options":["one","nine","two","three"],"correctAns":"two"}'::jsonb, 'active', 'high'),
+  ('u0-b3-e7', 'u0-b3', 7, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["а","аш"],"options":["ғ","қ","г"],"correctAns":"ғ","hintEn":"tree — ағаш"}'::jsonb, 'active', 'high'),
+  ('u0-b3-e8', 'u0-b3', 8, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["өле",""],"options":["ң","г","н"],"correctAns":"ң","hintEn":"song / poem — өлең"}'::jsonb, 'active', 'high'),
+  ('u0-b3-e9', 'u0-b3', 9, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","questionEn":"Which letter is special to Kazakh?","options":["Қ","Г","К","Х"],"correctAns":"Қ","scriptOptions":"kk"}'::jsonb, 'active', 'high'),
+  ('u0-b3-e10', 'u0-b3', 10, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","questionEn":"Which letter is special to Kazakh?","options":["О","Е","У","Ө"],"correctAns":"Ө","scriptOptions":"kk"}'::jsonb, 'active', 'high'),
+  ('u0-b3-e11', 'u0-b3', 11, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"әлем","options":["world","beautiful","art","hello"],"correctAns":"world"}'::jsonb, 'active', 'high'),
+  ('u0-b3-e12', 'u0-b3', 12, 'LISTENING', '{"type":"LISTENING","audioKk":"ұзын","options":["озын","үзін","ұзын"],"correctAns":"ұзын"}'::jsonb, 'active', 'high')
+on conflict (id) do update set
+  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
+  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
 
 -- u1-b1
 insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
@@ -377,43 +446,6 @@ on conflict (id) do update set
   lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
   prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
 
--- u2-b1
-insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
-  ('u2-b1-e1', 'u2-b1', 1, 'TEACH', '{"type":"TEACH","title":"42 letters","body":["The Kazakh Cyrillic alphabet has **42 letters**. 33 are the same as Russian.","**9 letters are special to Kazakh**: Ә І Ң Ғ Ү Ұ Қ Ө Һ.","Ф, в, ц, ч, щ, ъ, ь, э, ё, ю, я appear mostly in borrowed words."],"tip":"Tap any example to hear it."}'::jsonb, 'active', 'high'),
-  ('u2-b1-e2', 'u2-b1', 2, 'TEACH', '{"type":"TEACH","title":"Ә and І","body":["**Ә** sounds like the *a* in *apple* or *man*.","**І** is a short *i*, like in *till*."],"examples":[{"kk":"сәлем","en":"hello"},{"kk":"әдемі","en":"beautiful"},{"kk":"дәрігер","en":"doctor"},{"kk":"тіл","en":"language / tongue"},{"kk":"кітап","en":"book"},{"kk":"бір","en":"one"}]}'::jsonb, 'active', 'high'),
-  ('u2-b1-e3', 'u2-b1', 3, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"тіл","options":["language","son","snow","house"],"correctAns":"language"}'::jsonb, 'active', 'high'),
-  ('u2-b1-e4', 'u2-b1', 4, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"кітап","options":["doctor","river","tree","book"],"correctAns":"book"}'::jsonb, 'active', 'high'),
-  ('u2-b1-e5', 'u2-b1', 5, 'LISTENING', '{"type":"LISTENING","audioKk":"әдемі","options":["әдеми","адемі","әдемі"],"correctAns":"әдемі"}'::jsonb, 'active', 'high'),
-  ('u2-b1-e6', 'u2-b1', 6, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"дәрігер","options":["child","world","teacher","doctor"],"correctAns":"doctor"}'::jsonb, 'active', 'high'),
-  ('u2-b1-e7', 'u2-b1', 7, 'TEACH', '{"type":"TEACH","title":"Ө, Ү and Ұ","body":["**Ө** — like the *ea* in *early*.","**Ү** — say *oo* with your tongue pushed forward (like German *ü*).","**Ұ** — a short *u*, like in *pull*, with the tongue pulled back."],"examples":[{"kk":"өнер","en":"art"},{"kk":"өзен","en":"river"},{"kk":"үй","en":"house"},{"kk":"үш","en":"three"},{"kk":"ұл","en":"son / boy"},{"kk":"ұзын","en":"long"}]}'::jsonb, 'active', 'high'),
-  ('u2-b1-e8', 'u2-b1', 8, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["","й"],"options":["ө","ұ","ү"],"correctAns":"ү","hintEn":"house — үй"}'::jsonb, 'active', 'high'),
-  ('u2-b1-e9', 'u2-b1', 9, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["","л"],"options":["ү","ө","ұ"],"correctAns":"ұ","hintEn":"son / boy — ұл"}'::jsonb, 'active', 'high'),
-  ('u2-b1-e10', 'u2-b1', 10, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["","зен"],"options":["о","ө","ә"],"correctAns":"ө","hintEn":"river — өзен"}'::jsonb, 'active', 'high'),
-  ('u2-b1-e11', 'u2-b1', 11, 'LISTENING', '{"type":"LISTENING","audioKk":"үш","options":["іш","ұш","үш"],"correctAns":"үш"}'::jsonb, 'active', 'high'),
-  ('u2-b1-e12', 'u2-b1', 12, 'MATCH_PAIRS', '{"type":"MATCH_PAIRS","pairs":[{"kazakh":"үй","english":"house"},{"kazakh":"ұл","english":"son"},{"kazakh":"өзен","english":"river"},{"kazakh":"бір","english":"one"},{"kazakh":"әдемі","english":"beautiful"}]}'::jsonb, 'active', 'high'),
-  ('u2-b1-e13', 'u2-b1', 13, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"өнер","options":["apricot","art","world","river"],"correctAns":"art"}'::jsonb, 'active', 'high')
-on conflict (id) do update set
-  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
-  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
-
--- u2-b2
-insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
-  ('u2-b2-e1', 'u2-b2', 1, 'TEACH', '{"type":"TEACH","title":"Қ and Ғ","body":["**Қ** is a deep *k* made at the back of the throat.","**Ғ** is a soft, gargled *g* — close to the French *r*."],"examples":[{"kk":"қар","en":"snow"},{"kk":"қыс","en":"winter"},{"kk":"ақша","en":"money"},{"kk":"аға","en":"elder brother"},{"kk":"ағаш","en":"tree"},{"kk":"тоғыз","en":"nine"}]}'::jsonb, 'active', 'high'),
-  ('u2-b2-e2', 'u2-b2', 2, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"қар","options":["tree","snow","winter","money"],"correctAns":"snow"}'::jsonb, 'active', 'high'),
-  ('u2-b2-e3', 'u2-b2', 3, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"ағаш","options":["snow","tree","nine","river"],"correctAns":"tree"}'::jsonb, 'active', 'high'),
-  ('u2-b2-e4', 'u2-b2', 4, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["","ар"],"options":["к","қ","ғ"],"correctAns":"қ","hintEn":"snow — қар"}'::jsonb, 'active', 'high'),
-  ('u2-b2-e5', 'u2-b2', 5, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["а","а"],"options":["г","ғ","қ"],"correctAns":"ғ","hintEn":"elder brother — аға"}'::jsonb, 'active', 'high'),
-  ('u2-b2-e6', 'u2-b2', 6, 'LISTENING', '{"type":"LISTENING","audioKk":"ақша","options":["ағша","ақша","аша"],"correctAns":"ақша"}'::jsonb, 'active', 'high'),
-  ('u2-b2-e7', 'u2-b2', 7, 'TEACH', '{"type":"TEACH","title":"Ң and Һ","body":["**Ң** is the *ng* in *song* — never a separate *n* + *g*.","**Һ** is the English *h*. It''s rare: only a handful of words use it."],"examples":[{"kk":"өлең","en":"song / poem"},{"kk":"он","en":"ten"},{"kk":"оң","en":"right (side)"},{"kk":"айдаһар","en":"dragon"}],"tip":"**он** = ten, but **оң** = right. One letter changes the meaning!"}'::jsonb, 'active', 'high'),
-  ('u2-b2-e8', 'u2-b2', 8, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"он","questionEn":"What does this mean?","options":["ten","son","right","snow"],"correctAns":"ten"}'::jsonb, 'active', 'high'),
-  ('u2-b2-e9', 'u2-b2', 9, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"оң","questionEn":"What does this mean?","options":["right (side)","ten","nine","song"],"correctAns":"right (side)"}'::jsonb, 'active', 'high'),
-  ('u2-b2-e10', 'u2-b2', 10, 'MATCH_PAIRS', '{"type":"MATCH_PAIRS","pairs":[{"kazakh":"он","english":"ten"},{"kazakh":"оң","english":"right"},{"kazakh":"тоғыз","english":"nine"},{"kazakh":"ақша","english":"money"},{"kazakh":"айдаһар","english":"dragon"}]}'::jsonb, 'active', 'high'),
-  ('u2-b2-e11', 'u2-b2', 11, 'LISTENING', '{"type":"LISTENING","audioKk":"өлең","options":["олең","өлең","өлен"],"correctAns":"өлең"}'::jsonb, 'active', 'high'),
-  ('u2-b2-e12', 'u2-b2', 12, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"қыс","options":["winter","goose","snow","girl"],"correctAns":"winter"}'::jsonb, 'active', 'high')
-on conflict (id) do update set
-  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
-  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
-
 -- u2-b3
 insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
   ('u2-b3-e1', 'u2-b3', 1, 'TEACH', '{"type":"TEACH","title":"The harmony rule","body":["Kazakh builds words by gluing endings on. Most endings come in a **strong** and a **soft** version, and the word''s vowels decide which one you use."],"table":{"headers":["Group","Vowels"],"rows":[["Soft (“smiley”)","ә ө ү і е"],["Strong","а о ұ ы у"],["Usually strong","я ю и"]]},"tip":"Look at the **last vowel** of the word: бал**а** → strong, ү**й** → soft."}'::jsonb, 'active', 'high'),
@@ -428,7 +460,10 @@ insert into public.exercises (id, lesson_id, "order", type, prompt, status, conf
   ('u2-b3-e10', 'u2-b3', 10, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"ұшқыш","questionEn":"Is the last vowel soft or strong?","options":["Strong","Soft"],"correctAns":"Strong"}'::jsonb, 'active', 'high'),
   ('u2-b3-e11', 'u2-b3', 11, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["қала",""],"options":["лар","лер"],"correctAns":"лар","hintEn":"cities"}'::jsonb, 'active', 'high'),
   ('u2-b3-e12', 'u2-b3', 12, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["бөлме",""],"options":["лер","лар"],"correctAns":"лер","hintEn":"rooms"}'::jsonb, 'active', 'high'),
-  ('u2-b3-e13', 'u2-b3', 13, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","questionEn":"Which vowel is soft?","options":["а","ұ","і","ы"],"correctAns":"і","scriptOptions":"kk"}'::jsonb, 'active', 'high')
+  ('u2-b3-e13', 'u2-b3', 13, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","questionEn":"Which vowel is soft?","options":["а","ұ","і","ы"],"correctAns":"і","scriptOptions":"kk"}'::jsonb, 'active', 'high'),
+  ('u2-b3-e14', 'u2-b3', 14, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["тау",""],"options":["лар","лер"],"correctAns":"лар","hintEn":"mountains"}'::jsonb, 'active', 'high'),
+  ('u2-b3-e15', 'u2-b3', 15, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["терезе",""],"options":["лар","лер"],"correctAns":"лер","hintEn":"windows"}'::jsonb, 'active', 'high'),
+  ('u2-b3-e16', 'u2-b3', 16, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"ұл","questionEn":"Is the last vowel soft or strong?","options":["Soft","Strong"],"correctAns":"Strong"}'::jsonb, 'active', 'high')
 on conflict (id) do update set
   lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
   prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
@@ -447,25 +482,8 @@ insert into public.exercises (id, lesson_id, "order", type, prompt, status, conf
   ('u2-b4-e10', 'u2-b4', 10, 'TEACH', '{"type":"TEACH","title":"Stress: the last syllable","body":["Kazakh stress usually falls on the **last syllable**: бал**а**, қаз**а**қ, алм**а**.","Two exceptions: borrowed words keep their own stress (комп**ью**тер), and personal endings are never stressed: жақс**ы**мын — *I am good*."]}'::jsonb, 'active', 'high'),
   ('u2-b4-e11', 'u2-b4', 11, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"қазақ","questionEn":"Where does the stress usually fall in a Kazakh word?","options":["On the last syllable","On the first syllable","On the middle syllable"],"correctAns":"On the last syllable"}'::jsonb, 'active', 'high'),
   ('u2-b4-e12', 'u2-b4', 12, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"р","questionEn":"Which group is this letter in?","options":["Sonorant","Voiced","Voiceless"],"correctAns":"Sonorant"}'::jsonb, 'active', 'high'),
-  ('u2-b4-e13', 'u2-b4', 13, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"ж","questionEn":"Which group is this letter in?","options":["Voiced","Voiceless","Sonorant"],"correctAns":"Voiced"}'::jsonb, 'active', 'high')
-on conflict (id) do update set
-  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
-  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
-
--- u2-b5
-insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
-  ('u2-b5-e1', 'u2-b5', 1, 'TEACH', '{"type":"TEACH","title":"Review","body":["9 Kazakh letters: **Ә І Ң Ғ Ү Ұ Қ Ө Һ**.","Soft vowels **ә ө ү і е** · strong vowels **а о ұ ы у**.","Last letter groups: voiced **ж з** · sonorants **м н ң л р й у** · voiceless **п с ш к қ т …**"]}'::jsonb, 'active', 'high'),
-  ('u2-b5-e2', 'u2-b5', 2, 'MATCH_PAIRS', '{"type":"MATCH_PAIRS","pairs":[{"kazakh":"қар","english":"snow"},{"kazakh":"ағаш","english":"tree"},{"kazakh":"үй","english":"house"},{"kazakh":"тіл","english":"language"},{"kazakh":"өзен","english":"river"}]}'::jsonb, 'active', 'high'),
-  ('u2-b5-e3', 'u2-b5', 3, 'MATCH_PAIRS', '{"type":"MATCH_PAIRS","pairs":[{"kazakh":"бір","english":"one"},{"kazakh":"екі","english":"two"},{"kazakh":"үш","english":"three"},{"kazakh":"тоғыз","english":"nine"},{"kazakh":"он","english":"ten"}]}'::jsonb, 'active', 'high'),
-  ('u2-b5-e4', 'u2-b5', 4, 'LISTENING', '{"type":"LISTENING","audioKk":"айдаһар","options":["айдаһар","айдағар","айдар"],"correctAns":"айдаһар"}'::jsonb, 'active', 'high'),
-  ('u2-b5-e5', 'u2-b5', 5, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["","ір"],"options":["п","м","б"],"correctAns":"б","hintEn":"one — бір"}'::jsonb, 'active', 'high'),
-  ('u2-b5-e6', 'u2-b5', 6, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"екі","options":["one","nine","two","three"],"correctAns":"two"}'::jsonb, 'active', 'high'),
-  ('u2-b5-e7', 'u2-b5', 7, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["тау",""],"options":["лер","лар"],"correctAns":"лар","hintEn":"mountains"}'::jsonb, 'active', 'high'),
-  ('u2-b5-e8', 'u2-b5', 8, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["терезе",""],"options":["лар","лер"],"correctAns":"лер","hintEn":"windows"}'::jsonb, 'active', 'high'),
-  ('u2-b5-e9', 'u2-b5', 9, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"ұл","questionEn":"Is the last vowel soft or strong?","options":["Soft","Strong"],"correctAns":"Strong"}'::jsonb, 'active', 'high'),
-  ('u2-b5-e10', 'u2-b5', 10, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"ш","questionEn":"Which group is this letter in?","options":["Voiceless","Voiced","Sonorant"],"correctAns":"Voiceless"}'::jsonb, 'active', 'high'),
-  ('u2-b5-e11', 'u2-b5', 11, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"әлем","options":["beautiful","art","hello","world"],"correctAns":"world"}'::jsonb, 'active', 'high'),
-  ('u2-b5-e12', 'u2-b5', 12, 'LISTENING', '{"type":"LISTENING","audioKk":"ұзын","options":["үзін","ұзын","озын"],"correctAns":"ұзын"}'::jsonb, 'active', 'high')
+  ('u2-b4-e13', 'u2-b4', 13, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"ж","questionEn":"Which group is this letter in?","options":["Voiced","Voiceless","Sonorant"],"correctAns":"Voiced"}'::jsonb, 'active', 'high'),
+  ('u2-b4-e14', 'u2-b4', 14, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"ш","questionEn":"Which group is this letter in?","options":["Voiced","Voiceless","Sonorant"],"correctAns":"Voiceless"}'::jsonb, 'active', 'high')
 on conflict (id) do update set
   lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
   prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;

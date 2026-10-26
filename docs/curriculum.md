@@ -51,10 +51,16 @@ plural rules, present tense, small-talk dialogues and homework). The unit
 order follows the order those notes teach in: each unit builds only on the
 rules before it.
 
+The alphabet is not a step on the path. **Әліпби — The Alphabet** (`u0`,
+`track = 'alphabet'`; Kazakh vowels Ә І Ө Ү Ұ, consonants Қ Ғ Ң Һ, and a
+review) is its own section below the path on the home screen, under
+"Қатар оқу": learners work through it alongside the units, and nothing on
+the path is locked behind it.
+
 | Unit | Theme | Vocab | Grammar focus |
 |---|---|---|---|
 | 1 | Сәлем! — Greetings & Small Talk | 27 | сіз vs сен, қайырлы таң/күн/кеш, introductions, қалайсыз?, goodbyes |
-| 2 | Әліпби — Alphabet & Sounds | 26 | 9 Kazakh letters, soft vs strong vowels, consonant groups, final stress |
+| 2 | Үндестік — The Harmony Rule | 9 | Soft vs strong vowels, consonant groups, final stress |
 | 3 | Мен кіммін? — I am | 25 | Pronouns, -мын/-бын/-пын (all persons), negation with емес |
 | 4 | Көпше түр — Plurals | 24 | -лар/-дар/-тар; no plural after numbers / көп; олар + plural |
 | 5 | Менің отбасым — My Family | 25 | Possessives -м/-ым/-ім…, қ→ғ к→г п→б, бар / жоқ (to have), емес vs жоқ |
