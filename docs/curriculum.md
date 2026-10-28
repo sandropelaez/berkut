@@ -43,7 +43,7 @@ Every lesson is 10-15 exercises ≈ 3-5 minutes. Streaks unchanged.
 
 ## Course map (40 units)
 
-### Section 1 — A1.1 Absolute Beginner (7 units, 35 lessons)
+### Section 1 — A1.1 Absolute Beginner (7 units, 36 lessons)
 
 Rebuilt (v1.6) for complete beginners from the beginner tutoring notes
 (alphabet handout, harmony rule, personal/possessive-ending algorithms,
@@ -65,7 +65,7 @@ the path is locked behind it.
 | 4 | Көпше түр — Plurals | 24 | -лар/-дар/-тар; no plural after numbers / көп; олар + plural |
 | 5 | Менің отбасым — My Family | 25 | Possessives -м/-ым/-ім…, қ→ғ к→г п→б, бар / жоқ (to have), емес vs жоқ |
 | 6 | Сандар, уақыт, орын — Numbers, Time & Place | 33 | 1–100, age (жаста), locative -да/-та, сағат …-да, weekdays |
-| 7 | Не істейсің? — Everyday Verbs | 28 | Present/future -а/-е/-й + endings, SOV, negative -ма/-ба/-па, questions ма/ба |
+| 7 | Не істейсің? — Everyday Verbs | 37 | Present/future -а/-е/-й + endings, SOV, negative -ма/-ба/-па, questions ма/ба, маған … ұнайды / керек (like, need), да/де "too" |
 
 The previous A1.1 lessons in units 1–7 (including the old Food & Drink
 lessons in unit 7) are archived by `013_beginner_revamp.sql`.
@@ -172,7 +172,7 @@ The course ships incrementally. Each section is its own deliverable.
 
 | Section | Status | Deliverable |
 |---|---|---|
-| A1.1 (units 1-7) | ✅ Revamped (v1.6) | 35 lessons with teach cards; source in `src/content/beginner/` |
+| A1.1 (units 1-7) | ✅ Revamped (v1.6) | 36 lessons with teach cards; source in `src/content/beginner/` |
 | A1.2 (units 7-12) | ⏳ Planned | Full lessons + exercises |
 | A2.1 (units 13-18) | ⏳ Planned | Full lessons + exercises |
 | A2.2 (units 19-24) | ⏳ Planned | Full lessons + exercises |
