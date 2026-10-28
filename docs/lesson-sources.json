@@ -1,0 +1,22 @@
+{
+  "_comment": "State for the weekly lesson sync (see docs/lesson-sync.md). Updated by each sync run; don't hand-edit unless re-baselining.",
+  "folder": {
+    "id": "155stAXsj-LBu7cSnh0IJJerzC74R9_A4",
+    "title": "Sandro",
+    "owner": "zhazira.yessimova@gmail.com",
+    "url": "https://drive.google.com/drive/folders/155stAXsj-LBu7cSnh0IJJerzC74R9_A4"
+  },
+  "lastSyncedAt": "2026-10-16T21:49:16Z",
+  "lastSyncNote": "Baseline: the A1.1 revamp (PR #1) was built from this folder. No snapshots exist yet, so the first run compares changed docs against src/content/beginner/ directly.",
+  "files": {
+    "1UIsNkyvUh5A5blwUqTpSJ6OAz0VvhdI7dwny155qUF4": { "title": "Sandro - practice", "mimeType": "application/vnd.google-apps.document" },
+    "15Zt5CGHEcNxaoFgUCpVx2kOluN8nOymOTsvBCjEBlT8": { "title": "Present / Future simple tense (Ауыспалы осы/келер шақ)", "mimeType": "application/vnd.google-apps.document" },
+    "1iMDQH5iedUHcz0esoBbWTTBJChQXE-2xWZShKTUAy8k": { "title": "Homework", "mimeType": "application/vnd.google-apps.document" },
+    "1EJC5JDyrElGoYVVgFTi0X8yfO3V3sSq0vVwQZMUCWyw": { "title": "Vocabulary - Sandro", "mimeType": "application/vnd.google-apps.document" },
+    "1HjY7OGION-j3Clt6sZ9cKJFBhkA6bn6eNREQNxI9t8o": { "title": "Possessive endings", "mimeType": "application/vnd.google-apps.document" },
+    "1aofRaIEEEqbQzzbrZbl9C_F5uHMVL6P2": { "title": "An algorithm to help you choosing a correct personal ending_compressed.pdf", "mimeType": "application/pdf" },
+    "1B3A98DXNkt3xL7wrMU97SZr-5L8vECnqT9YuDNXGWm0": { "title": "The harmony rule in Kazakh", "mimeType": "application/vnd.google-apps.document" },
+    "1PHJTo8rcMxNN_93luxhCTdsaIDzp1N51": { "title": "1st lesson - Kazakh with Zhazira_compressed.pdf", "mimeType": "application/pdf" },
+    "12R0sRgEHShRO9EgoWHc8-wvZ9nkziDjq": { "title": "қазақша көркем жазу_compressed.pdf", "mimeType": "application/pdf" }
+  }
+}
