@@ -1,0 +1,59 @@
+# Weekly lesson sync from the tutoring folder
+
+Every Wednesday morning (07:43 Singapore time) a scheduled Claude session
+checks Zhazira's shared Google Drive folder **"Sandro"** for new or edited
+lesson documents and updates the Berkut course to match. This file is that
+session's runbook; `docs/lesson-sources.json` is its state.
+
+- Folder: <https://drive.google.com/drive/folders/155stAXsj-LBu7cSnh0IJJerzC74R9_A4>
+- State: `docs/lesson-sources.json` — `lastSyncedAt` plus the files seen last run.
+- Snapshots: `docs/lesson-sources/<fileId>.md` — the text of each doc as of
+  the last sync, so `git diff` shows exactly what the tutor changed.
+
+## Steps for each run
+
+1. **Find changes.** List the folder (Google Drive `search_files` with
+   `parentId = '<folder id>'`, all pages). A file has changed if its
+   `modifiedTime` is after `lastSyncedAt`, or it isn't in `files` yet. A file
+   in `files` but no longer in the folder was removed: note it, but don't
+   delete course content because of it.
+2. **Nothing changed?** Stop. Don't open a PR. Post a one-line "no changes"
+   summary.
+3. **Read each changed file** with `read_file_content` (Docs and PDFs both
+   work). Compare it with its snapshot in `docs/lesson-sources/` when one
+   exists; otherwise compare it with what `src/content/beginner/` already
+   teaches. Write the new text to the snapshot file.
+4. **Decide what the change means for the course.** Typical cases:
+   - Corrections to rules or examples already taught → fix those exercises,
+     teach cards and, if a suffix rule changed, `src/core/harmony.ts` and its
+     tests.
+   - New vocabulary → add it to the unit whose topic it fits.
+   - New grammar topic or homework set → extend the matching unit's lessons,
+     or add lessons to the unit whose grammar focus it is (see
+     `docs/curriculum.md`). Only build new units past unit 7 when the topic
+     clearly belongs to A1.2+.
+   - Practice sentences and corrected homework → use them as exercise
+     sentences (the tutor's corrected version, never the uncorrected one).
+   - Personal notes, scheduling, or anything not teaching Kazakh → ignore.
+   Keep lesson and exercise ids stable for content that already exists, so
+   learners' progress keeps pointing at the same rows.
+5. **Build and check.** `npm run content:build`, then `npm run ci`
+   (typecheck, tests, build). Fix until green.
+6. **Ship.** Update `docs/lesson-sources.json` (`lastSyncedAt` = the time
+   this run listed the folder, refresh `files`, write a one-line
+   `lastSyncNote`). Commit to a branch `lesson-sync/<YYYY-MM-DD>`, open a PR
+   to `main` that lists each changed doc and what it changed in the course,
+   and wait for CI. When CI is green, merge it.
+7. **Apply to production.** `013_beginner_revamp.sql` is idempotent and
+   archives rather than deletes, so re-apply the regenerated file to the
+   `berkut-prod` Supabase project with `apply_migration`, named
+   `013_resync_<YYYYMMDD>`. Then verify with a read-only query that the
+   lesson and exercise counts for units 0–7 match the source. If a change
+   can't be expressed by re-running 013 (e.g. ids had to move), write a
+   small delta migration instead and apply that.
+8. **Report** in one short message: which docs changed, what was updated,
+   the PR link, and that prod was migrated.
+
+If Google Drive can't be reached, or a step fails, don't guess: report the
+exact error and what's still pending, and leave `lastSyncedAt` unchanged so
+the next run picks the changes up again.
