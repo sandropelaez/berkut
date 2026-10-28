@@ -9,6 +9,7 @@ import {
   locDrill,
   match,
   mc,
+  mcKk,
   negDrill,
   possDrill,
   qDrill,
@@ -591,7 +592,7 @@ export const unit7: ContentUnit = {
   titleEn: "Everyday Verbs — Present Tense",
   cefr: "A1",
   emoji: "☕",
-  description: "Everyday verbs in the present/future tense, word order, food & drink, negatives and yes/no questions.",
+  description: "Everyday verbs in the present/future tense, word order, food & drink, negatives, yes/no questions, and saying what you like and need.",
   culturalNote:
     "Tea (шай) is at the heart of Kazakh hospitality — usually strong black tea with milk (сүтпен). The host pours only a little at a time and keeps refilling your cup; a cup filled to the brim can be a hint that it's time to leave!",
   vocab: [
@@ -623,6 +624,15 @@ export const unit7: ContentUnit = {
     ["kok", "көк", "blue / green"],
     ["zhasyl", "жасыл", "green"],
     ["sabaq", "сабақ", "lesson / homework"],
+    ["ademi", "әдемі", "beautiful"],
+    ["magan", "маған", "to me"],
+    ["sagan", "саған", "to you"],
+    ["unaydy", "ұнайды", "is liked (маған … ұнайды = I like …)"],
+    ["kerek", "керек", "needed (маған … керек = I need …)"],
+    ["mumkin", "мүмкін", "maybe"],
+    ["kesh", "кеш", "late"],
+    ["nan", "нан", "bread"],
+    ["aq", "ақ", "white"],
   ],
   lessons: [
     {
@@ -805,7 +815,7 @@ export const unit7: ContentUnit = {
         en("My daughter wakes up early.", "Қызым ерте оянады", ["ертең", "оянамын"]),
         fill("Досым ", " кофе ішеді.", "сүтпен", ["сүт", "сүтте"], "My friend drinks coffee with milk."),
         listen("әдетте", ["ертең", "күнде"]),
-        kk("Сенбіде онда пицца пісіремін.", "On Saturday at 10 I cook pizza.", ["On Saturday I eat pizza.", "On Sunday at 10 I cook pizza.", "On Saturday at 10 I order pizza."]),
+        kk("Сенбіде онда пицца пісіремін.", "On Saturday at 10 I cook pizza.", ["On Saturday I eat pizza.", "On Sunday at 10 I cook pizza.", "On Saturday at 10 I order pizza."]),        kk("Жақсы досым әдетте әдемі кафеде қара шай ішеді.", "My good friend usually drinks black tea in a beautiful café.", ["My good friend usually drinks green tea in a beautiful café.", "My good friend drinks black tea at home.", "I usually drink black tea in a beautiful café."]),
       ],
     },
     {
@@ -853,6 +863,76 @@ export const unit7: ContentUnit = {
         kk("Ертең сабақтарың бар ма?", "Do you have lessons tomorrow?", ["You have lessons tomorrow.", "Do you have lessons today?", "Where are your lessons tomorrow?"]),
         en("I don't work tomorrow, I rest.", "Ертең жұмыс істемеймін демаламын", ["істеймін", "демалмаймын"]),
         listen("бармаймын", ["барамын", "бармайды"]),
+      ],
+    },
+    {
+      id: "u7-b6",
+      titleKk: "Маған ұнайды, маған керек",
+      titleEn: "I like, I need",
+      items: [
+        teach("I like: маған … ұнайды", {
+          body: [
+            "Kazakh says *to me … is pleasing*: **маған** (to me) + the thing + **ұнайды**.",
+            "To like *doing* something, use the verb in its **-у** form: маған ерте ояну ұнайды = I like waking up early.",
+          ],
+          table: {
+            headers: ["", "Kazakh", "English"],
+            rows: [
+              ["+", "маған кофе **ұнайды**", "I like coffee"],
+              ["−", "маған кофе **ұнамайды**", "I don't like coffee"],
+              ["?", "саған кофе **ұнай ма**?", "Do you like coffee?"],
+            ],
+          },
+          examples: [
+            { kk: "Маған жұмыс істеу ұнайды.", en: "I like working." },
+            { kk: "Саған Сингапурда тұру ұнай ма?", en: "Do you like living in Singapore?" },
+            { kk: "Иә, маған Қазақстанда тұру ұнайды.", en: "Yes, I like living in Kazakhstan." },
+          ],
+        }),
+        teach("To me, to you …", {
+          table: {
+            headers: ["Pronoun", "to …", "", "Pronoun", "to …"],
+            rows: [
+              ["мен", "**маған**", "", "біз", "**бізге**"],
+              ["сен", "**саған**", "", "сендер", "**сендерге**"],
+              ["сіз", "**сізге**", "", "сіздер", "**сіздерге**"],
+              ["ол", "**оған**", "", "олар", "**оларға**"],
+            ],
+          },
+          tip: "Only the pronoun changes: **ұнайды** stays the same for everyone. Сізге кофе ұнай ма? = Do you (polite) like coffee?",
+        }),
+        match([
+          ["маған", "to me"],
+          ["саған", "to you"],
+          ["сізге", "to you (polite)"],
+          ["оған", "to him / her"],
+          ["бізге", "to us"],
+        ]),
+        mcKk("How do you say 'to them'?", "оларға", ["олар", "оларда"]),
+        kk("Маған кофе ұнайды.", "I like coffee.", ["I need coffee.", "You like coffee.", "I don't like coffee."]),
+        kk("Саған нан жеу ұнай ма?", "Do you like eating bread?", ["I like eating bread.", "Do you need bread?", "Do you like baking bread?"]),
+        fill("Маған кеш ояну ", ".", "ұнайды", ["ұнай ма", "ұнамайды"], "I like waking up late."),
+        fill("", " ерте ояну ұнай ма?", "Сізге", ["Сіз", "Сізде"], "Do you like waking up early? (polite)"),
+        en("I like working.", "Маған жұмыс істеу ұнайды", ["Мен", "ұнамайды"]),
+        en("I don't like living in Germany.", "Маған Германияда тұру ұнамайды", ["ұнайды", "Германия"]),
+        teach("I need: маған … керек", {
+          body: ["Same pattern: **маған** + the thing + **керек** (necessary). For a question, add **пе**: керек **пе**?"],
+          examples: [
+            { kk: "Маған ақ нан керек.", en: "I need white bread." },
+            { kk: "Саған кофе керек пе?", en: "Do you need coffee?" },
+            { kk: "Маған ерте ояну керек.", en: "I need to wake up early." },
+            { kk: "Маған су **да** керек.", en: "I also need water." },
+          ],
+          tip: "**да / де / та / те** after a word means *too*: су **да** (water too), досым **да** (my friend too), мысық **та** (a cat too). It follows the same rule as -да/-та, but it's written as a separate word.",
+        }),
+        kk("Маған қара кофе керек.", "I need black coffee.", ["I like black coffee.", "I need black tea.", "You need black coffee."]),
+        en("I need white bread.", "Маған ақ нан керек", ["қара", "ұнайды"]),
+        kk("Саған ерте ояну керек пе?", "Do you need to wake up early?", ["Do you like waking up early?", "I need to wake up early.", "Do you wake up early?"]),
+        fill("Маған су ", " керек.", "да", ["та", "де"], "I also need water."),
+        fill("Қызым ", " жақсы.", "да", ["та", "де"], "My daughter is also good."),
+        mc("What does мүмкін mean?", undefined, "maybe", ["yes", "no", "never"]),
+        kk("Мүмкін ертең кофе ішемін.", "Maybe I'll drink coffee tomorrow.", ["I'll definitely drink coffee tomorrow.", "Maybe I'll drink tea tomorrow.", "Maybe I drink coffee every day."]),
+        kk("Мүмкін маған Гонконгта тұру ұнайды.", "Maybe I'd like living in Hong Kong.", ["I don't like living in Hong Kong.", "Maybe I need to live in Hong Kong.", "Maybe I live in Hong Kong."]),
       ],
     },
   ],
