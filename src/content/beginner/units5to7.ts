@@ -916,9 +916,10 @@ export const unit7: ContentUnit = {
         en("I like working.", "Маған жұмыс істеу ұнайды", ["Мен", "ұнамайды"]),
         en("I don't like living in Germany.", "Маған Германияда тұру ұнамайды", ["ұнайды", "Германия"]),
         teach("I need: маған … керек", {
-          body: ["Same pattern: **маған** + the thing + **керек** (necessary). For a question, add **пе**: керек **пе**?"],
+          body: ["Same pattern: **маған** + the thing + **керек** (necessary). For *don't need*, add **жоқ**: керек **жоқ**. For a question, add **пе**: керек **пе**?"],
           examples: [
             { kk: "Маған ақ нан керек.", en: "I need white bread." },
+            { kk: "Маған кофе керек **жоқ**.", en: "I don't need coffee." },
             { kk: "Саған кофе керек пе?", en: "Do you need coffee?" },
             { kk: "Маған ерте ояну керек.", en: "I need to wake up early." },
             { kk: "Маған су **да** керек.", en: "I also need water." },
@@ -933,6 +934,9 @@ export const unit7: ContentUnit = {
         mc("What does мүмкін mean?", undefined, "maybe", ["yes", "no", "never"]),
         kk("Мүмкін ертең кофе ішемін.", "Maybe I'll drink coffee tomorrow.", ["I'll definitely drink coffee tomorrow.", "Maybe I'll drink tea tomorrow.", "Maybe I drink coffee every day."]),
         kk("Мүмкін маған Гонконгта тұру ұнайды.", "Maybe I'd like living in Hong Kong.", ["I don't like living in Hong Kong.", "Maybe I need to live in Hong Kong.", "Maybe I live in Hong Kong."]),
+        kk("Маған кофе керек жоқ.", "I don't need coffee.", ["I need coffee.", "Do I need coffee?", "I don't like coffee."]),
+        fill("Маған кофе керек ", ".", "жоқ", ["бар", "пе"], "I don't need coffee."),
+        en("I don't need coffee.", "Маған кофе керек жоқ", ["ұнайды", "пе"]),
       ],
     },
   ],
