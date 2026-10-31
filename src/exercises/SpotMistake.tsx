@@ -5,8 +5,8 @@ import { speakKazakh } from "@/core/tts";
 import { ChoiceTile, optionState, SpokenPrompt } from "@/components/ui";
 
 const CHOICES = [
-  { value: true, label: "Yes, that's right" },
-  { value: false, label: "No, it's wrong" },
+  { value: true, label: "Yes" },
+  { value: false, label: "No" },
 ];
 
 export default function SpotMistake({
