@@ -7,6 +7,9 @@ import TranslateENKK from "@/exercises/TranslateENKK";
 import TranslateKKEN from "@/exercises/TranslateKKEN";
 import MatchPairs from "@/exercises/MatchPairs";
 import FillBlank from "@/exercises/FillBlank";
+import TypeAnswer from "@/exercises/TypeAnswer";
+import SpotMistake from "@/exercises/SpotMistake";
+import ChooseReply from "@/exercises/ChooseReply";
 import TeachCard from "@/exercises/TeachCard";
 import { buildSession, requeueMistake, type SessionItem } from "@/core/session";
 import type { Exercise, Lesson } from "@/core/types";
@@ -139,6 +142,12 @@ export default function LessonPlayer() {
         return <MatchPairs key={exercise.id} prompt={exercise.prompt as any} phase={phase} onAnswer={handleAnswer} />;
       case "FILL_BLANK":
         return <FillBlank key={exercise.id} prompt={exercise.prompt as any} phase={phase} onAnswer={handleAnswer} />;
+      case "TYPE_ANSWER":
+        return <TypeAnswer key={exercise.id} prompt={exercise.prompt as any} phase={phase} onAnswer={handleAnswer} />;
+      case "SPOT_MISTAKE":
+        return <SpotMistake key={exercise.id} prompt={exercise.prompt as any} phase={phase} onAnswer={handleAnswer} />;
+      case "CHOOSE_REPLY":
+        return <ChooseReply key={exercise.id} prompt={exercise.prompt as any} phase={phase} onAnswer={handleAnswer} />;
       case "TEACH":
         return <TeachCard key={exercise.id} prompt={exercise.prompt as any} />;
     }

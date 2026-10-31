@@ -112,6 +112,34 @@ export function fill(before: string, after: string, correct: string, wrong: stri
   };
 }
 
+/** English → Kazakh, typed. Keep `answer` short: it's typed on a phone. */
+export function typeIt(promptEn: string, answer: string, alsoAccepted: string[] = []): Item {
+  return {
+    prompt: { type: "TYPE_ANSWER", promptEn, correctAns: answer, ...(alsoAccepted.length ? { alsoAccepted } : {}) },
+  };
+}
+
+/**
+ * Right or wrong: does `sentenceKk` mean `meaningEn`? Pass `correction` (the
+ * right Kazakh) to make it a sentence with a mistake in it.
+ */
+export function spot(sentenceKk: string, meaningEn: string, correction?: string): Item {
+  return {
+    prompt: {
+      type: "SPOT_MISTAKE",
+      sentenceKk,
+      meaningEn,
+      isCorrect: correction === undefined,
+      ...(correction !== undefined ? { fix: { kk: correction, en: meaningEn } } : {}),
+    },
+  };
+}
+
+/** Dialogue: someone says `lineKk`; pick the Kazakh reply. */
+export function reply(lineKk: string, lineEn: string, correct: string, wrong: string[]): Item {
+  return { prompt: { type: "CHOOSE_REPLY", lineKk, lineEn, options: [correct, ...wrong], correctAns: correct } };
+}
+
 // ─── Rule-driven drills ──────────────────────────────────────────────────
 
 const FLIP: Record<string, string> = { ы: "і", і: "ы", а: "е", е: "а" };
@@ -297,7 +325,10 @@ export function validateUnits(units: ContentUnit[]): number {
           if (new Set(opts).size !== opts.length) errors.push(`${where}: duplicate options ${opts}`);
           // Kazakh options must stay distinct in Latin script too (ұ and у are both "u").
           const kazakhOpts =
-            p.type === "LISTENING" || p.type === "FILL_BLANK" || (p.type === "MULTIPLE_CHOICE" && p.scriptOptions === "kk");
+            p.type === "LISTENING" ||
+            p.type === "FILL_BLANK" ||
+            p.type === "CHOOSE_REPLY" ||
+            (p.type === "MULTIPLE_CHOICE" && p.scriptOptions === "kk");
           if (kazakhOpts && new Set(opts.map((o) => toScript(o, "LATIN").toLowerCase())).size !== opts.length)
             errors.push(`${where}: options collide in Latin script ${opts}`);
           if (opts.length < 2) errors.push(`${where}: fewer than 2 options`);
@@ -312,6 +343,12 @@ export function validateUnits(units: ContentUnit[]): number {
           }
           if (pool.some((d) => p.correctAns.includes(d))) errors.push(`${where}: distractor duplicates an answer tile`);
           if (p.tiles.some((t) => /[.,!?]/.test(t))) errors.push(`${where}: punctuation in tiles`);
+        }
+        if (p.type === "TYPE_ANSWER" && p.correctAns.split(/\s+/).length > 4)
+          errors.push(`${where}: too long to type (4 words max)`);
+        if (p.type === "SPOT_MISTAKE") {
+          if (p.isCorrect === !!p.fix) errors.push(`${where}: a wrong sentence needs a fix, a right one none`);
+          if (p.fix && p.fix.kk === p.sentenceKk) errors.push(`${where}: fix is the same sentence`);
         }
         if (p.type === "MATCH_PAIRS") {
           const kks = p.pairs.map((x) => x.kazakh);

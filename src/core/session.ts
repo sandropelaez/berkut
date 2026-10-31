@@ -2,7 +2,8 @@
 // queue with spaced repetition inside the lesson.
 //
 //  - Every graded exercise gets an "echo" a few exercises later that tests the
-//    same phrase in a different format (KK→EN becomes EN→KK tiles, etc.).
+//    same phrase in a different format (KK→EN becomes EN→KK tiles, typing,
+//    right-or-wrong, etc.), rotating to the formats the session has used least.
 //  - The lesson ends with a mixed review: a match round over the phrases just
 //    practised plus a few of them in yet another format.
 //  - A missed exercise is re-asked a few exercises later (requeueMistake).
@@ -18,8 +19,10 @@ import type {
   Lesson,
   MatchPairsPrompt,
   MultipleChoicePrompt,
+  SpotMistakePrompt,
   TranslateENKKPrompt,
   TranslateKKENPrompt,
+  TypeAnswerPrompt,
 } from "@/core/types";
 import { normalize } from "@/core/scoring";
 
@@ -115,6 +118,10 @@ function rawPairOf(prompt: ExercisePrompt): Pair | null {
         kk: prompt.sentenceKkParts[0] + prompt.correctAns + prompt.sentenceKkParts[1],
         en: prompt.hintEn,
       };
+    case "TYPE_ANSWER":
+      return { kk: prompt.correctAns, en: prompt.promptEn };
+    case "SPOT_MISTAKE":
+      return prompt.isCorrect ? { kk: prompt.sentenceKk, en: prompt.meaningEn } : (prompt.fix ?? null);
     default:
       return null;
   }
@@ -170,6 +177,13 @@ class Bank {
     if (known) return head + known.slice(1);
     const mark = pair.en.replace(/\s*\([^)]*\)$/, "").match(/[.?!]$/)?.[0] ?? "";
     return pair.kk + mark;
+  }
+
+  /** Other Kazakh phrases the lesson gives the same English for. */
+  sameMeaning(pair: Pair): Pair[] {
+    const target = looseEn(pair.en);
+    const kk = normalize(pair.kk);
+    return this.all.filter((p) => looseEn(p.en) === target && normalize(p.kk) !== kk);
   }
 
   /** English options that are clearly not translations of `pair.kk`. */
@@ -285,12 +299,42 @@ function enToKkTiles(pair: Pair, bank: Bank, rand: Rand, preferred: string[] = [
   return { type: "TRANSLATE_EN_KK", promptEn: pair.en, tiles: [...answer, ...extra], correctAns: answer };
 }
 
+/** Typing is slow on a phone: only short words and phrases. */
+const MAX_TYPED_WORDS = 3;
+const MAX_TYPED_CHARS = 24;
+
+function typeIn(pair: Pair, bank: Bank): TypeAnswerPrompt | null {
+  const kk = bank.punctuated(pair);
+  if (words(kk).length > MAX_TYPED_WORDS || clean(kk).length > MAX_TYPED_CHARS) return null;
+  const also = bank.sameMeaning(pair).map((p) => bank.punctuated(p));
+  return { type: "TYPE_ANSWER", promptEn: pair.en, correctAns: kk, ...(also.length ? { alsoAccepted: also } : {}) };
+}
+
+/** Right or wrong: the pair as it is, or the Kazakh with another phrase's meaning. */
+function spotMeaning(pair: Pair, bank: Bank, rand: Rand): SpotMistakePrompt | null {
+  const kk = bank.punctuated(pair);
+  if (rand() < 0.5) return { type: "SPOT_MISTAKE", sentenceKk: kk, meaningEn: pair.en, isCorrect: true };
+  const [other] = bank.enDistractors(pair, 1, rand);
+  if (!other) return null;
+  return { type: "SPOT_MISTAKE", sentenceKk: kk, meaningEn: other, isCorrect: false, fix: { kk, en: pair.en } };
+}
+
+/** Right or wrong: the fill-in sentence with its answer, or with a wrong option. */
+function spotBlank(prompt: FillBlankPrompt, pair: Pair, rand: Rand): SpotMistakePrompt | null {
+  const [before, after] = prompt.sentenceKkParts;
+  const wrong = prompt.options.filter((o) => normalize(o) !== normalize(prompt.correctAns));
+  if (rand() < 0.5 || !wrong.length) return { type: "SPOT_MISTAKE", sentenceKk: pair.kk, meaningEn: pair.en, isCorrect: true };
+  const bad = wrong[Math.floor(rand() * wrong.length)]!;
+  return { type: "SPOT_MISTAKE", sentenceKk: before + bad + after, meaningEn: pair.en, isCorrect: false, fix: pair };
+}
+
 /** Same exercise with its options in a new order. */
 function reshuffled(prompt: ExercisePrompt, rand: Rand): ExercisePrompt {
   switch (prompt.type) {
     case "MULTIPLE_CHOICE":
     case "TRANSLATE_KK_EN":
     case "FILL_BLANK":
+    case "CHOOSE_REPLY":
       return { ...prompt, options: shuffle(prompt.options, rand) } as ExercisePrompt;
     case "MATCH_PAIRS":
       return { ...prompt, pairs: shuffle(prompt.pairs, rand) };
@@ -309,12 +353,23 @@ function variantsOf(prompt: ExercisePrompt, bank: Bank, rand: Rand): ExercisePro
     case "TRANSLATE_KK_EN":
     case "MULTIPLE_CHOICE": {
       const pair = pairOf(prompt);
-      if (pair) out.push(enToKkTiles(pair, bank, rand), enToKkChoice(pair, bank, rand));
+      if (pair)
+        out.push(enToKkTiles(pair, bank, rand), typeIn(pair, bank), enToKkChoice(pair, bank, rand), spotMeaning(pair, bank, rand));
       break;
     }
     case "TRANSLATE_EN_KK": {
       const pair = pairOf(prompt);
-      if (pair) out.push(kkToEn(pair, bank, rand), enToKkChoice(pair, bank, rand));
+      if (pair) out.push(kkToEn(pair, bank, rand), typeIn(pair, bank), enToKkChoice(pair, bank, rand), spotMeaning(pair, bank, rand));
+      break;
+    }
+    case "TYPE_ANSWER": {
+      const pair = pairOf(prompt)!;
+      out.push(kkToEn(pair, bank, rand), enToKkTiles(pair, bank, rand), spotMeaning(pair, bank, rand));
+      break;
+    }
+    case "SPOT_MISTAKE": {
+      const pair = pairOf(prompt);
+      if (pair) out.push(kkToEn(pair, bank, rand), enToKkTiles(pair, bank, rand), typeIn(pair, bank));
       break;
     }
     case "FILL_BLANK": {
@@ -328,7 +383,7 @@ function variantsOf(prompt: ExercisePrompt, bank: Bank, rand: Rand): ExercisePro
           .filter((o) => o !== prompt.correctAns)
           .flatMap((o) => tokens(before + o + after))
           .filter((t) => !answer.has(normalize(t)));
-        out.push(enToKkTiles(pair, bank, rand, near), kkToEn(pair, bank, rand));
+        out.push(enToKkTiles(pair, bank, rand, near), spotBlank(prompt, pair, rand), kkToEn(pair, bank, rand), typeIn(pair, bank));
       }
       break;
     }
@@ -336,6 +391,8 @@ function variantsOf(prompt: ExercisePrompt, bank: Bank, rand: Rand): ExercisePro
       const [a, b] = shuffle(prompt.pairs, rand);
       if (a) out.push(kkToEn({ kk: a.kazakh, en: a.english }, bank, rand));
       if (b) out.push(enToKkChoice({ kk: b.kazakh, en: b.english }, bank, rand));
+      const [c] = shuffle(prompt.pairs, rand);
+      if (c) out.push(typeIn({ kk: c.kazakh, en: c.english }, bank));
       break;
     }
   }
@@ -396,11 +453,12 @@ export function buildSession(lesson: Lesson, rand: Rand = Math.random): SessionI
   const authored = capped(lesson.exercises);
   const bank = new Bank(lesson, authored);
   let n = 0;
-  const item = (source: Exercise, prompt: ExercisePrompt, kind: SessionKind): SessionItem => ({
-    key: `${source.id}#${n++}`,
-    exercise: { id: source.id, type: prompt.type, prompt },
-    kind,
-  });
+  /** How often each format has been asked, so echoes rotate through them. */
+  const used = new Map<string, number>();
+  const item = (source: Exercise, prompt: ExercisePrompt, kind: SessionKind): SessionItem => {
+    used.set(prompt.type, (used.get(prompt.type) ?? 0) + 1);
+    return { key: `${source.id}#${n++}`, exercise: { id: source.id, type: prompt.type, prompt }, kind };
+  };
 
   const graded = authored.filter((e) => e.type !== "TEACH");
   const variants = new Map(graded.map((e) => [e, variantsOf(e.prompt, bank, rand)]));
@@ -422,12 +480,16 @@ export function buildSession(lesson: Lesson, rand: Rand = Math.random): SessionI
   const reviewCount = Math.max(0, Math.min(REVIEW_ITEMS, room - echoCount));
 
   const asked = new Set(authored.map((e) => signature(e.prompt)));
-  /** The first variant that asks something new, else the fallback's. */
+  /** The variant that asks something new in the least-used format, else the fallback's. */
   const pick = (ex: Exercise, fallback: () => ExercisePrompt | undefined): ExercisePrompt | undefined => {
-    const fresh = variants.get(ex)!.find((p) => {
-      const sig = signature(p);
-      return sig === null || !asked.has(sig);
-    });
+    const fresh = variants
+      .get(ex)!
+      .filter((p) => {
+        const sig = signature(p);
+        return sig === null || !asked.has(sig);
+      })
+      // Stable: among equally-used formats the best-first order stands.
+      .sort((a, b) => (used.get(a.type) ?? 0) - (used.get(b.type) ?? 0))[0];
     const chosen = fresh ?? fallback();
     if (chosen) asked.add(signature(chosen));
     return chosen;
