@@ -13,6 +13,9 @@ const EXERCISE_TYPES = [
   "SPEAKING",
   "MATCH_PAIRS",
   "FILL_BLANK",
+  "TYPE_ANSWER",
+  "SPOT_MISTAKE",
+  "CHOOSE_REPLY",
   "TEACH",
 ];
 
@@ -42,7 +45,7 @@ export function buildMigrationSql(units: ContentUnit[], header: string): string 
   const out: string[] = [header.trimEnd(), ""];
 
   out.push(
-    "-- ─── Allow ungraded TEACH (explanation) cards ───────────────────────────",
+    "-- ─── Allowed exercise types (TEACH cards, the newer formats) ────────────",
     "alter table public.exercises drop constraint if exists exercises_type_check;",
     `alter table public.exercises add constraint exercises_type_check check (type in (${list(EXERCISE_TYPES)}));`,
     "",

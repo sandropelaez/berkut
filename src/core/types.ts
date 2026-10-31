@@ -7,6 +7,9 @@ export type ExerciseType =
   | "LISTENING"
   | "MATCH_PAIRS"
   | "FILL_BLANK"
+  | "TYPE_ANSWER"
+  | "SPOT_MISTAKE"
+  | "CHOOSE_REPLY"
   | "TEACH";
 
 export interface Vocab {
@@ -63,6 +66,36 @@ export interface FillBlankPrompt {
   hintEn?: string;
 }
 
+/** English → Kazakh, typed. Either script is accepted. */
+export interface TypeAnswerPrompt {
+  type: "TYPE_ANSWER";
+  promptEn: string;
+  correctAns: string;
+  /** Other Kazakh that also means `promptEn` ("Сәлем!" for "Hi!"). */
+  alsoAccepted?: string[];
+}
+
+/**
+ * Right or wrong: does `sentenceKk` mean `meaningEn`? When it doesn't,
+ * `fix` is the right pairing, shown once the learner has answered.
+ */
+export interface SpotMistakePrompt {
+  type: "SPOT_MISTAKE";
+  sentenceKk: string;
+  meaningEn: string;
+  isCorrect: boolean;
+  fix?: { kk: string; en: string };
+}
+
+/** A line of dialogue and Kazakh replies to pick from. */
+export interface ChooseReplyPrompt {
+  type: "CHOOSE_REPLY";
+  lineKk: string;
+  lineEn?: string;
+  options: string[];
+  correctAns: string;
+}
+
 // Ungraded explanation card shown between exercises. Text fields support
 // **bold** spans (used to highlight suffixes); Kazakh text is transliterated
 // with the learner's script preference like everywhere else.
@@ -82,6 +115,9 @@ export type ExercisePrompt =
   | ListeningPrompt
   | MatchPairsPrompt
   | FillBlankPrompt
+  | TypeAnswerPrompt
+  | SpotMistakePrompt
+  | ChooseReplyPrompt
   | TeachPrompt;
 
 export interface Exercise {

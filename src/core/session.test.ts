@@ -108,6 +108,33 @@ describe("buildSession", () => {
     expect(tiles!.type === "TRANSLATE_EN_KK" && tiles!.tiles).toEqual(expect.arrayContaining(["дәрігерпін"]));
   });
 
+  it("mixes in typed answers and right-or-wrong checks", () => {
+    const types = new Set(runs.flat().map((i) => i.exercise.type));
+    expect(types).toContain("TYPE_ANSWER");
+    expect(types).toContain("SPOT_MISTAKE");
+  });
+
+  it("builds right-or-wrong checks whose wrong versions carry the fix", () => {
+    const spots = [...Array(20).keys()]
+      .flatMap((s) => buildSession(lesson, seeded(s)))
+      .map((i) => i.exercise.prompt)
+      .filter((p) => p.type === "SPOT_MISTAKE");
+    expect(spots.some((p) => p.isCorrect)).toBe(true);
+    expect(spots.some((p) => !p.isCorrect)).toBe(true);
+    for (const p of spots) {
+      if (p.isCorrect) expect(p.fix).toBeUndefined();
+      // A wrong suffix ("дәрігерпін") or the wrong meaning: never the fix as given.
+      else expect(p.fix!.kk !== p.sentenceKk || p.fix!.en !== p.meaningEn).toBe(true);
+    }
+  });
+
+  it("only asks to type short phrases", () => {
+    for (const { exercise } of runs.flat()) {
+      const p = exercise.prompt;
+      if (p.type === "TYPE_ANSWER") expect(p.correctAns.split(/\s+/).length).toBeLessThanOrEqual(3);
+    }
+  });
+
   it("ends with a mixed review opened by a match round", () => {
     for (const q of runs) {
       const review = q.filter((i) => i.kind === "review");

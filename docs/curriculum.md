@@ -39,6 +39,12 @@ A Duolingo-style progression from absolute beginner (A1.1) to upper-intermediate
 | C | **Cultural Card** (ungated) | reading + 2-3 vocab | Context, motivation |
 | T | **Teach card** (`TEACH`, ungraded) | title, short explanation, table, tappable examples, tip | Introduce a rule before drilling it |
 
+Formats added in v1.8, usable in any lesson type: **ChooseReply** (pick the
+Kazakh reply to a line of dialogue), **SpotMistake** (right or wrong: does
+this Kazakh mean that English?) and **TypeAnswer** (type a short Kazakh
+answer, either script). Sessions also generate the last two from a lesson's
+own questions for its repeats and review.
+
 Every lesson is 10-15 exercises ≈ 3-5 minutes. Streaks unchanged.
 
 ## Course map (40 units)

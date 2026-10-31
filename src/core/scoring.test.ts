@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { answersMatch, arraysMatch, levenshtein, similarity } from "./scoring";
+import { answersMatch, arraysMatch, levenshtein, similarity, typedMatch } from "./scoring";
 
 describe("answersMatch", () => {
   it("normalises case and whitespace", () => {
@@ -43,5 +43,24 @@ describe("similarity", () => {
     const s = similarity("hello", "hallo");
     expect(s).toBeGreaterThan(0.7);
     expect(s).toBeLessThan(0.9);
+  });
+});
+
+describe("typedMatch", () => {
+  it("accepts the answer in either script, ignoring case and punctuation", () => {
+    expect(typedMatch("Сәлем!", "сәлем")).toBe("exact");
+    expect(typedMatch("sälem", "Сәлем!")).toBe("exact");
+    expect(typedMatch("Ит", "ит")).toBe("exact");
+  });
+  it("calls Kazakh letters typed as plain look-alikes close", () => {
+    expect(typedMatch("салем", "сәлем")).toBe("close");
+    expect(typedMatch("кайырлы тан", "қайырлы таң")).toBe("close");
+    expect(typedMatch("salem", "сәлем")).toBe("close");
+    expect(typedMatch("мен де жаксымын", "Мен де жақсымын.")).toBe("close");
+  });
+  it("rejects other mistakes and empty input", () => {
+    expect(typedMatch("сәлемм", "сәлем")).toBe("wrong");
+    expect(typedMatch("дәрігерпін", "дәрігермін")).toBe("wrong");
+    expect(typedMatch("  ", "сәлем")).toBe("wrong");
   });
 });

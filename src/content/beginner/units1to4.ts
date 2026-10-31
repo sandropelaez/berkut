@@ -10,7 +10,10 @@ import {
   mc,
   mcKk,
   pluralDrill,
+  reply,
+  spot,
   teach,
+  typeIt,
   type ContentUnit,
 } from "../builders";
 
@@ -72,7 +75,7 @@ export const unit1: ContentUnit = {
           tip: "Not sure which one? Use the polite **Сәлеметсіз бе**. It's never rude.",
         }),
         kk("Сәлем!", "Hi!", ["Thank you!", "Bye!", "Yes!"]),
-        listen("сәлеметсіз бе", ["сәлеметсің бе", "сәлем", "сау бол"]),
+        typeIt("Hi!", "Сәлем!"),
         mc("Who would you greet with this?", "Сәлеметсіз бе!", "Your teacher or an older person", [
           "Only your little brother",
           "Only your cat",
@@ -112,7 +115,7 @@ export const unit1: ContentUnit = {
         ]),
         fill("Қайырлы ", "!", "таң", ["кеш", "түн"], "Good morning!"),
         en("Good afternoon!", "Қайырлы күн", ["таң", "сәлем"]),
-        listen("қайырлы кеш", ["қайырлы күн", "қайырлы таң"]),
+        reply("Қайырлы таң!", "Good morning!", "Қайырлы таң!", ["Қайырлы кеш!", "Қайырлы түн!"]),
       ],
     },
     {
@@ -148,7 +151,7 @@ export const unit1: ContentUnit = {
             { kk: "Мен де қуаныштымын!", en: "Nice to meet you too!" },
           ],
         }),
-        listen("танысқаныма қуаныштымын", ["мен де қуаныштымын", "менің атым Ержан"]),
+        reply("Танысқаныма қуаныштымын.", "Nice to meet you.", "Мен де қуаныштымын!", ["Сенің атың кім?", "Қайырлы түн!"]),
         kk("Мен де қуаныштымын!", "Nice to meet you too!", ["I'm tired too!", "See you later!", "My name is too!"]),
         en("Nice to meet you.", "Танысқаныма қуаныштымын", ["мен", "де"]),
         teach("A shortcut: Сандромын", {
@@ -238,7 +241,7 @@ export const unit1: ContentUnit = {
           ],
         }),
         kk("Сау бол!", "Bye!", ["Hello!", "Thank you!", "Welcome!"]),
-        listen("сау болыңыз", ["сау бол", "сәлеметсіз бе"]),
+        typeIt("See you!", "Көріскенше!"),
         kk("Көріскенше!", "See you!", ["Welcome!", "Good evening!", "Nice to meet you!"]),
         mc("Who would you say this to?", "Сау бол!", "A friend", ["Your boss", "A stranger at the bank", "An elder you just met"]),
         fill("Сау ", "!", "болыңыз", ["келдіңіз", "ше"], "Goodbye! (polite)"),
@@ -265,7 +268,7 @@ export const unit1: ContentUnit = {
         ]),
         en("Welcome!", "Қош келдіңіз", ["сау", "бол"]),
         en("Bye! (to a friend)", "Сау бол", ["Қош", "болыңыз"]),
-        listen("рақмет", ["сәлем", "көріскенше"]),
+        reply("Сау болыңыз!", "Goodbye! (polite)", "Сау болыңыз!", ["Қош келдіңіз!", "Сәлем!"]),
       ],
     },
     {
@@ -284,10 +287,13 @@ export const unit1: ContentUnit = {
           ],
           tip: "**Ал** = *and / so* — it starts a new question: **Ал сенің атың кім?**",
         }),
-        fill("Қайырлы таң! — ", "!", "Сәлем", ["Сау бол", "Рақмет"], "Good morning! — Hi!"),
+        reply("Қайырлы таң!", "Good morning!", "Сәлем!", ["Сау бол!", "Рақмет!"]),
         fill("Менің ", " Айгүл. Ал сенің атың кім?", "атым", ["атың", "қуанышты"], "My name is Aigul. And what's your name?"),
         fill("Танысқаныма ", ".", "қуаныштымын", ["жақсымын", "рақмет"], "Nice to meet you."),
-        fill("", " де қуаныштымын!", "Мен", ["Сен", "Сіз"], "Nice to meet you too!"),
+        reply("Менің атым Ержан. Танысқаныма қуаныштымын.", "My name is Yerzhan. Nice to meet you.", "Мен де қуаныштымын!", [
+          "Сау болыңыз!",
+          "Ал сенің атың кім?",
+        ]),
         teach("Dialogue: a polite hello", {
           examples: [
             { kk: "— Сәлеметсіз бе, Олжас!", en: "Arai: Hello, Olzhas!" },
@@ -301,7 +307,10 @@ export const unit1: ContentUnit = {
         }),
         fill("Сәлеметсіз бе, Арай! Қош ", "!", "келдіңіз", ["болыңыз", "қалайсыз"], "Hello, Arai! Welcome!"),
         fill("Рақмет! ", "?", "Қалайсыз", ["Көріскенше", "Сау болыңыз"], "Thank you! How are you?"),
-        fill("Мен де ", ".", "жақсымын", ["қуанышты", "рақмет"], "I'm good too."),
+        reply("Рақмет, жақсымын. Сіз қалайсыз?", "Thanks, I'm good. How are you?", "Мен де жақсымын.", [
+          "Қош келдіңіз!",
+          "Менің атым Арай.",
+        ]),
         en("Hello! How are you? (polite)", "Сәлеметсіз бе қалайсыз", ["сен", "ше"]),
         en("My name is Sandro. What's your name?", "Менің атым Сандро Сенің атың кім", ["мен", "де"]),
         listen("көріскенше", ["қош келдіңіз", "сау болыңыз"]),
@@ -562,9 +571,10 @@ export const unit3: ContentUnit = {
           ["мен", "I"],
           ["олар", "they"],
         ]),
-        listen("сендер", ["сіздер", "сен"]),
+        typeIt("we", "біз"),
         kk("олар", "they", ["he / she", "we", "you all"]),
         fill("", " Сандромын.", "Мен", ["Сен", "Ол"], "I am Sandro."),
+        spot("олар", "we", "біз"),
       ],
     },
     {
@@ -603,7 +613,7 @@ export const unit3: ContentUnit = {
         amDrill("Мен ", "хатшы", "мен", "I am a secretary."),
         amDrill("Мен ", "әке", "мен", "I am a father."),
         kk("Мен инженермін.", "I am an engineer.", ["You are an engineer.", "I am a teacher.", "He is an engineer."]),
-        kk("Мен оқушымын.", "I am a student.", ["I am a teacher.", "She is a student.", "I am happy."]),
+        spot("Мен оқушыпын.", "I am a student.", "Мен оқушымын."),
         en("I am a teacher.", "Мен мұғаліммін", ["мұғалім", "сен"]),
         listen("дәрігермін", ["дәрігер", "дәрігерсің"]),
         match([
@@ -813,7 +823,7 @@ export const unit4: ContentUnit = {
         pluralDrill("пәтер", "apartments"),
         pluralDrill("көрші", "neighbours"),
         kk("қалалар", "cities", ["a city", "children", "steppes"]),
-        listen("үйлер", ["үйлар", "үй"]),
+        spot("баладар", "children", "балалар"),
         match([
           ["бала", "child"],
           ["қала", "city"],
@@ -883,7 +893,7 @@ export const unit4: ContentUnit = {
         pluralDrill("сурет", "pictures"),
         pluralDrill("туыс", "relatives"),
         kk("мысықтар", "cats", ["a cat", "dogs", "books"]),
-        listen("кітаптар", ["кітапдар", "кітап"]),
+        spot("кітапдар", "books", "кітаптар"),
         match([
           ["кітап", "book"],
           ["мысық", "cat"],
@@ -910,7 +920,7 @@ export const unit4: ContentUnit = {
           tip: "**Екі қызбыз** = *We are two girls*, but **Қыздармыз** = *We are girls*.",
         }),
         fill("Екі ", ".", "алма", ["алмалар"], "two apples"),
-        fill("Көп ", ".", "адам", ["адамдар"], "many people"),
+        spot("Көп адамдар.", "many people", "Көп адам."),
         kk("екі ит", "two dogs", ["a dog", "dogs", "many dogs"]),
         kk("үш мысық", "three cats", ["three dogs", "cats", "one cat"]),
         en("many books", "көп кітап", ["кітаптар", "бір"]),
