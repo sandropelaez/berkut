@@ -312,6 +312,22 @@ export const unit1: ContentUnit = {
 };
 
 // ─── Unit 2 — The harmony rule ───────────────────────────────────────────
+// Teach cards a lesson shares with its part 2, where they open as a recap.
+const harmonyRuleCard = teach("The harmony rule", {
+  body: [
+    "Kazakh builds words by gluing endings on. Most endings come in a **strong** and a **soft** version, and the word's vowels decide which one you use.",
+  ],
+  table: {
+    headers: ["Group", "Vowels"],
+    rows: [
+      ["Soft (“smiley”)", "ә ө ү і е"],
+      ["Strong", "а о ұ ы у"],
+      ["Usually strong", "я ю и"],
+    ],
+  },
+  tip: "Look at the **last vowel** of the word: бал**а** → strong, ү**й** → soft.",
+});
+
 export const unit2: ContentUnit = {
   id: "u2",
   order: 2,
@@ -339,20 +355,7 @@ export const unit2: ContentUnit = {
       titleKk: "Жіңішке және жуан",
       titleEn: "Soft & strong vowels",
       items: [
-        teach("The harmony rule", {
-          body: [
-            "Kazakh builds words by gluing endings on. Most endings come in a **strong** and a **soft** version, and the word's vowels decide which one you use.",
-          ],
-          table: {
-            headers: ["Group", "Vowels"],
-            rows: [
-              ["Soft (“smiley”)", "ә ө ү і е"],
-              ["Strong", "а о ұ ы у"],
-              ["Usually strong", "я ю и"],
-            ],
-          },
-          tip: "Look at the **last vowel** of the word: бал**а** → strong, ү**й** → soft.",
-        }),
+        harmonyRuleCard,
         mc("Is the last vowel soft or strong?", "бала", "Strong", ["Soft"]),
         mc("Is the last vowel soft or strong?", "үй", "Soft", ["Strong"]),
         mc("Is the last vowel soft or strong?", "кітап", "Strong", ["Soft"]),
@@ -368,6 +371,14 @@ export const unit2: ContentUnit = {
         }),
         fill("бала", "", "лар", ["лер"], "children"),
         fill("әке", "", "лер", ["лар"], "fathers"),
+      ],
+    },
+    {
+      id: "u2-b3-2",
+      titleKk: "Жіңішке және жуан · 2-бөлім",
+      titleEn: "Soft & strong vowels · part 2",
+      items: [
+        harmonyRuleCard,
         mc("Is the last vowel soft or strong?", "дәрігер", "Soft", ["Strong"]),
         mc("Is the last vowel soft or strong?", "ұшқыш", "Strong", ["Soft"]),
         fill("қала", "", "лар", ["лер"], "cities"),
@@ -430,6 +441,50 @@ export const unit2: ContentUnit = {
 };
 
 // ─── Unit 3 — Pronouns & personal endings ("I am") ───────────────────────
+// Teach cards a lesson shares with its part 2, where they open as a recap.
+const iAmFamiliesCard = teach("Three families of “I am”", {
+  body: ["The **last letter** picks м, б or п. The **last vowel** picks ы or і."],
+  table: {
+    headers: ["Word ends in…", "Strong", "Soft"],
+    rows: [
+      ["vowel, м н ң л р й у", "**-мын** · адам**мын**", "**-мін** · дәрігер**мін**"],
+      ["ж з", "**-бын** · қыз**бын**", "**-бін** · тез**бін**"],
+      ["voiceless: к қ п с т ш…", "**-пын** · қазақ**пын**", "**-пін** · әріптес**пін**"],
+    ],
+  },
+});
+const personEndingsCard = teach("Strong & soft endings", {
+  table: {
+    headers: ["Pronoun", "Strong", "Soft"],
+    rows: [
+      ["сен", "-сың", "-сің"],
+      ["сіз", "-сыз", "-сіз"],
+      ["біз", "-мыз / -быз / -пыз", "-міз / -біз / -піз"],
+      ["сендер", "-сыңдар", "-сіңдер"],
+      ["сіздер", "-сыздар", "-сіздер"],
+    ],
+  },
+  tip: "**Біз** is special: after **м н ң** it takes **-быз / -біз**: адам**быз**, мұғалім**біз**.",
+  examples: [
+    { kk: "Сен жақсы адам**сың**.", en: "You are a good person." },
+    { kk: "Ол жақсы адам.", en: "She is a good person." },
+    { kk: "Біз жақсы адам**быз**.", en: "We are good people." },
+  ],
+});
+const emesCard = teach("Not = емес", {
+  body: [
+    "To say *not*, put **емес** after the word, and move the ending onto **емес**.",
+    "Емес ends in **с** (voiceless, soft), so it always takes **-пін, -сің, -сіз, -піз, -сіңдер, -сіздер**.",
+  ],
+  examples: [
+    { kk: "Мен мұғаліммін. → Мен мұғалім емес**пін**.", en: "I am a teacher. → I am not a teacher." },
+    { kk: "Сен инженер емес**сің**.", en: "You are not an engineer." },
+    { kk: "Ол дәрігер емес.", en: "She is not a doctor." },
+    { kk: "Біз мұғалім емес**піз**.", en: "We are not teachers." },
+    { kk: "Бұл телефон емес.", en: "This is not a phone." },
+  ],
+});
+
 export const unit3: ContentUnit = {
   id: "u3",
   order: 3,
@@ -565,17 +620,7 @@ export const unit3: ContentUnit = {
       titleKk: "-бын/-бін, -пын/-пін",
       titleEn: "I am: -бын and -пын",
       items: [
-        teach("Three families of “I am”", {
-          body: ["The **last letter** picks м, б or п. The **last vowel** picks ы or і."],
-          table: {
-            headers: ["Word ends in…", "Strong", "Soft"],
-            rows: [
-              ["vowel, м н ң л р й у", "**-мын** · адам**мын**", "**-мін** · дәрігер**мін**"],
-              ["ж з", "**-бын** · қыз**бын**", "**-бін** · тез**бін**"],
-              ["voiceless: к қ п с т ш…", "**-пын** · қазақ**пын**", "**-пін** · әріптес**пін**"],
-            ],
-          },
-        }),
+        iAmFamiliesCard,
         teach("Examples", {
           examples: [
             { kk: "Аспаз**бын**.", en: "I am a chef." },
@@ -593,6 +638,14 @@ export const unit3: ContentUnit = {
         amDrill("Мен ", "француз", "мен", "I am French."),
         amDrill("Мен ", "жұлдыз", "мен", "I am a star."),
         amDrill("Мен ", "Мөлдір", "мен", "I am Moldir."),
+      ],
+    },
+    {
+      id: "u3-b3-2",
+      titleKk: "-бын/-бін, -пын/-пін · 2-бөлім",
+      titleEn: "I am: -бын and -пын · part 2",
+      items: [
+        iAmFamiliesCard,
         amDrill("Мен ", "Қанат", "мен", "I am Qanat."),
         amDrill("Мен ", "дайын", "мен", "I am ready."),
         en("I am Kazakh.", "Мен қазақпын", ["қазақмын", "қазақбын"]),
@@ -622,30 +675,21 @@ export const unit3: ContentUnit = {
             ],
           },
         }),
-        teach("Strong & soft endings", {
-          table: {
-            headers: ["Pronoun", "Strong", "Soft"],
-            rows: [
-              ["сен", "-сың", "-сің"],
-              ["сіз", "-сыз", "-сіз"],
-              ["біз", "-мыз / -быз / -пыз", "-міз / -біз / -піз"],
-              ["сендер", "-сыңдар", "-сіңдер"],
-              ["сіздер", "-сыздар", "-сіздер"],
-            ],
-          },
-          tip: "**Біз** is special: after **м н ң** it takes **-быз / -біз**: адам**быз**, мұғалім**біз**.",
-          examples: [
-            { kk: "Сен жақсы адам**сың**.", en: "You are a good person." },
-            { kk: "Ол жақсы адам.", en: "She is a good person." },
-            { kk: "Біз жақсы адам**быз**.", en: "We are good people." },
-          ],
-        }),
+        personEndingsCard,
         amDrill("Сен ", "ана", "сен", "You are a mother."),
         amDrill("Сіз ", "ата", "сіз", "You are a grandpa. (polite)"),
         amDrill("Біз ", "мұғалім", "біз", "We are teachers."),
         amDrill("Біз ", "ұшқыш", "біз", "We are pilots."),
         amDrill("Біз ", "дәрігер", "біз", "We are doctors."),
         amDrill("Сендер ", "жақсы", "сендер", "You (all) are good."),
+      ],
+    },
+    {
+      id: "u3-b4-2",
+      titleKk: "Сен, сіз, біз… · 2-бөлім",
+      titleEn: "You are, we are · part 2",
+      items: [
+        personEndingsCard,
         amDrill("Сіздер жақсы ", "адам", "сіздер", "You (all) are good people."),
         amDrill("Біз ", "бала", "біз", "We are children."),
         kk("Біз жақсы адамбыз.", "We are good people.", ["You are good people.", "They are good people.", "I am a good person."]),
@@ -659,25 +703,21 @@ export const unit3: ContentUnit = {
       titleKk: "Емес",
       titleEn: "Not: емес",
       items: [
-        teach("Not = емес", {
-          body: [
-            "To say *not*, put **емес** after the word, and move the ending onto **емес**.",
-            "Емес ends in **с** (voiceless, soft), so it always takes **-пін, -сің, -сіз, -піз, -сіңдер, -сіздер**.",
-          ],
-          examples: [
-            { kk: "Мен мұғаліммін. → Мен мұғалім емес**пін**.", en: "I am a teacher. → I am not a teacher." },
-            { kk: "Сен инженер емес**сің**.", en: "You are not an engineer." },
-            { kk: "Ол дәрігер емес.", en: "She is not a doctor." },
-            { kk: "Біз мұғалім емес**піз**.", en: "We are not teachers." },
-            { kk: "Бұл телефон емес.", en: "This is not a phone." },
-          ],
-        }),
+        emesCard,
         fill("Мен дәрігер емес", ".", "пін", ["мін", "пын"], "I am not a doctor."),
         fill("Сіз әже емес", ".", "сіз", ["сыз", "сің"], "You are not a grandma. (polite)"),
         fill("Сен ұл емес", ".", "сің", ["сың", "пін"], "You are not a boy."),
         fill("Біз жақсы адам емес", ".", "піз", ["пыз", "быз"], "We are not good people."),
         en("I am not French.", "Мен француз емеспін", ["французбын", "емес"]),
         kk("Ол мейірімді қыз емес.", "She is not a kind girl.", ["She is a kind girl.", "I am not a kind girl.", "This is not a girl."]),
+      ],
+    },
+    {
+      id: "u3-b5-2",
+      titleKk: "Емес · 2-бөлім",
+      titleEn: "Not: емес · part 2",
+      items: [
+        emesCard,
         kk("Бұл Педро емес.", "This is not Pedro.", ["This is Pedro.", "I am not Pedro.", "Pedro is not here."]),
         mc("What does it mean?", "Мен қазақ емеспін.", "I am not Kazakh.", ["I am Kazakh.", "You are not Kazakh.", "We are Kazakh."]),
         en("I am not a teacher, I am an engineer.", "Мен мұғалім емеспін инженермін", ["мұғаліммін", "инженер"]),
@@ -696,6 +736,18 @@ export const unit3: ContentUnit = {
 };
 
 // ─── Unit 4 — Plurals ────────────────────────────────────────────────────
+// Teach cards a lesson shares with its part 2, where they open as a recap.
+const allPluralsCard = teach("All six plurals", {
+  table: {
+    headers: ["Word ends in…", "Strong", "Soft"],
+    rows: [
+      ["vowel, р й у", "**-лар** · бала**лар**", "**-лер** · үй**лер**"],
+      ["л м н ң, ж з", "**-дар** · адам**дар**", "**-дер** · үстел**дер**"],
+      ["voiceless: к қ п с т ш…", "**-тар** · кітап**тар**", "**-тер** · ит**тер**"],
+    ],
+  },
+});
+
 export const unit4: ContentUnit = {
   id: "u4",
   order: 4,
@@ -886,22 +938,21 @@ export const unit4: ContentUnit = {
       titleKk: "Шеберлік",
       titleEn: "Plurals mastery",
       items: [
-        teach("All six plurals", {
-          table: {
-            headers: ["Word ends in…", "Strong", "Soft"],
-            rows: [
-              ["vowel, р й у", "**-лар** · бала**лар**", "**-лер** · үй**лер**"],
-              ["л м н ң, ж з", "**-дар** · адам**дар**", "**-дер** · үстел**дер**"],
-              ["voiceless: к қ п с т ш…", "**-тар** · кітап**тар**", "**-тер** · ит**тер**"],
-            ],
-          },
-        }),
+        allPluralsCard,
         pluralDrill("жүрек", "hearts"),
         pluralDrill("ұл", "boys"),
         pluralDrill("үй", "houses"),
         pluralDrill("мысық", "cats"),
         pluralDrill("телефон", "phones"),
         pluralDrill("мектеп", "schools"),
+      ],
+    },
+    {
+      id: "u4-b5-2",
+      titleKk: "Шеберлік · 2-бөлім",
+      titleEn: "Plurals mastery · part 2",
+      items: [
+        allPluralsCard,
         pluralDrill("бөлме", "rooms"),
         pluralDrill("дос", "friends"),
         match([

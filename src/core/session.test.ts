@@ -65,8 +65,23 @@ describe("buildSession", () => {
 
   it("repeats material: more graded items than authored, within the cap", () => {
     for (const q of runs) {
-      expect(graded(q).length).toBeGreaterThan(6 * 2);
+      expect(graded(q).length).toBeGreaterThan(6);
       expect(graded(q).length).toBeLessThanOrEqual(MAX_GRADED);
+    }
+  });
+
+  it(`never asks more than ${MAX_GRADED} questions, keeping authored ones first`, () => {
+    const drills = Array.from({ length: 14 }, (_, i) =>
+      ex({ type: "MULTIPLE_CHOICE", questionEn: `Drill ${i}`, options: ["a", "b", "c"], correctAns: "a" }),
+    );
+    for (const n of [MAX_GRADED, 14]) {
+      const long: Lesson = { ...lesson, exercises: [lesson.exercises[0]!, ...drills.slice(0, n)] };
+      for (const s of [1, 2, 3]) {
+        const q = buildSession(long, seeded(s));
+        expect(graded(q).length).toBe(MAX_GRADED);
+        expect(graded(q).every((i) => i.kind === "new")).toBe(true);
+        expect(graded(q).map((i) => i.exercise.id)).toEqual(drills.slice(0, MAX_GRADED).map((e) => e.id));
+      }
     }
   });
 

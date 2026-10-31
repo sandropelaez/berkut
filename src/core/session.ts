@@ -41,8 +41,11 @@ export const ECHO_GAP = 3;
 export const REVIEW_ITEMS = 3;
 /** A missed exercise comes back this many slots later (or at the end). */
 export const MISTAKE_GAP = 3;
-/** Upper bound on graded exercises in a session (before mistakes). */
-export const MAX_GRADED = 22;
+/**
+ * Upper bound on graded exercises in a session (before re-asked mistakes).
+ * Authored exercises come first; echoes and the review only fill what's left.
+ */
+export const MAX_GRADED = 10;
 /** Stop re-asking the same exercise after this many requeues. */
 export const MAX_REQUEUES = 2;
 
@@ -373,8 +376,24 @@ function signature(prompt: ExercisePrompt): string | null {
   return kk === null ? null : `${prompt.type}|${normalize(kk)}`;
 }
 
+/**
+ * The lesson's exercises minus Listening, cut after the MAX_GRADED-th graded
+ * one. Authored lessons are kept within the cap (validateUnits); this only
+ * guards content that isn't.
+ */
+function capped(exercises: Exercise[]): Exercise[] {
+  const out: Exercise[] = [];
+  let graded = 0;
+  for (const e of exercises) {
+    if (e.type === "LISTENING") continue;
+    if (e.type !== "TEACH" && graded++ === MAX_GRADED) break;
+    out.push(e);
+  }
+  return out;
+}
+
 export function buildSession(lesson: Lesson, rand: Rand = Math.random): SessionItem[] {
-  const authored = lesson.exercises.filter((e) => e.type !== "LISTENING");
+  const authored = capped(lesson.exercises);
   const bank = new Bank(lesson, authored);
   let n = 0;
   const item = (source: Exercise, prompt: ExercisePrompt, kind: SessionKind): SessionItem => ({
@@ -385,13 +404,21 @@ export function buildSession(lesson: Lesson, rand: Rand = Math.random): SessionI
 
   const graded = authored.filter((e) => e.type !== "TEACH");
   const variants = new Map(graded.map((e) => [e, variantsOf(e.prompt, bank, rand)]));
-  const match = matchRound(bank, rand);
 
-  // Fit echoes and review into MAX_GRADED, keeping at least one review item.
+  // Fit echoes and review into what MAX_GRADED leaves: the match round first,
+  // then echoes, keeping one review item when there's room for it.
   const withVariants = graded.filter((e) => variants.get(e)!.length > 0);
+  const match = graded.length < MAX_GRADED ? matchRound(bank, rand) : null;
   const room = MAX_GRADED - graded.length - (match ? 1 : 0);
   const echoCount = Math.max(0, Math.min(withVariants.length, room - 1));
-  const echoed = new Set(shuffle(withVariants, rand).slice(0, echoCount));
+  // With few echoes to give, prefer exercises whose echo lands inside the
+  // lesson: one of the last few would be echoed straight after itself.
+  const late = new Set(graded.slice(-ECHO_GAP));
+  const echoed = new Set(
+    shuffle(withVariants, rand)
+      .sort((a, b) => +late.has(a) - +late.has(b))
+      .slice(0, echoCount),
+  );
   const reviewCount = Math.max(0, Math.min(REVIEW_ITEMS, room - echoCount));
 
   const asked = new Set(authored.map((e) => signature(e.prompt)));

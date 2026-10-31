@@ -19,6 +19,32 @@ import {
 } from "../builders";
 
 // ─── Unit 5 — My family: possessive endings, бар / жоқ ───────────────────
+// Teach cards a lesson shares with its part 2, where they open as a recap.
+const possessiveEndingsCard = teach("Whose? Endings for everyone", {
+  table: {
+    headers: ["Whose?", "After a vowel", "After a consonant"],
+    rows: [
+      ["менің — my", "бала**м**", "үй**ім**"],
+      ["сенің — your", "бала**ң**", "үй**ің**"],
+      ["сіздің — your (polite)", "бала**ңыз**", "үй**іңіз**"],
+      ["оның — his / her", "бала**сы**", "үй**і**"],
+      ["біздің — our", "бала**мыз**", "үй**іміз**"],
+    ],
+  },
+  tip: "*Their* = **олардың** + the same ending as оның: олардың үй**і**.",
+});
+const twoEndingsCard = teach("Review: two kinds of endings", {
+  body: ["Don't mix them up: *I am* endings go on what you **are**; possessive endings go on what you **have**."],
+  table: {
+    headers: ["my (possessive)", "I am (personal)"],
+    rows: [
+      ["қыз**ым** — my daughter", "қыз**бын** — I am a girl"],
+      ["әріптес**ім** — my colleague", "әріптес**пін** — I am a colleague"],
+      ["дәрігер**ім** — my doctor", "дәрігер**мін** — I am a doctor"],
+    ],
+  },
+});
+
 export const unit5: ContentUnit = {
   id: "u5",
   order: 5,
@@ -144,6 +170,13 @@ export const unit5: ContentUnit = {
         possDrill("Менің ", "қыз", "менің", ".", "my daughter"),
         possDrill("Менің ", "іні", "менің", ".", "my younger brother"),
         possDrill("Менің ", "телефон", "менің", ".", "my phone"),
+      ],
+    },
+    {
+      id: "u5-b2-2",
+      titleKk: "Менің … · 2-бөлім",
+      titleEn: "My: -м / -ым / -ім · part 2",
+      items: [
         teach("Sound change: қ→ғ, к→г, п→б", {
           body: ["When a vowel ending follows **қ к п** at the end of a word, they soften to **ғ г б**:"],
           examples: [
@@ -167,19 +200,7 @@ export const unit5: ContentUnit = {
       titleKk: "Сенің, сіздің, оның, біздің",
       titleEn: "Your, his / her, our",
       items: [
-        teach("Whose? Endings for everyone", {
-          table: {
-            headers: ["Whose?", "After a vowel", "After a consonant"],
-            rows: [
-              ["менің — my", "бала**м**", "үй**ім**"],
-              ["сенің — your", "бала**ң**", "үй**ің**"],
-              ["сіздің — your (polite)", "бала**ңыз**", "үй**іңіз**"],
-              ["оның — his / her", "бала**сы**", "үй**і**"],
-              ["біздің — our", "бала**мыз**", "үй**іміз**"],
-            ],
-          },
-          tip: "*Their* = **олардың** + the same ending as оның: олардың үй**і**.",
-        }),
+        possessiveEndingsCard,
         teach("Examples", {
           examples: [
             { kk: "сенің телефон**ың**", en: "your phone" },
@@ -195,6 +216,14 @@ export const unit5: ContentUnit = {
         possDrill("Біздің ", "үй", "біздің", ".", "our house"),
         possDrill("Оның ", "іні", "оның", ".", "his / her younger brother"),
         possDrill("Сенің ", "пәтер", "сенің", ".", "your apartment"),
+      ],
+    },
+    {
+      id: "u5-b3-2",
+      titleKk: "Сенің, сіздің, оның, біздің · 2-бөлім",
+      titleEn: "Your, his / her, our · part 2",
+      items: [
+        possessiveEndingsCard,
         possDrill("Оның ", "үстел", "оның", ".", "his / her table"),
         possDrill("Сіздің ", "қарындас", "сіздің", ".", "your younger sister (polite)"),
         possDrill("Біздің ", "мысық", "біздің", ".", "our cat"),
@@ -251,23 +280,21 @@ export const unit5: ContentUnit = {
       titleKk: "Шеберлік",
       titleEn: "Family mastery",
       items: [
-        teach("Review: two kinds of endings", {
-          body: ["Don't mix them up: *I am* endings go on what you **are**; possessive endings go on what you **have**."],
-          table: {
-            headers: ["my (possessive)", "I am (personal)"],
-            rows: [
-              ["қыз**ым** — my daughter", "қыз**бын** — I am a girl"],
-              ["әріптес**ім** — my colleague", "әріптес**пін** — I am a colleague"],
-              ["дәрігер**ім** — my doctor", "дәрігер**мін** — I am a doctor"],
-            ],
-          },
-        }),
+        twoEndingsCard,
         en("My daughter is a student.", "Қызым оқушы", ["оқушымын", "қызың"]),
         en("My cat is big.", "Мысығым үлкен", ["мысық", "бар"]),
         en("My family is not big.", "Отбасым үлкен емес", ["жоқ", "отбасы"]),
         en("We don't have a cat.", "Мысығымыз жоқ", ["емес", "мысығым"]),
         kk("Жұмысым жақсы.", "My work is good.", ["I have good work.", "Your work is good.", "I work well."]),
         en("I have a big table.", "Үлкен үстелім бар", ["жоқ", "үстел"]),
+      ],
+    },
+    {
+      id: "u5-b5-2",
+      titleKk: "Шеберлік · 2-бөлім",
+      titleEn: "Family mastery · part 2",
+      items: [
+        twoEndingsCard,
         kk("Қызым инженер емес.", "My daughter is not an engineer.", ["My daughter is an engineer.", "I am not an engineer.", "I don't have a daughter."]),
         en("Your house is not big.", "Сенің үйің үлкен емес", ["үйім", "жоқ"]),
         kk("Атым Энди емес.", "My name is not Andy.", ["My name is Andy.", "Andy is not here.", "His name is not Andy."]),
@@ -287,6 +314,24 @@ export const unit5: ContentUnit = {
 };
 
 // ─── Unit 6 — Numbers, time & place ──────────────────────────────────────
+// Teach cards a lesson shares with its part 2, where they open as a recap.
+const locativeCard = teach("Where? — one ending", {
+  body: [
+    "**-да / -де / -та / -те** = *in / on / at*.",
+    "After a **voiceless** consonant (к қ п с т ш…) → **-та / -те**. After everything else → **-да / -де**.",
+  ],
+  examples: [
+    { kk: "үй**де**", en: "at home" },
+    { kk: "жұмыс**та**", en: "at work" },
+    { kk: "қала**да**", en: "in the city" },
+    { kk: "дала**да**", en: "outside" },
+    { kk: "Сингапур**да**", en: "in Singapore" },
+    { kk: "Бангкок**та**", en: "in Bangkok" },
+    { kk: "Шымкент**те**", en: "in Shymkent" },
+    { kk: "Берлин**де**", en: "in Berlin" },
+  ],
+});
+
 export const unit6: ContentUnit = {
   id: "u6",
   order: 6,
@@ -435,28 +480,21 @@ export const unit6: ContentUnit = {
       titleKk: "-да / -де / -та / -те",
       titleEn: "In, on, at",
       items: [
-        teach("Where? — one ending", {
-          body: [
-            "**-да / -де / -та / -те** = *in / on / at*.",
-            "After a **voiceless** consonant (к қ п с т ш…) → **-та / -те**. After everything else → **-да / -де**.",
-          ],
-          examples: [
-            { kk: "үй**де**", en: "at home" },
-            { kk: "жұмыс**та**", en: "at work" },
-            { kk: "қала**да**", en: "in the city" },
-            { kk: "дала**да**", en: "outside" },
-            { kk: "Сингапур**да**", en: "in Singapore" },
-            { kk: "Бангкок**та**", en: "in Bangkok" },
-            { kk: "Шымкент**те**", en: "in Shymkent" },
-            { kk: "Берлин**де**", en: "in Berlin" },
-          ],
-        }),
+        locativeCard,
         locDrill("", "қала", "", "in the city"),
         locDrill("", "үй", "", "at home"),
         locDrill("", "жұмыс", "", "at work"),
         locDrill("", "Алматы", "", "in Almaty"),
         locDrill("", "Шымкент", "", "in Shymkent"),
         locDrill("", "мектеп", "", "at school"),
+      ],
+    },
+    {
+      id: "u6-b3-2",
+      titleKk: "-да / -де / -та / -те · 2-бөлім",
+      titleEn: "In, on, at · part 2",
+      items: [
+        locativeCard,
         locDrill("", "кафе", "", "in a café"),
         locDrill("", "ресторан", "", "in a restaurant"),
         teach("I'm at… / I live in…", {
@@ -585,6 +623,32 @@ export const unit6: ContentUnit = {
 };
 
 // ─── Unit 7 — Present / future tense ─────────────────────────────────────
+// Teach cards a lesson shares with its part 2, where they open as a recap.
+const presentPersonsCard = teach("Every person", {
+  body: ["**бару** go · **ішу** drink · **жасау** do"],
+  table: {
+    headers: ["", "бару", "ішу", "жасау"],
+    rows: (["мен", "сен", "сіз", "ол", "біз", "сендер", "сіздер", "олар"] as const).map((p) => [
+      p,
+      conjCell("бару", p),
+      conjCell("ішу", p),
+      conjCell("жасау", p),
+    ]),
+  },
+  tip: "**ол** and **олар** share one form: Ол барады · Олар барады.",
+});
+const kerekCard = teach("I need: маған … керек", {
+  body: ["Same pattern: **маған** + the thing + **керек** (necessary). For *don't need*, add **жоқ**: керек **жоқ**. For a question, add **пе**: керек **пе**?"],
+  examples: [
+    { kk: "Маған ақ нан керек.", en: "I need white bread." },
+    { kk: "Маған кофе керек **жоқ**.", en: "I don't need coffee." },
+    { kk: "Саған кофе керек пе?", en: "Do you need coffee?" },
+    { kk: "Маған ерте ояну керек.", en: "I need to wake up early." },
+    { kk: "Маған су **да** керек.", en: "I also need water." },
+  ],
+  tip: "**да / де / та / те** after a word means *too*: су **да** (water too), досым **да** (my friend too), мысық **та** (a cat too). It follows the same rule as -да/-та, but it's written as a separate word.",
+});
+
 export const unit7: ContentUnit = {
   id: "u7",
   order: 7,
@@ -739,25 +803,21 @@ export const unit7: ContentUnit = {
       titleKk: "Сен, ол, біз…",
       titleEn: "You, she, we: all persons",
       items: [
-        teach("Every person", {
-          body: ["**бару** go · **ішу** drink · **жасау** do"],
-          table: {
-            headers: ["", "бару", "ішу", "жасау"],
-            rows: (["мен", "сен", "сіз", "ол", "біз", "сендер", "сіздер", "олар"] as const).map((p) => [
-              p,
-              conjCell("бару", p),
-              conjCell("ішу", p),
-              conjCell("жасау", p),
-            ]),
-          },
-          tip: "**ол** and **олар** share one form: Ол барады · Олар барады.",
-        }),
+        presentPersonsCard,
         verbDrill("Педро Испанияда ", "тұру", "ол", ".", "Pedro lives in Spain."),
         verbDrill("Сен Шымкентте ", "тұру", "сен", ".", "You live in Shymkent."),
         verbDrill("Біз күнде су ", "ішу", "біз", ".", "We drink water every day."),
         verbDrill("Сіз Бернде ", "тұру", "сіз", ".", "You live in Bern. (polite)"),
         verbDrill("Қызым әдетте көк шай ", "ішу", "ол", ".", "My daughter usually drinks green tea."),
         verbDrill("Олар үйде тамақ ", "жеу", "олар", ".", "They eat at home."),
+      ],
+    },
+    {
+      id: "u7-b3-2",
+      titleKk: "Сен, ол, біз… · 2-бөлім",
+      titleEn: "You, she, we: all persons · part 2",
+      items: [
+        presentPersonsCard,
         verbDrill("Сендер не ", "істеу", "сендер", "?", "What do you (all) do?"),
         kk("Досым кафеде кофе ішеді.", "My friend drinks coffee in a café.", ["I drink coffee in a café.", "My friend makes coffee at home.", "My friend is in a café."]),
         kk("Әйелім күнде кофе ішеді.", "My wife drinks coffee every day.", ["My wife drinks tea every day.", "I drink coffee every day.", "My wife drinks coffee today."]),
@@ -845,6 +905,13 @@ export const unit7: ContentUnit = {
         negDrill("Кеш ", "ояну", "мен", ".", "I don't wake up late."),
         negDrill("Ертең қызым эссе ", "жазу", "ол", ".", "Tomorrow my daughter won't write an essay."),
         negDrill("Қарындасым Сингапурда ", "тұру", "ол", ".", "My younger sister doesn't live in Singapore."),
+      ],
+    },
+    {
+      id: "u7-b5-2",
+      titleKk: "Жоқ / ма? · 2-бөлім",
+      titleEn: "Negatives & questions · part 2",
+      items: [
         teach("Questions: ма / ме, ба / бе", {
           body: [
             "To ask a yes/no question, put a particle **after** the verb.",
@@ -915,22 +982,27 @@ export const unit7: ContentUnit = {
         fill("", " ерте ояну ұнай ма?", "Сізге", ["Сіз", "Сізде"], "Do you like waking up early? (polite)"),
         en("I like working.", "Маған жұмыс істеу ұнайды", ["Мен", "ұнамайды"]),
         en("I don't like living in Germany.", "Маған Германияда тұру ұнамайды", ["ұнайды", "Германия"]),
-        teach("I need: маған … керек", {
-          body: ["Same pattern: **маған** + the thing + **керек** (necessary). For *don't need*, add **жоқ**: керек **жоқ**. For a question, add **пе**: керек **пе**?"],
-          examples: [
-            { kk: "Маған ақ нан керек.", en: "I need white bread." },
-            { kk: "Маған кофе керек **жоқ**.", en: "I don't need coffee." },
-            { kk: "Саған кофе керек пе?", en: "Do you need coffee?" },
-            { kk: "Маған ерте ояну керек.", en: "I need to wake up early." },
-            { kk: "Маған су **да** керек.", en: "I also need water." },
-          ],
-          tip: "**да / де / та / те** after a word means *too*: су **да** (water too), досым **да** (my friend too), мысық **та** (a cat too). It follows the same rule as -да/-та, but it's written as a separate word.",
-        }),
+      ],
+    },
+    {
+      id: "u7-b6-2",
+      titleKk: "Маған ұнайды, маған керек · 2-бөлім",
+      titleEn: "I like, I need · part 2",
+      items: [
+        kerekCard,
         kk("Маған қара кофе керек.", "I need black coffee.", ["I like black coffee.", "I need black tea.", "You need black coffee."]),
         en("I need white bread.", "Маған ақ нан керек", ["қара", "ұнайды"]),
         kk("Саған ерте ояну керек пе?", "Do you need to wake up early?", ["Do you like waking up early?", "I need to wake up early.", "Do you wake up early?"]),
         fill("Маған су ", " керек.", "да", ["та", "де"], "I also need water."),
         fill("Қызым ", " жақсы.", "да", ["та", "де"], "My daughter is also good."),
+      ],
+    },
+    {
+      id: "u7-b6-3",
+      titleKk: "Маған ұнайды, маған керек · 3-бөлім",
+      titleEn: "I like, I need · part 3",
+      items: [
+        kerekCard,
         mc("What does мүмкін mean?", undefined, "maybe", ["yes", "no", "never"]),
         kk("Мүмкін ертең кофе ішемін.", "Maybe I'll drink coffee tomorrow.", ["I'll definitely drink coffee tomorrow.", "Maybe I'll drink tea tomorrow.", "Maybe I drink coffee every day."]),
         kk("Мүмкін маған Гонконгта тұру ұнайды.", "Maybe I'd like living in Hong Kong.", ["I don't like living in Hong Kong.", "Maybe I need to live in Hong Kong.", "Maybe I live in Hong Kong."]),

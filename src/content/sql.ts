@@ -18,16 +18,18 @@ const EXERCISE_TYPES = [
 
 // Legacy lessons in these units use orders 1–5 and are re-upserted (active,
 // same order) whenever older migrations are re-applied. lessons has a unique
-// (unit_id, "order") that archived rows still hold, so new lessons start above
-// that range and take their order from the -bN in their id rather than their
-// position: dropping u2-b1 leaves u2-b3 at 13 instead of moving it onto the
-// archived row's 11. The skill tree numbers lessons by position, not by this.
-const LESSON_ORDER_BASE = 10;
+// (unit_id, "order") that archived rows still hold (11–17 from before parts
+// existed, too), so new lessons start above that range and take their order
+// from the -bN in their id rather than their position: dropping u2-b1 leaves
+// u2-b3 at 130 instead of moving it onto the archived row's 110. A lesson
+// split for length continues as -bN-2, -bN-3 right after it. The skill tree
+// numbers lessons by position, not by this.
+const LESSON_ORDER_BASE = 100;
 
 function lessonOrder(id: string): number {
-  const m = /-b(\d+)$/.exec(id);
-  if (!m) throw new Error(`lesson id ${id} should end in -b<number>`);
-  return LESSON_ORDER_BASE + Number(m[1]);
+  const m = /-b(\d+)(?:-(\d))?$/.exec(id);
+  if (!m) throw new Error(`lesson id ${id} should end in -b<number> or -b<number>-<part>`);
+  return LESSON_ORDER_BASE + 10 * Number(m[1]) + (m[2] ? Number(m[2]) - 1 : 0);
 }
 
 export function buildMigrationSql(units: ContentUnit[], header: string): string {
