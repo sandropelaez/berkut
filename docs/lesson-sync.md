@@ -46,6 +46,28 @@ session's runbook; `docs/lesson-sources.json` is its state.
    it, id `<lesson>-2` (then `-3`), titled "… · part 2" / "… · 2-бөлім", opening
    with the lesson's main teach card as a recap (see `u7-b6-2`, `u7-b6-3`).
    Never re-split a lesson whose ids already exist in prod; add a part instead.
+
+   **Vary the formats.** A lesson that is all `fill()` or all `kk()` gets
+   boring fast. Give each lesson at least three formats, and use the newer
+   builders (`src/content/builders.ts`) wherever the material fits:
+   - `reply(lineKk, lineEn, correct, wrong)` — *choose the reply*. Turn the
+     tutor's dialogues into it: one speaker's line, the next line as the
+     answer, and replies that don't fit as decoys. Best for greetings and
+     small talk, questions with бар/жоқ, and any homework dialogue.
+   - `spot(sentenceKk, meaningEn, correction?)` — *right or wrong?* With a
+     `correction` it shows a sentence with one mistake: a wrong suffix
+     (оқушыпын → оқушымын), a mixed-up word (ертең / ерте), or wrong word
+     order. Use the tutor's own corrections of homework: the uncorrected
+     sentence is the mistake, the corrected one the fix. Without
+     `correction` it's a correct sentence to confirm. Mix both.
+   - `typeIt(promptEn, answer, alsoAccepted?)` — *type the Kazakh*. Only for
+     words and short phrases (4 words max, CI enforces it); list other right
+     answers in `alsoAccepted` (ана / мама). Either script is accepted, and
+     plain look-alike letters (салем for сәлем) count with a spelling note.
+   Don't use `listen()`: Listening is retired until there is recorded audio.
+   The app also turns every lesson's own questions into typed answers and
+   right-or-wrong checks for its repeats and review, so authored questions
+   don't need to cover every format.
 5. **Build and check.** `npm run content:build`, then `npm run ci`
    (typecheck, tests, build). Fix until green.
 6. **Ship.** Update `docs/lesson-sources.json` (`lastSyncedAt` = the time
