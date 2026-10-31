@@ -44,7 +44,7 @@ on conflict (id) do update set
 -- Archived (not deleted) so exercise reports and SRS history keep their rows.
 update public.lessons set status = 'archived'
   where unit_id in ('u0', 'u1', 'u2', 'u3', 'u4', 'u5', 'u6', 'u7')
-    and id not in ('u0-b1', 'u0-b2', 'u0-b3', 'u1-b1', 'u1-b2', 'u1-b3', 'u1-b4', 'u1-b5', 'u2-b3', 'u2-b4', 'u3-b1', 'u3-b2', 'u3-b3', 'u3-b4', 'u3-b5', 'u4-b1', 'u4-b2', 'u4-b3', 'u4-b4', 'u4-b5', 'u5-b1', 'u5-b2', 'u5-b3', 'u5-b4', 'u5-b5', 'u6-b1', 'u6-b2', 'u6-b3', 'u6-b4', 'u6-b5', 'u7-b1', 'u7-b2', 'u7-b3', 'u7-b4', 'u7-b5', 'u7-b6');
+    and id not in ('u0-b1', 'u0-b2', 'u0-b3', 'u1-b1', 'u1-b2', 'u1-b3', 'u1-b4', 'u1-b5', 'u2-b3', 'u2-b3-2', 'u2-b4', 'u3-b1', 'u3-b2', 'u3-b3', 'u3-b3-2', 'u3-b4', 'u3-b4-2', 'u3-b5', 'u3-b5-2', 'u4-b1', 'u4-b2', 'u4-b3', 'u4-b4', 'u4-b5', 'u4-b5-2', 'u5-b1', 'u5-b2', 'u5-b2-2', 'u5-b3', 'u5-b3-2', 'u5-b4', 'u5-b5', 'u5-b5-2', 'u6-b1', 'u6-b2', 'u6-b3', 'u6-b3-2', 'u6-b4', 'u6-b5', 'u7-b1', 'u7-b2', 'u7-b3', 'u7-b3-2', 'u7-b4', 'u7-b5', 'u7-b5-2', 'u7-b6', 'u7-b6-2', 'u7-b6-3');
 -- Vocab no longer in the source (the pre-v1.6 rows, and words that moved
 -- unit) goes to a hidden archived unit instead of being deleted.
 insert into public.units (id, language_code, "order", title_native, title_en, cefr_level, emoji, description, status) values
@@ -54,42 +54,55 @@ update public.vocab set unit_id = 'u-legacy-a1' where unit_id in ('u0', 'u1', 'u
 
 -- ─── Lessons ─────────────────────────────────────────────────────────────
 insert into public.lessons (id, unit_id, "order", title_native, title_en, status) values
-  ('u0-b1', 'u0', 11, 'Ә, І, Ө, Ү, Ұ', 'Kazakh vowels', 'active'),
-  ('u0-b2', 'u0', 12, 'Қ, Ғ, Ң, Һ', 'Kazakh consonants', 'active'),
-  ('u0-b3', 'u0', 13, 'Шеберлік', 'Alphabet mastery', 'active'),
-  ('u1-b1', 'u1', 11, 'Сәлеметсіз бе!', 'Saying hello', 'active'),
-  ('u1-b2', 'u1', 12, 'Танысу', 'Introducing yourself', 'active'),
-  ('u1-b3', 'u1', 13, 'Қалайсыз?', 'How are you?', 'active'),
-  ('u1-b4', 'u1', 14, 'Сау болыңыз!', 'Goodbyes & polite words', 'active'),
-  ('u1-b5', 'u1', 15, 'Диалог', 'Small-talk mastery', 'active'),
-  ('u2-b3', 'u2', 13, 'Жіңішке және жуан', 'Soft & strong vowels', 'active'),
-  ('u2-b4', 'u2', 14, 'Дауыссыздар', 'Consonant groups & stress', 'active'),
-  ('u3-b1', 'u3', 11, 'Есімдіктер', 'Pronouns', 'active'),
-  ('u3-b2', 'u3', 12, '-мын / -мін', 'I am: -мын / -мін', 'active'),
-  ('u3-b3', 'u3', 13, '-бын/-бін, -пын/-пін', 'I am: -бын and -пын', 'active'),
-  ('u3-b4', 'u3', 14, 'Сен, сіз, біз…', 'You are, we are', 'active'),
-  ('u3-b5', 'u3', 15, 'Емес', 'Not: емес', 'active'),
-  ('u4-b1', 'u4', 11, '-лар / -лер', 'Plural after vowels', 'active'),
-  ('u4-b2', 'u4', 12, '-дар / -дер', 'Plural after л м н ң ж з', 'active'),
-  ('u4-b3', 'u4', 13, '-тар / -тер', 'Plural after voiceless', 'active'),
-  ('u4-b4', 'u4', 14, 'Екі алма', 'Numbers, көп & олар', 'active'),
-  ('u4-b5', 'u4', 15, 'Шеберлік', 'Plurals mastery', 'active'),
-  ('u5-b1', 'u5', 11, 'Отбасы', 'Family words', 'active'),
-  ('u5-b2', 'u5', 12, 'Менің …', 'My: -м / -ым / -ім', 'active'),
-  ('u5-b3', 'u5', 13, 'Сенің, сіздің, оның, біздің', 'Your, his / her, our', 'active'),
-  ('u5-b4', 'u5', 14, 'Бар / жоқ', 'I have / I don''t have', 'active'),
-  ('u5-b5', 'u5', 15, 'Шеберлік', 'Family mastery', 'active'),
-  ('u6-b1', 'u6', 11, '1–10', 'Numbers 1–10', 'active'),
-  ('u6-b2', 'u6', 12, '20–100, жас', 'Tens & your age', 'active'),
-  ('u6-b3', 'u6', 13, '-да / -де / -та / -те', 'In, on, at', 'active'),
-  ('u6-b4', 'u6', 14, 'Сағат', 'Telling the time', 'active'),
-  ('u6-b5', 'u6', 15, 'Апта күндері', 'Days of the week', 'active'),
-  ('u7-b1', 'u7', 11, 'Етістіктер', 'Verbs & word order', 'active'),
-  ('u7-b2', 'u7', 12, '-а / -е / -й', 'I do: present tense', 'active'),
-  ('u7-b3', 'u7', 13, 'Сен, ол, біз…', 'You, she, we: all persons', 'active'),
-  ('u7-b4', 'u7', 14, 'Әдетте, күнде, ертең', 'Daily routine, food & drink', 'active'),
-  ('u7-b5', 'u7', 15, 'Жоқ / ма?', 'Negatives & questions', 'active'),
-  ('u7-b6', 'u7', 16, 'Маған ұнайды, маған керек', 'I like, I need', 'active')
+  ('u0-b1', 'u0', 110, 'Ә, І, Ө, Ү, Ұ', 'Kazakh vowels', 'active'),
+  ('u0-b2', 'u0', 120, 'Қ, Ғ, Ң, Һ', 'Kazakh consonants', 'active'),
+  ('u0-b3', 'u0', 130, 'Шеберлік', 'Alphabet mastery', 'active'),
+  ('u1-b1', 'u1', 110, 'Сәлеметсіз бе!', 'Saying hello', 'active'),
+  ('u1-b2', 'u1', 120, 'Танысу', 'Introducing yourself', 'active'),
+  ('u1-b3', 'u1', 130, 'Қалайсыз?', 'How are you?', 'active'),
+  ('u1-b4', 'u1', 140, 'Сау болыңыз!', 'Goodbyes & polite words', 'active'),
+  ('u1-b5', 'u1', 150, 'Диалог', 'Small-talk mastery', 'active'),
+  ('u2-b3', 'u2', 130, 'Жіңішке және жуан', 'Soft & strong vowels', 'active'),
+  ('u2-b3-2', 'u2', 131, 'Жіңішке және жуан · 2-бөлім', 'Soft & strong vowels · part 2', 'active'),
+  ('u2-b4', 'u2', 140, 'Дауыссыздар', 'Consonant groups & stress', 'active'),
+  ('u3-b1', 'u3', 110, 'Есімдіктер', 'Pronouns', 'active'),
+  ('u3-b2', 'u3', 120, '-мын / -мін', 'I am: -мын / -мін', 'active'),
+  ('u3-b3', 'u3', 130, '-бын/-бін, -пын/-пін', 'I am: -бын and -пын', 'active'),
+  ('u3-b3-2', 'u3', 131, '-бын/-бін, -пын/-пін · 2-бөлім', 'I am: -бын and -пын · part 2', 'active'),
+  ('u3-b4', 'u3', 140, 'Сен, сіз, біз…', 'You are, we are', 'active'),
+  ('u3-b4-2', 'u3', 141, 'Сен, сіз, біз… · 2-бөлім', 'You are, we are · part 2', 'active'),
+  ('u3-b5', 'u3', 150, 'Емес', 'Not: емес', 'active'),
+  ('u3-b5-2', 'u3', 151, 'Емес · 2-бөлім', 'Not: емес · part 2', 'active'),
+  ('u4-b1', 'u4', 110, '-лар / -лер', 'Plural after vowels', 'active'),
+  ('u4-b2', 'u4', 120, '-дар / -дер', 'Plural after л м н ң ж з', 'active'),
+  ('u4-b3', 'u4', 130, '-тар / -тер', 'Plural after voiceless', 'active'),
+  ('u4-b4', 'u4', 140, 'Екі алма', 'Numbers, көп & олар', 'active'),
+  ('u4-b5', 'u4', 150, 'Шеберлік', 'Plurals mastery', 'active'),
+  ('u4-b5-2', 'u4', 151, 'Шеберлік · 2-бөлім', 'Plurals mastery · part 2', 'active'),
+  ('u5-b1', 'u5', 110, 'Отбасы', 'Family words', 'active'),
+  ('u5-b2', 'u5', 120, 'Менің …', 'My: -м / -ым / -ім', 'active'),
+  ('u5-b2-2', 'u5', 121, 'Менің … · 2-бөлім', 'My: -м / -ым / -ім · part 2', 'active'),
+  ('u5-b3', 'u5', 130, 'Сенің, сіздің, оның, біздің', 'Your, his / her, our', 'active'),
+  ('u5-b3-2', 'u5', 131, 'Сенің, сіздің, оның, біздің · 2-бөлім', 'Your, his / her, our · part 2', 'active'),
+  ('u5-b4', 'u5', 140, 'Бар / жоқ', 'I have / I don''t have', 'active'),
+  ('u5-b5', 'u5', 150, 'Шеберлік', 'Family mastery', 'active'),
+  ('u5-b5-2', 'u5', 151, 'Шеберлік · 2-бөлім', 'Family mastery · part 2', 'active'),
+  ('u6-b1', 'u6', 110, '1–10', 'Numbers 1–10', 'active'),
+  ('u6-b2', 'u6', 120, '20–100, жас', 'Tens & your age', 'active'),
+  ('u6-b3', 'u6', 130, '-да / -де / -та / -те', 'In, on, at', 'active'),
+  ('u6-b3-2', 'u6', 131, '-да / -де / -та / -те · 2-бөлім', 'In, on, at · part 2', 'active'),
+  ('u6-b4', 'u6', 140, 'Сағат', 'Telling the time', 'active'),
+  ('u6-b5', 'u6', 150, 'Апта күндері', 'Days of the week', 'active'),
+  ('u7-b1', 'u7', 110, 'Етістіктер', 'Verbs & word order', 'active'),
+  ('u7-b2', 'u7', 120, '-а / -е / -й', 'I do: present tense', 'active'),
+  ('u7-b3', 'u7', 130, 'Сен, ол, біз…', 'You, she, we: all persons', 'active'),
+  ('u7-b3-2', 'u7', 131, 'Сен, ол, біз… · 2-бөлім', 'You, she, we: all persons · part 2', 'active'),
+  ('u7-b4', 'u7', 140, 'Әдетте, күнде, ертең', 'Daily routine, food & drink', 'active'),
+  ('u7-b5', 'u7', 150, 'Жоқ / ма?', 'Negatives & questions', 'active'),
+  ('u7-b5-2', 'u7', 151, 'Жоқ / ма? · 2-бөлім', 'Negatives & questions · part 2', 'active'),
+  ('u7-b6', 'u7', 160, 'Маған ұнайды, маған керек', 'I like, I need', 'active'),
+  ('u7-b6-2', 'u7', 161, 'Маған ұнайды, маған керек · 2-бөлім', 'I like, I need · part 2', 'active'),
+  ('u7-b6-3', 'u7', 162, 'Маған ұнайды, маған керек · 3-бөлім', 'I like, I need · part 3', 'active')
 on conflict (id) do update set
   unit_id=excluded.unit_id, "order"=excluded."order",
   title_native=excluded.title_native, title_en=excluded.title_en,
@@ -305,8 +318,8 @@ on conflict (id) do update set
 -- ─── Exercises ───────────────────────────────────────────────────────────
 -- Drop exercises removed from the source since the last run, then upsert.
 delete from public.exercises
-  where lesson_id in ('u0-b1', 'u0-b2', 'u0-b3', 'u1-b1', 'u1-b2', 'u1-b3', 'u1-b4', 'u1-b5', 'u2-b3', 'u2-b4', 'u3-b1', 'u3-b2', 'u3-b3', 'u3-b4', 'u3-b5', 'u4-b1', 'u4-b2', 'u4-b3', 'u4-b4', 'u4-b5', 'u5-b1', 'u5-b2', 'u5-b3', 'u5-b4', 'u5-b5', 'u6-b1', 'u6-b2', 'u6-b3', 'u6-b4', 'u6-b5', 'u7-b1', 'u7-b2', 'u7-b3', 'u7-b4', 'u7-b5', 'u7-b6')
-    and id not in ('u0-b1-e1', 'u0-b1-e2', 'u0-b1-e3', 'u0-b1-e4', 'u0-b1-e5', 'u0-b1-e6', 'u0-b1-e7', 'u0-b1-e8', 'u0-b1-e9', 'u0-b1-e10', 'u0-b1-e11', 'u0-b1-e12', 'u0-b1-e13', 'u0-b2-e1', 'u0-b2-e2', 'u0-b2-e3', 'u0-b2-e4', 'u0-b2-e5', 'u0-b2-e6', 'u0-b2-e7', 'u0-b2-e8', 'u0-b2-e9', 'u0-b2-e10', 'u0-b2-e11', 'u0-b2-e12', 'u0-b3-e1', 'u0-b3-e2', 'u0-b3-e3', 'u0-b3-e4', 'u0-b3-e5', 'u0-b3-e6', 'u0-b3-e7', 'u0-b3-e8', 'u0-b3-e9', 'u0-b3-e10', 'u0-b3-e11', 'u0-b3-e12', 'u1-b1-e1', 'u1-b1-e2', 'u1-b1-e3', 'u1-b1-e4', 'u1-b1-e5', 'u1-b1-e6', 'u1-b1-e7', 'u1-b1-e8', 'u1-b1-e9', 'u1-b1-e10', 'u1-b1-e11', 'u1-b1-e12', 'u1-b2-e1', 'u1-b2-e2', 'u1-b2-e3', 'u1-b2-e4', 'u1-b2-e5', 'u1-b2-e6', 'u1-b2-e7', 'u1-b2-e8', 'u1-b2-e9', 'u1-b2-e10', 'u1-b2-e11', 'u1-b2-e12', 'u1-b2-e13', 'u1-b3-e1', 'u1-b3-e2', 'u1-b3-e3', 'u1-b3-e4', 'u1-b3-e5', 'u1-b3-e6', 'u1-b3-e7', 'u1-b3-e8', 'u1-b3-e9', 'u1-b3-e10', 'u1-b3-e11', 'u1-b3-e12', 'u1-b3-e13', 'u1-b4-e1', 'u1-b4-e2', 'u1-b4-e3', 'u1-b4-e4', 'u1-b4-e5', 'u1-b4-e6', 'u1-b4-e7', 'u1-b4-e8', 'u1-b4-e9', 'u1-b4-e10', 'u1-b4-e11', 'u1-b4-e12', 'u1-b5-e1', 'u1-b5-e2', 'u1-b5-e3', 'u1-b5-e4', 'u1-b5-e5', 'u1-b5-e6', 'u1-b5-e7', 'u1-b5-e8', 'u1-b5-e9', 'u1-b5-e10', 'u1-b5-e11', 'u1-b5-e12', 'u1-b5-e13', 'u2-b3-e1', 'u2-b3-e2', 'u2-b3-e3', 'u2-b3-e4', 'u2-b3-e5', 'u2-b3-e6', 'u2-b3-e7', 'u2-b3-e8', 'u2-b3-e9', 'u2-b3-e10', 'u2-b3-e11', 'u2-b3-e12', 'u2-b3-e13', 'u2-b3-e14', 'u2-b3-e15', 'u2-b3-e16', 'u2-b4-e1', 'u2-b4-e2', 'u2-b4-e3', 'u2-b4-e4', 'u2-b4-e5', 'u2-b4-e6', 'u2-b4-e7', 'u2-b4-e8', 'u2-b4-e9', 'u2-b4-e10', 'u2-b4-e11', 'u2-b4-e12', 'u2-b4-e13', 'u2-b4-e14', 'u3-b1-e1', 'u3-b1-e2', 'u3-b1-e3', 'u3-b1-e4', 'u3-b1-e5', 'u3-b1-e6', 'u3-b1-e7', 'u3-b1-e8', 'u3-b1-e9', 'u3-b1-e10', 'u3-b2-e1', 'u3-b2-e2', 'u3-b2-e3', 'u3-b2-e4', 'u3-b2-e5', 'u3-b2-e6', 'u3-b2-e7', 'u3-b2-e8', 'u3-b2-e9', 'u3-b2-e10', 'u3-b2-e11', 'u3-b2-e12', 'u3-b2-e13', 'u3-b3-e1', 'u3-b3-e2', 'u3-b3-e3', 'u3-b3-e4', 'u3-b3-e5', 'u3-b3-e6', 'u3-b3-e7', 'u3-b3-e8', 'u3-b3-e9', 'u3-b3-e10', 'u3-b3-e11', 'u3-b3-e12', 'u3-b3-e13', 'u3-b3-e14', 'u3-b4-e1', 'u3-b4-e2', 'u3-b4-e3', 'u3-b4-e4', 'u3-b4-e5', 'u3-b4-e6', 'u3-b4-e7', 'u3-b4-e8', 'u3-b4-e9', 'u3-b4-e10', 'u3-b4-e11', 'u3-b4-e12', 'u3-b4-e13', 'u3-b4-e14', 'u3-b5-e1', 'u3-b5-e2', 'u3-b5-e3', 'u3-b5-e4', 'u3-b5-e5', 'u3-b5-e6', 'u3-b5-e7', 'u3-b5-e8', 'u3-b5-e9', 'u3-b5-e10', 'u3-b5-e11', 'u3-b5-e12', 'u3-b5-e13', 'u4-b1-e1', 'u4-b1-e2', 'u4-b1-e3', 'u4-b1-e4', 'u4-b1-e5', 'u4-b1-e6', 'u4-b1-e7', 'u4-b1-e8', 'u4-b1-e9', 'u4-b1-e10', 'u4-b1-e11', 'u4-b2-e1', 'u4-b2-e2', 'u4-b2-e3', 'u4-b2-e4', 'u4-b2-e5', 'u4-b2-e6', 'u4-b2-e7', 'u4-b2-e8', 'u4-b2-e9', 'u4-b2-e10', 'u4-b2-e11', 'u4-b2-e12', 'u4-b3-e1', 'u4-b3-e2', 'u4-b3-e3', 'u4-b3-e4', 'u4-b3-e5', 'u4-b3-e6', 'u4-b3-e7', 'u4-b3-e8', 'u4-b3-e9', 'u4-b3-e10', 'u4-b3-e11', 'u4-b4-e1', 'u4-b4-e2', 'u4-b4-e3', 'u4-b4-e4', 'u4-b4-e5', 'u4-b4-e6', 'u4-b4-e7', 'u4-b4-e8', 'u4-b4-e9', 'u4-b4-e10', 'u4-b4-e11', 'u4-b4-e12', 'u4-b4-e13', 'u4-b5-e1', 'u4-b5-e2', 'u4-b5-e3', 'u4-b5-e4', 'u4-b5-e5', 'u4-b5-e6', 'u4-b5-e7', 'u4-b5-e8', 'u4-b5-e9', 'u4-b5-e10', 'u4-b5-e11', 'u4-b5-e12', 'u5-b1-e1', 'u5-b1-e2', 'u5-b1-e3', 'u5-b1-e4', 'u5-b1-e5', 'u5-b1-e6', 'u5-b1-e7', 'u5-b1-e8', 'u5-b1-e9', 'u5-b1-e10', 'u5-b1-e11', 'u5-b2-e1', 'u5-b2-e2', 'u5-b2-e3', 'u5-b2-e4', 'u5-b2-e5', 'u5-b2-e6', 'u5-b2-e7', 'u5-b2-e8', 'u5-b2-e9', 'u5-b2-e10', 'u5-b2-e11', 'u5-b2-e12', 'u5-b2-e13', 'u5-b2-e14', 'u5-b3-e1', 'u5-b3-e2', 'u5-b3-e3', 'u5-b3-e4', 'u5-b3-e5', 'u5-b3-e6', 'u5-b3-e7', 'u5-b3-e8', 'u5-b3-e9', 'u5-b3-e10', 'u5-b3-e11', 'u5-b3-e12', 'u5-b3-e13', 'u5-b3-e14', 'u5-b4-e1', 'u5-b4-e2', 'u5-b4-e3', 'u5-b4-e4', 'u5-b4-e5', 'u5-b4-e6', 'u5-b4-e7', 'u5-b4-e8', 'u5-b4-e9', 'u5-b4-e10', 'u5-b4-e11', 'u5-b4-e12', 'u5-b4-e13', 'u5-b5-e1', 'u5-b5-e2', 'u5-b5-e3', 'u5-b5-e4', 'u5-b5-e5', 'u5-b5-e6', 'u5-b5-e7', 'u5-b5-e8', 'u5-b5-e9', 'u5-b5-e10', 'u5-b5-e11', 'u5-b5-e12', 'u5-b5-e13', 'u5-b5-e14', 'u6-b1-e1', 'u6-b1-e2', 'u6-b1-e3', 'u6-b1-e4', 'u6-b1-e5', 'u6-b1-e6', 'u6-b1-e7', 'u6-b1-e8', 'u6-b1-e9', 'u6-b1-e10', 'u6-b1-e11', 'u6-b1-e12', 'u6-b2-e1', 'u6-b2-e2', 'u6-b2-e3', 'u6-b2-e4', 'u6-b2-e5', 'u6-b2-e6', 'u6-b2-e7', 'u6-b2-e8', 'u6-b2-e9', 'u6-b2-e10', 'u6-b2-e11', 'u6-b3-e1', 'u6-b3-e2', 'u6-b3-e3', 'u6-b3-e4', 'u6-b3-e5', 'u6-b3-e6', 'u6-b3-e7', 'u6-b3-e8', 'u6-b3-e9', 'u6-b3-e10', 'u6-b3-e11', 'u6-b3-e12', 'u6-b3-e13', 'u6-b3-e14', 'u6-b3-e15', 'u6-b4-e1', 'u6-b4-e2', 'u6-b4-e3', 'u6-b4-e4', 'u6-b4-e5', 'u6-b4-e6', 'u6-b4-e7', 'u6-b4-e8', 'u6-b4-e9', 'u6-b4-e10', 'u6-b4-e11', 'u6-b4-e12', 'u6-b4-e13', 'u6-b5-e1', 'u6-b5-e2', 'u6-b5-e3', 'u6-b5-e4', 'u6-b5-e5', 'u6-b5-e6', 'u6-b5-e7', 'u6-b5-e8', 'u6-b5-e9', 'u6-b5-e10', 'u6-b5-e11', 'u6-b5-e12', 'u7-b1-e1', 'u7-b1-e2', 'u7-b1-e3', 'u7-b1-e4', 'u7-b1-e5', 'u7-b1-e6', 'u7-b1-e7', 'u7-b1-e8', 'u7-b1-e9', 'u7-b1-e10', 'u7-b1-e11', 'u7-b2-e1', 'u7-b2-e2', 'u7-b2-e3', 'u7-b2-e4', 'u7-b2-e5', 'u7-b2-e6', 'u7-b2-e7', 'u7-b2-e8', 'u7-b2-e9', 'u7-b2-e10', 'u7-b2-e11', 'u7-b2-e12', 'u7-b3-e1', 'u7-b3-e2', 'u7-b3-e3', 'u7-b3-e4', 'u7-b3-e5', 'u7-b3-e6', 'u7-b3-e7', 'u7-b3-e8', 'u7-b3-e9', 'u7-b3-e10', 'u7-b3-e11', 'u7-b3-e12', 'u7-b3-e13', 'u7-b4-e1', 'u7-b4-e2', 'u7-b4-e3', 'u7-b4-e4', 'u7-b4-e5', 'u7-b4-e6', 'u7-b4-e7', 'u7-b4-e8', 'u7-b4-e9', 'u7-b4-e10', 'u7-b4-e11', 'u7-b4-e12', 'u7-b4-e13', 'u7-b5-e1', 'u7-b5-e2', 'u7-b5-e3', 'u7-b5-e4', 'u7-b5-e5', 'u7-b5-e6', 'u7-b5-e7', 'u7-b5-e8', 'u7-b5-e9', 'u7-b5-e10', 'u7-b5-e11', 'u7-b5-e12', 'u7-b5-e13', 'u7-b5-e14', 'u7-b6-e1', 'u7-b6-e2', 'u7-b6-e3', 'u7-b6-e4', 'u7-b6-e5', 'u7-b6-e6', 'u7-b6-e7', 'u7-b6-e8', 'u7-b6-e9', 'u7-b6-e10', 'u7-b6-e11', 'u7-b6-e12', 'u7-b6-e13', 'u7-b6-e14', 'u7-b6-e15', 'u7-b6-e16', 'u7-b6-e17', 'u7-b6-e18', 'u7-b6-e19', 'u7-b6-e20', 'u7-b6-e21', 'u7-b6-e22');
+  where lesson_id in ('u0-b1', 'u0-b2', 'u0-b3', 'u1-b1', 'u1-b2', 'u1-b3', 'u1-b4', 'u1-b5', 'u2-b3', 'u2-b3-2', 'u2-b4', 'u3-b1', 'u3-b2', 'u3-b3', 'u3-b3-2', 'u3-b4', 'u3-b4-2', 'u3-b5', 'u3-b5-2', 'u4-b1', 'u4-b2', 'u4-b3', 'u4-b4', 'u4-b5', 'u4-b5-2', 'u5-b1', 'u5-b2', 'u5-b2-2', 'u5-b3', 'u5-b3-2', 'u5-b4', 'u5-b5', 'u5-b5-2', 'u6-b1', 'u6-b2', 'u6-b3', 'u6-b3-2', 'u6-b4', 'u6-b5', 'u7-b1', 'u7-b2', 'u7-b3', 'u7-b3-2', 'u7-b4', 'u7-b5', 'u7-b5-2', 'u7-b6', 'u7-b6-2', 'u7-b6-3')
+    and id not in ('u0-b1-e1', 'u0-b1-e2', 'u0-b1-e3', 'u0-b1-e4', 'u0-b1-e5', 'u0-b1-e6', 'u0-b1-e7', 'u0-b1-e8', 'u0-b1-e9', 'u0-b1-e10', 'u0-b1-e11', 'u0-b1-e12', 'u0-b1-e13', 'u0-b2-e1', 'u0-b2-e2', 'u0-b2-e3', 'u0-b2-e4', 'u0-b2-e5', 'u0-b2-e6', 'u0-b2-e7', 'u0-b2-e8', 'u0-b2-e9', 'u0-b2-e10', 'u0-b2-e11', 'u0-b2-e12', 'u0-b3-e1', 'u0-b3-e2', 'u0-b3-e3', 'u0-b3-e4', 'u0-b3-e5', 'u0-b3-e6', 'u0-b3-e7', 'u0-b3-e8', 'u0-b3-e9', 'u0-b3-e10', 'u0-b3-e11', 'u0-b3-e12', 'u1-b1-e1', 'u1-b1-e2', 'u1-b1-e3', 'u1-b1-e4', 'u1-b1-e5', 'u1-b1-e6', 'u1-b1-e7', 'u1-b1-e8', 'u1-b1-e9', 'u1-b1-e10', 'u1-b1-e11', 'u1-b1-e12', 'u1-b2-e1', 'u1-b2-e2', 'u1-b2-e3', 'u1-b2-e4', 'u1-b2-e5', 'u1-b2-e6', 'u1-b2-e7', 'u1-b2-e8', 'u1-b2-e9', 'u1-b2-e10', 'u1-b2-e11', 'u1-b2-e12', 'u1-b2-e13', 'u1-b3-e1', 'u1-b3-e2', 'u1-b3-e3', 'u1-b3-e4', 'u1-b3-e5', 'u1-b3-e6', 'u1-b3-e7', 'u1-b3-e8', 'u1-b3-e9', 'u1-b3-e10', 'u1-b3-e11', 'u1-b3-e12', 'u1-b3-e13', 'u1-b4-e1', 'u1-b4-e2', 'u1-b4-e3', 'u1-b4-e4', 'u1-b4-e5', 'u1-b4-e6', 'u1-b4-e7', 'u1-b4-e8', 'u1-b4-e9', 'u1-b4-e10', 'u1-b4-e11', 'u1-b4-e12', 'u1-b5-e1', 'u1-b5-e2', 'u1-b5-e3', 'u1-b5-e4', 'u1-b5-e5', 'u1-b5-e6', 'u1-b5-e7', 'u1-b5-e8', 'u1-b5-e9', 'u1-b5-e10', 'u1-b5-e11', 'u1-b5-e12', 'u1-b5-e13', 'u2-b3-e1', 'u2-b3-e2', 'u2-b3-e3', 'u2-b3-e4', 'u2-b3-e5', 'u2-b3-e6', 'u2-b3-e7', 'u2-b3-e8', 'u2-b3-2-e1', 'u2-b3-2-e2', 'u2-b3-2-e3', 'u2-b3-2-e4', 'u2-b3-2-e5', 'u2-b3-2-e6', 'u2-b3-2-e7', 'u2-b3-2-e8', 'u2-b3-2-e9', 'u2-b4-e1', 'u2-b4-e2', 'u2-b4-e3', 'u2-b4-e4', 'u2-b4-e5', 'u2-b4-e6', 'u2-b4-e7', 'u2-b4-e8', 'u2-b4-e9', 'u2-b4-e10', 'u2-b4-e11', 'u2-b4-e12', 'u2-b4-e13', 'u2-b4-e14', 'u3-b1-e1', 'u3-b1-e2', 'u3-b1-e3', 'u3-b1-e4', 'u3-b1-e5', 'u3-b1-e6', 'u3-b1-e7', 'u3-b1-e8', 'u3-b1-e9', 'u3-b1-e10', 'u3-b2-e1', 'u3-b2-e2', 'u3-b2-e3', 'u3-b2-e4', 'u3-b2-e5', 'u3-b2-e6', 'u3-b2-e7', 'u3-b2-e8', 'u3-b2-e9', 'u3-b2-e10', 'u3-b2-e11', 'u3-b2-e12', 'u3-b2-e13', 'u3-b3-e1', 'u3-b3-e2', 'u3-b3-e3', 'u3-b3-e4', 'u3-b3-e5', 'u3-b3-e6', 'u3-b3-e7', 'u3-b3-e8', 'u3-b3-2-e1', 'u3-b3-2-e2', 'u3-b3-2-e3', 'u3-b3-2-e4', 'u3-b3-2-e5', 'u3-b3-2-e6', 'u3-b3-2-e7', 'u3-b4-e1', 'u3-b4-e2', 'u3-b4-e3', 'u3-b4-e4', 'u3-b4-e5', 'u3-b4-e6', 'u3-b4-e7', 'u3-b4-e8', 'u3-b4-2-e1', 'u3-b4-2-e2', 'u3-b4-2-e3', 'u3-b4-2-e4', 'u3-b4-2-e5', 'u3-b4-2-e6', 'u3-b4-2-e7', 'u3-b5-e1', 'u3-b5-e2', 'u3-b5-e3', 'u3-b5-e4', 'u3-b5-e5', 'u3-b5-e6', 'u3-b5-e7', 'u3-b5-2-e1', 'u3-b5-2-e2', 'u3-b5-2-e3', 'u3-b5-2-e4', 'u3-b5-2-e5', 'u3-b5-2-e6', 'u3-b5-2-e7', 'u4-b1-e1', 'u4-b1-e2', 'u4-b1-e3', 'u4-b1-e4', 'u4-b1-e5', 'u4-b1-e6', 'u4-b1-e7', 'u4-b1-e8', 'u4-b1-e9', 'u4-b1-e10', 'u4-b1-e11', 'u4-b2-e1', 'u4-b2-e2', 'u4-b2-e3', 'u4-b2-e4', 'u4-b2-e5', 'u4-b2-e6', 'u4-b2-e7', 'u4-b2-e8', 'u4-b2-e9', 'u4-b2-e10', 'u4-b2-e11', 'u4-b2-e12', 'u4-b3-e1', 'u4-b3-e2', 'u4-b3-e3', 'u4-b3-e4', 'u4-b3-e5', 'u4-b3-e6', 'u4-b3-e7', 'u4-b3-e8', 'u4-b3-e9', 'u4-b3-e10', 'u4-b3-e11', 'u4-b4-e1', 'u4-b4-e2', 'u4-b4-e3', 'u4-b4-e4', 'u4-b4-e5', 'u4-b4-e6', 'u4-b4-e7', 'u4-b4-e8', 'u4-b4-e9', 'u4-b4-e10', 'u4-b4-e11', 'u4-b4-e12', 'u4-b4-e13', 'u4-b5-e1', 'u4-b5-e2', 'u4-b5-e3', 'u4-b5-e4', 'u4-b5-e5', 'u4-b5-e6', 'u4-b5-e7', 'u4-b5-2-e1', 'u4-b5-2-e2', 'u4-b5-2-e3', 'u4-b5-2-e4', 'u4-b5-2-e5', 'u4-b5-2-e6', 'u5-b1-e1', 'u5-b1-e2', 'u5-b1-e3', 'u5-b1-e4', 'u5-b1-e5', 'u5-b1-e6', 'u5-b1-e7', 'u5-b1-e8', 'u5-b1-e9', 'u5-b1-e10', 'u5-b1-e11', 'u5-b2-e1', 'u5-b2-e2', 'u5-b2-e3', 'u5-b2-e4', 'u5-b2-e5', 'u5-b2-e6', 'u5-b2-2-e1', 'u5-b2-2-e2', 'u5-b2-2-e3', 'u5-b2-2-e4', 'u5-b2-2-e5', 'u5-b2-2-e6', 'u5-b2-2-e7', 'u5-b2-2-e8', 'u5-b3-e1', 'u5-b3-e2', 'u5-b3-e3', 'u5-b3-e4', 'u5-b3-e5', 'u5-b3-e6', 'u5-b3-e7', 'u5-b3-e8', 'u5-b3-2-e1', 'u5-b3-2-e2', 'u5-b3-2-e3', 'u5-b3-2-e4', 'u5-b3-2-e5', 'u5-b3-2-e6', 'u5-b3-2-e7', 'u5-b4-e1', 'u5-b4-e2', 'u5-b4-e3', 'u5-b4-e4', 'u5-b4-e5', 'u5-b4-e6', 'u5-b4-e7', 'u5-b4-e8', 'u5-b4-e9', 'u5-b4-e10', 'u5-b4-e11', 'u5-b4-e12', 'u5-b4-e13', 'u5-b5-e1', 'u5-b5-e2', 'u5-b5-e3', 'u5-b5-e4', 'u5-b5-e5', 'u5-b5-e6', 'u5-b5-e7', 'u5-b5-2-e1', 'u5-b5-2-e2', 'u5-b5-2-e3', 'u5-b5-2-e4', 'u5-b5-2-e5', 'u5-b5-2-e6', 'u5-b5-2-e7', 'u5-b5-2-e8', 'u6-b1-e1', 'u6-b1-e2', 'u6-b1-e3', 'u6-b1-e4', 'u6-b1-e5', 'u6-b1-e6', 'u6-b1-e7', 'u6-b1-e8', 'u6-b1-e9', 'u6-b1-e10', 'u6-b1-e11', 'u6-b1-e12', 'u6-b2-e1', 'u6-b2-e2', 'u6-b2-e3', 'u6-b2-e4', 'u6-b2-e5', 'u6-b2-e6', 'u6-b2-e7', 'u6-b2-e8', 'u6-b2-e9', 'u6-b2-e10', 'u6-b2-e11', 'u6-b3-e1', 'u6-b3-e2', 'u6-b3-e3', 'u6-b3-e4', 'u6-b3-e5', 'u6-b3-e6', 'u6-b3-e7', 'u6-b3-2-e1', 'u6-b3-2-e2', 'u6-b3-2-e3', 'u6-b3-2-e4', 'u6-b3-2-e5', 'u6-b3-2-e6', 'u6-b3-2-e7', 'u6-b3-2-e8', 'u6-b3-2-e9', 'u6-b4-e1', 'u6-b4-e2', 'u6-b4-e3', 'u6-b4-e4', 'u6-b4-e5', 'u6-b4-e6', 'u6-b4-e7', 'u6-b4-e8', 'u6-b4-e9', 'u6-b4-e10', 'u6-b4-e11', 'u6-b4-e12', 'u6-b4-e13', 'u6-b5-e1', 'u6-b5-e2', 'u6-b5-e3', 'u6-b5-e4', 'u6-b5-e5', 'u6-b5-e6', 'u6-b5-e7', 'u6-b5-e8', 'u6-b5-e9', 'u6-b5-e10', 'u6-b5-e11', 'u6-b5-e12', 'u7-b1-e1', 'u7-b1-e2', 'u7-b1-e3', 'u7-b1-e4', 'u7-b1-e5', 'u7-b1-e6', 'u7-b1-e7', 'u7-b1-e8', 'u7-b1-e9', 'u7-b1-e10', 'u7-b1-e11', 'u7-b2-e1', 'u7-b2-e2', 'u7-b2-e3', 'u7-b2-e4', 'u7-b2-e5', 'u7-b2-e6', 'u7-b2-e7', 'u7-b2-e8', 'u7-b2-e9', 'u7-b2-e10', 'u7-b2-e11', 'u7-b2-e12', 'u7-b3-e1', 'u7-b3-e2', 'u7-b3-e3', 'u7-b3-e4', 'u7-b3-e5', 'u7-b3-e6', 'u7-b3-e7', 'u7-b3-2-e1', 'u7-b3-2-e2', 'u7-b3-2-e3', 'u7-b3-2-e4', 'u7-b3-2-e5', 'u7-b3-2-e6', 'u7-b3-2-e7', 'u7-b4-e1', 'u7-b4-e2', 'u7-b4-e3', 'u7-b4-e4', 'u7-b4-e5', 'u7-b4-e6', 'u7-b4-e7', 'u7-b4-e8', 'u7-b4-e9', 'u7-b4-e10', 'u7-b4-e11', 'u7-b4-e12', 'u7-b4-e13', 'u7-b5-e1', 'u7-b5-e2', 'u7-b5-e3', 'u7-b5-e4', 'u7-b5-e5', 'u7-b5-e6', 'u7-b5-e7', 'u7-b5-2-e1', 'u7-b5-2-e2', 'u7-b5-2-e3', 'u7-b5-2-e4', 'u7-b5-2-e5', 'u7-b5-2-e6', 'u7-b5-2-e7', 'u7-b6-e1', 'u7-b6-e2', 'u7-b6-e3', 'u7-b6-e4', 'u7-b6-e5', 'u7-b6-e6', 'u7-b6-e7', 'u7-b6-e8', 'u7-b6-e9', 'u7-b6-e10', 'u7-b6-2-e1', 'u7-b6-2-e2', 'u7-b6-2-e3', 'u7-b6-2-e4', 'u7-b6-2-e5', 'u7-b6-2-e6', 'u7-b6-3-e1', 'u7-b6-3-e2', 'u7-b6-3-e3', 'u7-b6-3-e4', 'u7-b6-3-e5', 'u7-b6-3-e6', 'u7-b6-3-e7');
 
 -- u0-b1
 insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
@@ -465,15 +478,22 @@ insert into public.exercises (id, lesson_id, "order", type, prompt, status, conf
   ('u2-b3-e5', 'u2-b3', 5, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"мектеп","questionEn":"Is the last vowel soft or strong?","options":["Soft","Strong"],"correctAns":"Soft"}'::jsonb, 'active', 'high'),
   ('u2-b3-e6', 'u2-b3', 6, 'TEACH', '{"type":"TEACH","title":"See it in action","body":["The plural ending (*many*) is **-лар** after strong words and **-лер** after soft ones:"],"examples":[{"kk":"бала → бала**лар**","en":"child → children"},{"kk":"қала → қала**лар**","en":"city → cities"},{"kk":"әке → әке**лер**","en":"father → fathers"},{"kk":"бөлме → бөлме**лер**","en":"room → rooms"}]}'::jsonb, 'active', 'high'),
   ('u2-b3-e7', 'u2-b3', 7, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["бала",""],"options":["лар","лер"],"correctAns":"лар","hintEn":"children"}'::jsonb, 'active', 'high'),
-  ('u2-b3-e8', 'u2-b3', 8, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["әке",""],"options":["лер","лар"],"correctAns":"лер","hintEn":"fathers"}'::jsonb, 'active', 'high'),
-  ('u2-b3-e9', 'u2-b3', 9, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"дәрігер","questionEn":"Is the last vowel soft or strong?","options":["Soft","Strong"],"correctAns":"Soft"}'::jsonb, 'active', 'high'),
-  ('u2-b3-e10', 'u2-b3', 10, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"ұшқыш","questionEn":"Is the last vowel soft or strong?","options":["Strong","Soft"],"correctAns":"Strong"}'::jsonb, 'active', 'high'),
-  ('u2-b3-e11', 'u2-b3', 11, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["қала",""],"options":["лар","лер"],"correctAns":"лар","hintEn":"cities"}'::jsonb, 'active', 'high'),
-  ('u2-b3-e12', 'u2-b3', 12, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["бөлме",""],"options":["лер","лар"],"correctAns":"лер","hintEn":"rooms"}'::jsonb, 'active', 'high'),
-  ('u2-b3-e13', 'u2-b3', 13, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","questionEn":"Which vowel is soft?","options":["а","ұ","і","ы"],"correctAns":"і","scriptOptions":"kk"}'::jsonb, 'active', 'high'),
-  ('u2-b3-e14', 'u2-b3', 14, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["тау",""],"options":["лар","лер"],"correctAns":"лар","hintEn":"mountains"}'::jsonb, 'active', 'high'),
-  ('u2-b3-e15', 'u2-b3', 15, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["терезе",""],"options":["лар","лер"],"correctAns":"лер","hintEn":"windows"}'::jsonb, 'active', 'high'),
-  ('u2-b3-e16', 'u2-b3', 16, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"ұл","questionEn":"Is the last vowel soft or strong?","options":["Soft","Strong"],"correctAns":"Strong"}'::jsonb, 'active', 'high')
+  ('u2-b3-e8', 'u2-b3', 8, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["әке",""],"options":["лер","лар"],"correctAns":"лер","hintEn":"fathers"}'::jsonb, 'active', 'high')
+on conflict (id) do update set
+  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
+  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
+
+-- u2-b3-2
+insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
+  ('u2-b3-2-e1', 'u2-b3-2', 1, 'TEACH', '{"type":"TEACH","title":"The harmony rule","body":["Kazakh builds words by gluing endings on. Most endings come in a **strong** and a **soft** version, and the word''s vowels decide which one you use."],"table":{"headers":["Group","Vowels"],"rows":[["Soft (“smiley”)","ә ө ү і е"],["Strong","а о ұ ы у"],["Usually strong","я ю и"]]},"tip":"Look at the **last vowel** of the word: бал**а** → strong, ү**й** → soft."}'::jsonb, 'active', 'high'),
+  ('u2-b3-2-e2', 'u2-b3-2', 2, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"дәрігер","questionEn":"Is the last vowel soft or strong?","options":["Soft","Strong"],"correctAns":"Soft"}'::jsonb, 'active', 'high'),
+  ('u2-b3-2-e3', 'u2-b3-2', 3, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"ұшқыш","questionEn":"Is the last vowel soft or strong?","options":["Strong","Soft"],"correctAns":"Strong"}'::jsonb, 'active', 'high'),
+  ('u2-b3-2-e4', 'u2-b3-2', 4, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["қала",""],"options":["лер","лар"],"correctAns":"лар","hintEn":"cities"}'::jsonb, 'active', 'high'),
+  ('u2-b3-2-e5', 'u2-b3-2', 5, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["бөлме",""],"options":["лар","лер"],"correctAns":"лер","hintEn":"rooms"}'::jsonb, 'active', 'high'),
+  ('u2-b3-2-e6', 'u2-b3-2', 6, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","questionEn":"Which vowel is soft?","options":["а","ы","і","ұ"],"correctAns":"і","scriptOptions":"kk"}'::jsonb, 'active', 'high'),
+  ('u2-b3-2-e7', 'u2-b3-2', 7, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["тау",""],"options":["лар","лер"],"correctAns":"лар","hintEn":"mountains"}'::jsonb, 'active', 'high'),
+  ('u2-b3-2-e8', 'u2-b3-2', 8, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["терезе",""],"options":["лер","лар"],"correctAns":"лер","hintEn":"windows"}'::jsonb, 'active', 'high'),
+  ('u2-b3-2-e9', 'u2-b3-2', 9, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"ұл","questionEn":"Is the last vowel soft or strong?","options":["Soft","Strong"],"correctAns":"Strong"}'::jsonb, 'active', 'high')
 on conflict (id) do update set
   lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
   prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
@@ -542,13 +562,20 @@ insert into public.exercises (id, lesson_id, "order", type, prompt, status, conf
   ('u3-b3-e5', 'u3-b3', 5, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Мен қазақ","."],"options":["пін","пын","мын"],"correctAns":"пын","hintEn":"I am Kazakh."}'::jsonb, 'active', 'high'),
   ('u3-b3-e6', 'u3-b3', 6, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Мен француз","."],"options":["бін","бын","мын"],"correctAns":"бын","hintEn":"I am French."}'::jsonb, 'active', 'high'),
   ('u3-b3-e7', 'u3-b3', 7, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Мен жұлдыз","."],"options":["мын","бын","бін"],"correctAns":"бын","hintEn":"I am a star."}'::jsonb, 'active', 'high'),
-  ('u3-b3-e8', 'u3-b3', 8, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Мен Мөлдір","."],"options":["пін","мын","мін"],"correctAns":"мін","hintEn":"I am Moldir."}'::jsonb, 'active', 'high'),
-  ('u3-b3-e9', 'u3-b3', 9, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Мен Қанат","."],"options":["мын","пын","пін"],"correctAns":"пын","hintEn":"I am Qanat."}'::jsonb, 'active', 'high'),
-  ('u3-b3-e10', 'u3-b3', 10, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Мен дайын","."],"options":["мін","пын","мын"],"correctAns":"мын","hintEn":"I am ready."}'::jsonb, 'active', 'high'),
-  ('u3-b3-e11', 'u3-b3', 11, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I am Kazakh.","tiles":["Мен","қазақпын","қазақмын","қазақбын"],"correctAns":["Мен","қазақпын"]}'::jsonb, 'active', 'high'),
-  ('u3-b3-e12', 'u3-b3', 12, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I am a pilot.","tiles":["Мен","ұшқышпын","ұшқышмын","ұшқышбын"],"correctAns":["Мен","ұшқышпын"]}'::jsonb, 'active', 'high'),
-  ('u3-b3-e13', 'u3-b3', 13, 'LISTENING', '{"type":"LISTENING","audioKk":"аспазбын","options":["аспазпын","аспазбын","аспазмын"],"correctAns":"аспазбын"}'::jsonb, 'active', 'high'),
-  ('u3-b3-e14', 'u3-b3', 14, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Мен америкалықпын.","options":["I am American.","I am not American.","I am in America.","You are American."],"correctAns":"I am American."}'::jsonb, 'active', 'high')
+  ('u3-b3-e8', 'u3-b3', 8, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Мен Мөлдір","."],"options":["пін","мын","мін"],"correctAns":"мін","hintEn":"I am Moldir."}'::jsonb, 'active', 'high')
+on conflict (id) do update set
+  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
+  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
+
+-- u3-b3-2
+insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
+  ('u3-b3-2-e1', 'u3-b3-2', 1, 'TEACH', '{"type":"TEACH","title":"Three families of “I am”","body":["The **last letter** picks м, б or п. The **last vowel** picks ы or і."],"table":{"headers":["Word ends in…","Strong","Soft"],"rows":[["vowel, м н ң л р й у","**-мын** · адам**мын**","**-мін** · дәрігер**мін**"],["ж з","**-бын** · қыз**бын**","**-бін** · тез**бін**"],["voiceless: к қ п с т ш…","**-пын** · қазақ**пын**","**-пін** · әріптес**пін**"]]}}'::jsonb, 'active', 'high'),
+  ('u3-b3-2-e2', 'u3-b3-2', 2, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Мен Қанат","."],"options":["пін","пын","мын"],"correctAns":"пын","hintEn":"I am Qanat."}'::jsonb, 'active', 'high'),
+  ('u3-b3-2-e3', 'u3-b3-2', 3, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Мен дайын","."],"options":["пын","мін","мын"],"correctAns":"мын","hintEn":"I am ready."}'::jsonb, 'active', 'high'),
+  ('u3-b3-2-e4', 'u3-b3-2', 4, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I am Kazakh.","tiles":["Мен","қазақпын","қазақмын","қазақбын"],"correctAns":["Мен","қазақпын"]}'::jsonb, 'active', 'high'),
+  ('u3-b3-2-e5', 'u3-b3-2', 5, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I am a pilot.","tiles":["Мен","ұшқышпын","ұшқышмын","ұшқышбын"],"correctAns":["Мен","ұшқышпын"]}'::jsonb, 'active', 'high'),
+  ('u3-b3-2-e6', 'u3-b3-2', 6, 'LISTENING', '{"type":"LISTENING","audioKk":"аспазбын","options":["аспазбын","аспазпын","аспазмын"],"correctAns":"аспазбын"}'::jsonb, 'active', 'high'),
+  ('u3-b3-2-e7', 'u3-b3-2', 7, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Мен америкалықпын.","options":["You are American.","I am not American.","I am American.","I am in America."],"correctAns":"I am American."}'::jsonb, 'active', 'high')
 on conflict (id) do update set
   lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
   prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
@@ -562,13 +589,20 @@ insert into public.exercises (id, lesson_id, "order", type, prompt, status, conf
   ('u3-b4-e5', 'u3-b4', 5, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Біз мұғалім","."],"options":["быз","біз","міз"],"correctAns":"біз","hintEn":"We are teachers."}'::jsonb, 'active', 'high'),
   ('u3-b4-e6', 'u3-b4', 6, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Біз ұшқыш","."],"options":["піз","пыз","мыз"],"correctAns":"пыз","hintEn":"We are pilots."}'::jsonb, 'active', 'high'),
   ('u3-b4-e7', 'u3-b4', 7, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Біз дәрігер","."],"options":["піз","міз","мыз"],"correctAns":"міз","hintEn":"We are doctors."}'::jsonb, 'active', 'high'),
-  ('u3-b4-e8', 'u3-b4', 8, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Сендер жақсы","."],"options":["сіңдер","сыңдар","сыздар"],"correctAns":"сыңдар","hintEn":"You (all) are good."}'::jsonb, 'active', 'high'),
-  ('u3-b4-e9', 'u3-b4', 9, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Сіздер жақсы адам","."],"options":["сыңдар","сіздер","сыздар"],"correctAns":"сыздар","hintEn":"You (all) are good people."}'::jsonb, 'active', 'high'),
-  ('u3-b4-e10', 'u3-b4', 10, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Біз бала","."],"options":["міз","мыз","пыз"],"correctAns":"мыз","hintEn":"We are children."}'::jsonb, 'active', 'high'),
-  ('u3-b4-e11', 'u3-b4', 11, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Біз жақсы адамбыз.","options":["They are good people.","You are good people.","We are good people.","I am a good person."],"correctAns":"We are good people."}'::jsonb, 'active', 'high'),
-  ('u3-b4-e12', 'u3-b4', 12, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Ол мейірімді қыз.","options":["You are a kind girl.","She is a good girl.","She is a kind girl.","This is my girl."],"correctAns":"She is a kind girl."}'::jsonb, 'active', 'high'),
-  ('u3-b4-e13', 'u3-b4', 13, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"You are a good doctor. (polite)","tiles":["Сіз","жақсы","дәрігерсіз","дәрігермін","сен"],"correctAns":["Сіз","жақсы","дәрігерсіз"]}'::jsonb, 'active', 'high'),
-  ('u3-b4-e14', 'u3-b4', 14, 'LISTENING', '{"type":"LISTENING","audioKk":"мейірімдісіңдер","options":["мейірімдісіңдер","мейірімдіміз","мейірімдісіздер"],"correctAns":"мейірімдісіңдер"}'::jsonb, 'active', 'high')
+  ('u3-b4-e8', 'u3-b4', 8, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Сендер жақсы","."],"options":["сіңдер","сыңдар","сыздар"],"correctAns":"сыңдар","hintEn":"You (all) are good."}'::jsonb, 'active', 'high')
+on conflict (id) do update set
+  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
+  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
+
+-- u3-b4-2
+insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
+  ('u3-b4-2-e1', 'u3-b4-2', 1, 'TEACH', '{"type":"TEACH","title":"Strong & soft endings","table":{"headers":["Pronoun","Strong","Soft"],"rows":[["сен","-сың","-сің"],["сіз","-сыз","-сіз"],["біз","-мыз / -быз / -пыз","-міз / -біз / -піз"],["сендер","-сыңдар","-сіңдер"],["сіздер","-сыздар","-сіздер"]]},"tip":"**Біз** is special: after **м н ң** it takes **-быз / -біз**: адам**быз**, мұғалім**біз**.","examples":[{"kk":"Сен жақсы адам**сың**.","en":"You are a good person."},{"kk":"Ол жақсы адам.","en":"She is a good person."},{"kk":"Біз жақсы адам**быз**.","en":"We are good people."}]}'::jsonb, 'active', 'high'),
+  ('u3-b4-2-e2', 'u3-b4-2', 2, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Сіздер жақсы адам","."],"options":["сыңдар","сыздар","сіздер"],"correctAns":"сыздар","hintEn":"You (all) are good people."}'::jsonb, 'active', 'high'),
+  ('u3-b4-2-e3', 'u3-b4-2', 3, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Біз бала","."],"options":["мыз","міз","пыз"],"correctAns":"мыз","hintEn":"We are children."}'::jsonb, 'active', 'high'),
+  ('u3-b4-2-e4', 'u3-b4-2', 4, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Біз жақсы адамбыз.","options":["I am a good person.","We are good people.","You are good people.","They are good people."],"correctAns":"We are good people."}'::jsonb, 'active', 'high'),
+  ('u3-b4-2-e5', 'u3-b4-2', 5, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Ол мейірімді қыз.","options":["You are a kind girl.","This is my girl.","She is a good girl.","She is a kind girl."],"correctAns":"She is a kind girl."}'::jsonb, 'active', 'high'),
+  ('u3-b4-2-e6', 'u3-b4-2', 6, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"You are a good doctor. (polite)","tiles":["Сіз","жақсы","дәрігерсіз","дәрігермін","сен"],"correctAns":["Сіз","жақсы","дәрігерсіз"]}'::jsonb, 'active', 'high'),
+  ('u3-b4-2-e7', 'u3-b4-2', 7, 'LISTENING', '{"type":"LISTENING","audioKk":"мейірімдісіңдер","options":["мейірімдісіздер","мейірімдісіңдер","мейірімдіміз"],"correctAns":"мейірімдісіңдер"}'::jsonb, 'active', 'high')
 on conflict (id) do update set
   lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
   prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
@@ -581,13 +615,20 @@ insert into public.exercises (id, lesson_id, "order", type, prompt, status, conf
   ('u3-b5-e4', 'u3-b5', 4, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Сен ұл емес","."],"options":["сың","пін","сің"],"correctAns":"сің","hintEn":"You are not a boy."}'::jsonb, 'active', 'high'),
   ('u3-b5-e5', 'u3-b5', 5, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Біз жақсы адам емес","."],"options":["быз","піз","пыз"],"correctAns":"піз","hintEn":"We are not good people."}'::jsonb, 'active', 'high'),
   ('u3-b5-e6', 'u3-b5', 6, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I am not French.","tiles":["Мен","француз","емеспін","французбын","емес"],"correctAns":["Мен","француз","емеспін"]}'::jsonb, 'active', 'high'),
-  ('u3-b5-e7', 'u3-b5', 7, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Ол мейірімді қыз емес.","options":["She is not a kind girl.","She is a kind girl.","I am not a kind girl.","This is not a girl."],"correctAns":"She is not a kind girl."}'::jsonb, 'active', 'high'),
-  ('u3-b5-e8', 'u3-b5', 8, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Бұл Педро емес.","options":["This is not Pedro.","I am not Pedro.","Pedro is not here.","This is Pedro."],"correctAns":"This is not Pedro."}'::jsonb, 'active', 'high'),
-  ('u3-b5-e9', 'u3-b5', 9, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"Мен қазақ емеспін.","questionEn":"What does it mean?","options":["I am Kazakh.","I am not Kazakh.","You are not Kazakh.","We are Kazakh."],"correctAns":"I am not Kazakh."}'::jsonb, 'active', 'high'),
-  ('u3-b5-e10', 'u3-b5', 10, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I am not a teacher, I am an engineer.","tiles":["Мен","мұғалім","емеспін","инженермін","мұғаліммін","инженер"],"correctAns":["Мен","мұғалім","емеспін","инженермін"]}'::jsonb, 'active', 'high'),
-  ('u3-b5-e11', 'u3-b5', 11, 'LISTENING', '{"type":"LISTENING","audioKk":"емеспін","options":["емеспін","емеспіз","емессің"],"correctAns":"емеспін"}'::jsonb, 'active', 'high'),
-  ('u3-b5-e12', 'u3-b5', 12, 'MATCH_PAIRS', '{"type":"MATCH_PAIRS","pairs":[{"kazakh":"мейірімді","english":"kind"},{"kazakh":"бұл","english":"this"},{"kazakh":"емес","english":"not"},{"kazakh":"ата","english":"grandpa"},{"kazakh":"әже","english":"grandma"}]}'::jsonb, 'active', 'high'),
-  ('u3-b5-e13', 'u3-b5', 13, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"You are not a grandma. (friendly)","tiles":["Сен","әже","емессің","әжесің","сіз"],"correctAns":["Сен","әже","емессің"]}'::jsonb, 'active', 'high')
+  ('u3-b5-e7', 'u3-b5', 7, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Ол мейірімді қыз емес.","options":["She is not a kind girl.","She is a kind girl.","I am not a kind girl.","This is not a girl."],"correctAns":"She is not a kind girl."}'::jsonb, 'active', 'high')
+on conflict (id) do update set
+  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
+  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
+
+-- u3-b5-2
+insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
+  ('u3-b5-2-e1', 'u3-b5-2', 1, 'TEACH', '{"type":"TEACH","title":"Not = емес","body":["To say *not*, put **емес** after the word, and move the ending onto **емес**.","Емес ends in **с** (voiceless, soft), so it always takes **-пін, -сің, -сіз, -піз, -сіңдер, -сіздер**."],"examples":[{"kk":"Мен мұғаліммін. → Мен мұғалім емес**пін**.","en":"I am a teacher. → I am not a teacher."},{"kk":"Сен инженер емес**сің**.","en":"You are not an engineer."},{"kk":"Ол дәрігер емес.","en":"She is not a doctor."},{"kk":"Біз мұғалім емес**піз**.","en":"We are not teachers."},{"kk":"Бұл телефон емес.","en":"This is not a phone."}]}'::jsonb, 'active', 'high'),
+  ('u3-b5-2-e2', 'u3-b5-2', 2, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Бұл Педро емес.","options":["This is Pedro.","I am not Pedro.","This is not Pedro.","Pedro is not here."],"correctAns":"This is not Pedro."}'::jsonb, 'active', 'high'),
+  ('u3-b5-2-e3', 'u3-b5-2', 3, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","promptKk":"Мен қазақ емеспін.","questionEn":"What does it mean?","options":["I am not Kazakh.","We are Kazakh.","You are not Kazakh.","I am Kazakh."],"correctAns":"I am not Kazakh."}'::jsonb, 'active', 'high'),
+  ('u3-b5-2-e4', 'u3-b5-2', 4, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I am not a teacher, I am an engineer.","tiles":["Мен","мұғалім","емеспін","инженермін","мұғаліммін","инженер"],"correctAns":["Мен","мұғалім","емеспін","инженермін"]}'::jsonb, 'active', 'high'),
+  ('u3-b5-2-e5', 'u3-b5-2', 5, 'LISTENING', '{"type":"LISTENING","audioKk":"емеспін","options":["емеспіз","емессің","емеспін"],"correctAns":"емеспін"}'::jsonb, 'active', 'high'),
+  ('u3-b5-2-e6', 'u3-b5-2', 6, 'MATCH_PAIRS', '{"type":"MATCH_PAIRS","pairs":[{"kazakh":"мейірімді","english":"kind"},{"kazakh":"бұл","english":"this"},{"kazakh":"емес","english":"not"},{"kazakh":"ата","english":"grandpa"},{"kazakh":"әже","english":"grandma"}]}'::jsonb, 'active', 'high'),
+  ('u3-b5-2-e7', 'u3-b5-2', 7, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"You are not a grandma. (friendly)","tiles":["Сен","әже","емессің","әжесің","сіз"],"correctAns":["Сен","әже","емессің"]}'::jsonb, 'active', 'high')
 on conflict (id) do update set
   lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
   prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
@@ -671,12 +712,19 @@ insert into public.exercises (id, lesson_id, "order", type, prompt, status, conf
   ('u4-b5-e4', 'u4-b5', 4, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["үй",""],"options":["лар","дер","лер"],"correctAns":"лер","hintEn":"houses"}'::jsonb, 'active', 'high'),
   ('u4-b5-e5', 'u4-b5', 5, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["мысық",""],"options":["лар","тар","тер"],"correctAns":"тар","hintEn":"cats"}'::jsonb, 'active', 'high'),
   ('u4-b5-e6', 'u4-b5', 6, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["телефон",""],"options":["дар","дер","лар"],"correctAns":"дар","hintEn":"phones"}'::jsonb, 'active', 'high'),
-  ('u4-b5-e7', 'u4-b5', 7, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["мектеп",""],"options":["тер","тар","лер"],"correctAns":"тер","hintEn":"schools"}'::jsonb, 'active', 'high'),
-  ('u4-b5-e8', 'u4-b5', 8, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["бөлме",""],"options":["лар","дер","лер"],"correctAns":"лер","hintEn":"rooms"}'::jsonb, 'active', 'high'),
-  ('u4-b5-e9', 'u4-b5', 9, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["дос",""],"options":["тер","тар","лар"],"correctAns":"тар","hintEn":"friends"}'::jsonb, 'active', 'high'),
-  ('u4-b5-e10', 'u4-b5', 10, 'MATCH_PAIRS', '{"type":"MATCH_PAIRS","pairs":[{"kazakh":"балалар","english":"children"},{"kazakh":"адамдар","english":"people"},{"kazakh":"кітаптар","english":"books"},{"kazakh":"үйлер","english":"houses"},{"kazakh":"иттер","english":"dogs"}]}'::jsonb, 'active', 'high'),
-  ('u4-b5-e11', 'u4-b5', 11, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"They are good people.","tiles":["Олар","жақсы","адамдар","адам","біз"],"correctAns":["Олар","жақсы","адамдар"]}'::jsonb, 'active', 'high'),
-  ('u4-b5-e12', 'u4-b5', 12, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"суреттер","options":["windows","a picture","photographers","pictures"],"correctAns":"pictures"}'::jsonb, 'active', 'high')
+  ('u4-b5-e7', 'u4-b5', 7, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["мектеп",""],"options":["тер","тар","лер"],"correctAns":"тер","hintEn":"schools"}'::jsonb, 'active', 'high')
+on conflict (id) do update set
+  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
+  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
+
+-- u4-b5-2
+insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
+  ('u4-b5-2-e1', 'u4-b5-2', 1, 'TEACH', '{"type":"TEACH","title":"All six plurals","table":{"headers":["Word ends in…","Strong","Soft"],"rows":[["vowel, р й у","**-лар** · бала**лар**","**-лер** · үй**лер**"],["л м н ң, ж з","**-дар** · адам**дар**","**-дер** · үстел**дер**"],["voiceless: к қ п с т ш…","**-тар** · кітап**тар**","**-тер** · ит**тер**"]]}}'::jsonb, 'active', 'high'),
+  ('u4-b5-2-e2', 'u4-b5-2', 2, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["бөлме",""],"options":["дер","лер","лар"],"correctAns":"лер","hintEn":"rooms"}'::jsonb, 'active', 'high'),
+  ('u4-b5-2-e3', 'u4-b5-2', 3, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["дос",""],"options":["лар","тар","тер"],"correctAns":"тар","hintEn":"friends"}'::jsonb, 'active', 'high'),
+  ('u4-b5-2-e4', 'u4-b5-2', 4, 'MATCH_PAIRS', '{"type":"MATCH_PAIRS","pairs":[{"kazakh":"балалар","english":"children"},{"kazakh":"адамдар","english":"people"},{"kazakh":"кітаптар","english":"books"},{"kazakh":"үйлер","english":"houses"},{"kazakh":"иттер","english":"dogs"}]}'::jsonb, 'active', 'high'),
+  ('u4-b5-2-e5', 'u4-b5-2', 5, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"They are good people.","tiles":["Олар","жақсы","адамдар","адам","біз"],"correctAns":["Олар","жақсы","адамдар"]}'::jsonb, 'active', 'high'),
+  ('u4-b5-2-e6', 'u4-b5-2', 6, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"суреттер","options":["windows","photographers","a picture","pictures"],"correctAns":"pictures"}'::jsonb, 'active', 'high')
 on conflict (id) do update set
   lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
   prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
@@ -705,15 +753,21 @@ insert into public.exercises (id, lesson_id, "order", type, prompt, status, conf
   ('u5-b2-e3', 'u5-b2', 3, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Менің ","."],"options":["анам","анаң","анаым"],"correctAns":"анам","hintEn":"my mother"}'::jsonb, 'active', 'high'),
   ('u5-b2-e4', 'u5-b2', 4, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Менің ","."],"options":["қызм","қызым","қызім"],"correctAns":"қызым","hintEn":"my daughter"}'::jsonb, 'active', 'high'),
   ('u5-b2-e5', 'u5-b2', 5, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Менің ","."],"options":["ініім","інің","інім"],"correctAns":"інім","hintEn":"my younger brother"}'::jsonb, 'active', 'high'),
-  ('u5-b2-e6', 'u5-b2', 6, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Менің ","."],"options":["телефоным","телефонм","телефонім"],"correctAns":"телефоным","hintEn":"my phone"}'::jsonb, 'active', 'high'),
-  ('u5-b2-e7', 'u5-b2', 7, 'TEACH', '{"type":"TEACH","title":"Sound change: қ→ғ, к→г, п→б","body":["When a vowel ending follows **қ к п** at the end of a word, they soften to **ғ г б**:"],"examples":[{"kk":"мысық → мысы**ғым**","en":"cat → my cat"},{"kk":"кітап → кіта**бым**","en":"book → my book"},{"kk":"жүрек → жүре**гім**","en":"heart → my heart"},{"kk":"орындық → орынды**ғым**","en":"chair → my chair"}]}'::jsonb, 'active', 'high'),
-  ('u5-b2-e8', 'u5-b2', 8, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Менің ","."],"options":["мысығім","мысықым","мысығым"],"correctAns":"мысығым","hintEn":"my cat"}'::jsonb, 'active', 'high'),
-  ('u5-b2-e9', 'u5-b2', 9, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Менің ","."],"options":["кітабым","кітапым","кітабім"],"correctAns":"кітабым","hintEn":"my book"}'::jsonb, 'active', 'high'),
-  ('u5-b2-e10', 'u5-b2', 10, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Менің ","."],"options":["жұмысым","жұмысім","жұмысм"],"correctAns":"жұмысым","hintEn":"my work"}'::jsonb, 'active', 'high'),
-  ('u5-b2-e11', 'u5-b2', 11, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Менің ","."],"options":["орындықым","орындығім","орындығым"],"correctAns":"орындығым","hintEn":"my chair"}'::jsonb, 'active', 'high'),
-  ('u5-b2-e12', 'u5-b2', 12, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Менің атым Сандро.","options":["My name is Sandro.","Sandro''s horse.","I am Sandro''s.","Your name is Sandro."],"correctAns":"My name is Sandro."}'::jsonb, 'active', 'high'),
-  ('u5-b2-e13', 'u5-b2', 13, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"my father","tiles":["менің","әкем","әке","сенің"],"correctAns":["менің","әкем"]}'::jsonb, 'active', 'high'),
-  ('u5-b2-e14', 'u5-b2', 14, 'LISTENING', '{"type":"LISTENING","audioKk":"мысығым","options":["мысығым","мысығың","мысықым"],"correctAns":"мысығым"}'::jsonb, 'active', 'high')
+  ('u5-b2-e6', 'u5-b2', 6, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Менің ","."],"options":["телефоным","телефонм","телефонім"],"correctAns":"телефоным","hintEn":"my phone"}'::jsonb, 'active', 'high')
+on conflict (id) do update set
+  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
+  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
+
+-- u5-b2-2
+insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
+  ('u5-b2-2-e1', 'u5-b2-2', 1, 'TEACH', '{"type":"TEACH","title":"Sound change: қ→ғ, к→г, п→б","body":["When a vowel ending follows **қ к п** at the end of a word, they soften to **ғ г б**:"],"examples":[{"kk":"мысық → мысы**ғым**","en":"cat → my cat"},{"kk":"кітап → кіта**бым**","en":"book → my book"},{"kk":"жүрек → жүре**гім**","en":"heart → my heart"},{"kk":"орындық → орынды**ғым**","en":"chair → my chair"}]}'::jsonb, 'active', 'high'),
+  ('u5-b2-2-e2', 'u5-b2-2', 2, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Менің ","."],"options":["мысықым","мысығім","мысығым"],"correctAns":"мысығым","hintEn":"my cat"}'::jsonb, 'active', 'high'),
+  ('u5-b2-2-e3', 'u5-b2-2', 3, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Менің ","."],"options":["кітабім","кітабым","кітапым"],"correctAns":"кітабым","hintEn":"my book"}'::jsonb, 'active', 'high'),
+  ('u5-b2-2-e4', 'u5-b2-2', 4, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Менің ","."],"options":["жұмысім","жұмысм","жұмысым"],"correctAns":"жұмысым","hintEn":"my work"}'::jsonb, 'active', 'high'),
+  ('u5-b2-2-e5', 'u5-b2-2', 5, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Менің ","."],"options":["орындығым","орындықым","орындығім"],"correctAns":"орындығым","hintEn":"my chair"}'::jsonb, 'active', 'high'),
+  ('u5-b2-2-e6', 'u5-b2-2', 6, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Менің атым Сандро.","options":["Your name is Sandro.","I am Sandro''s.","My name is Sandro.","Sandro''s horse."],"correctAns":"My name is Sandro."}'::jsonb, 'active', 'high'),
+  ('u5-b2-2-e7', 'u5-b2-2', 7, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"my father","tiles":["менің","әкем","әке","сенің"],"correctAns":["менің","әкем"]}'::jsonb, 'active', 'high'),
+  ('u5-b2-2-e8', 'u5-b2-2', 8, 'LISTENING', '{"type":"LISTENING","audioKk":"мысығым","options":["мысығым","мысығың","мысықым"],"correctAns":"мысығым"}'::jsonb, 'active', 'high')
 on conflict (id) do update set
   lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
   prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
@@ -727,13 +781,20 @@ insert into public.exercises (id, lesson_id, "order", type, prompt, status, conf
   ('u5-b3-e5', 'u5-b3', 5, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Оның ","."],"options":["баласы","балаы","баласі"],"correctAns":"баласы","hintEn":"his / her child"}'::jsonb, 'active', 'high'),
   ('u5-b3-e6', 'u5-b3', 6, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Біздің ","."],"options":["үйіміз","үйміз","үйымыз"],"correctAns":"үйіміз","hintEn":"our house"}'::jsonb, 'active', 'high'),
   ('u5-b3-e7', 'u5-b3', 7, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Оның ","."],"options":["ініі","інісі","інісы"],"correctAns":"інісі","hintEn":"his / her younger brother"}'::jsonb, 'active', 'high'),
-  ('u5-b3-e8', 'u5-b3', 8, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Сенің ","."],"options":["пәтерің","пәтерың","пәтерң"],"correctAns":"пәтерің","hintEn":"your apartment"}'::jsonb, 'active', 'high'),
-  ('u5-b3-e9', 'u5-b3', 9, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Оның ","."],"options":["үстелы","үстелсі","үстелі"],"correctAns":"үстелі","hintEn":"his / her table"}'::jsonb, 'active', 'high'),
-  ('u5-b3-e10', 'u5-b3', 10, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Сіздің ","."],"options":["қарындасыңыз","қарындасңыз","қарындасіңіз"],"correctAns":"қарындасыңыз","hintEn":"your younger sister (polite)"}'::jsonb, 'active', 'high'),
-  ('u5-b3-e11', 'u5-b3', 11, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Біздің ","."],"options":["мысықымыз","мысығіміз","мысығымыз"],"correctAns":"мысығымыз","hintEn":"our cat"}'::jsonb, 'active', 'high'),
-  ('u5-b3-e12', 'u5-b3', 12, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Біздің үйіміз үлкен.","options":["Our house is big.","We have a big house.","Your house is big.","My house is big."],"correctAns":"Our house is big."}'::jsonb, 'active', 'high'),
-  ('u5-b3-e13', 'u5-b3', 13, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Сенің телефоның жақсы.","options":["You have a good phone.","His phone is good.","Your phone is good.","My phone is good."],"correctAns":"Your phone is good."}'::jsonb, 'active', 'high'),
-  ('u5-b3-e14', 'u5-b3', 14, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"our house","tiles":["біздің","үйіміз","үйім","менің"],"correctAns":["біздің","үйіміз"]}'::jsonb, 'active', 'high')
+  ('u5-b3-e8', 'u5-b3', 8, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Сенің ","."],"options":["пәтерің","пәтерың","пәтерң"],"correctAns":"пәтерің","hintEn":"your apartment"}'::jsonb, 'active', 'high')
+on conflict (id) do update set
+  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
+  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
+
+-- u5-b3-2
+insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
+  ('u5-b3-2-e1', 'u5-b3-2', 1, 'TEACH', '{"type":"TEACH","title":"Whose? Endings for everyone","table":{"headers":["Whose?","After a vowel","After a consonant"],"rows":[["менің — my","бала**м**","үй**ім**"],["сенің — your","бала**ң**","үй**ің**"],["сіздің — your (polite)","бала**ңыз**","үй**іңіз**"],["оның — his / her","бала**сы**","үй**і**"],["біздің — our","бала**мыз**","үй**іміз**"]]},"tip":"*Their* = **олардың** + the same ending as оның: олардың үй**і**."}'::jsonb, 'active', 'high'),
+  ('u5-b3-2-e2', 'u5-b3-2', 2, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Оның ","."],"options":["үстелы","үстелі","үстелсі"],"correctAns":"үстелі","hintEn":"his / her table"}'::jsonb, 'active', 'high'),
+  ('u5-b3-2-e3', 'u5-b3-2', 3, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Сіздің ","."],"options":["қарындасыңыз","қарындасңыз","қарындасіңіз"],"correctAns":"қарындасыңыз","hintEn":"your younger sister (polite)"}'::jsonb, 'active', 'high'),
+  ('u5-b3-2-e4', 'u5-b3-2', 4, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Біздің ","."],"options":["мысықымыз","мысығіміз","мысығымыз"],"correctAns":"мысығымыз","hintEn":"our cat"}'::jsonb, 'active', 'high'),
+  ('u5-b3-2-e5', 'u5-b3-2', 5, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Біздің үйіміз үлкен.","options":["My house is big.","Your house is big.","We have a big house.","Our house is big."],"correctAns":"Our house is big."}'::jsonb, 'active', 'high'),
+  ('u5-b3-2-e6', 'u5-b3-2', 6, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Сенің телефоның жақсы.","options":["My phone is good.","You have a good phone.","His phone is good.","Your phone is good."],"correctAns":"Your phone is good."}'::jsonb, 'active', 'high'),
+  ('u5-b3-2-e7', 'u5-b3-2', 7, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"our house","tiles":["біздің","үйіміз","үйім","менің"],"correctAns":["біздің","үйіміз"]}'::jsonb, 'active', 'high')
 on conflict (id) do update set
   lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
   prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
@@ -765,14 +826,21 @@ insert into public.exercises (id, lesson_id, "order", type, prompt, status, conf
   ('u5-b5-e4', 'u5-b5', 4, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"My family is not big.","tiles":["Отбасым","үлкен","емес","жоқ","отбасы"],"correctAns":["Отбасым","үлкен","емес"]}'::jsonb, 'active', 'high'),
   ('u5-b5-e5', 'u5-b5', 5, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"We don''t have a cat.","tiles":["Мысығымыз","жоқ","емес","мысығым"],"correctAns":["Мысығымыз","жоқ"]}'::jsonb, 'active', 'high'),
   ('u5-b5-e6', 'u5-b5', 6, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Жұмысым жақсы.","options":["My work is good.","I have good work.","Your work is good.","I work well."],"correctAns":"My work is good."}'::jsonb, 'active', 'high'),
-  ('u5-b5-e7', 'u5-b5', 7, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I have a big table.","tiles":["Үлкен","үстелім","бар","жоқ","үстел"],"correctAns":["Үлкен","үстелім","бар"]}'::jsonb, 'active', 'high'),
-  ('u5-b5-e8', 'u5-b5', 8, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Қызым инженер емес.","options":["My daughter is not an engineer.","I don''t have a daughter.","I am not an engineer.","My daughter is an engineer."],"correctAns":"My daughter is not an engineer."}'::jsonb, 'active', 'high'),
-  ('u5-b5-e9', 'u5-b5', 9, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"Your house is not big.","tiles":["Сенің","үйің","үлкен","емес","үйім","жоқ"],"correctAns":["Сенің","үйің","үлкен","емес"]}'::jsonb, 'active', 'high'),
-  ('u5-b5-e10', 'u5-b5', 10, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Атым Энди емес.","options":["His name is not Andy.","My name is not Andy.","Andy is not here.","My name is Andy."],"correctAns":"My name is not Andy."}'::jsonb, 'active', 'high'),
-  ('u5-b5-e11', 'u5-b5', 11, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Бір қарындасым бар.","options":["I have two younger sisters.","I have one younger sister.","My sister is young.","I am one younger sister."],"correctAns":"I have one younger sister."}'::jsonb, 'active', 'high'),
-  ('u5-b5-e12', 'u5-b5', 12, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Жақсы ата-анамыз бар.","options":["I have good parents.","We have good parents.","We are good parents.","Our grandparents are good."],"correctAns":"We have good parents."}'::jsonb, 'active', 'high'),
-  ('u5-b5-e13', 'u5-b5', 13, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":[""," әдемі."],"options":["қалаң","қалаым","қалам"],"correctAns":"қалам","hintEn":"My city is beautiful."}'::jsonb, 'active', 'high'),
-  ('u5-b5-e14', 'u5-b5', 14, 'MATCH_PAIRS', '{"type":"MATCH_PAIRS","pairs":[{"kazakh":"үлкен","english":"big"},{"kazakh":"әдемі","english":"beautiful"},{"kazakh":"жақсы","english":"good"},{"kazakh":"үй","english":"house"},{"kazakh":"жұмыс","english":"work"}]}'::jsonb, 'active', 'high')
+  ('u5-b5-e7', 'u5-b5', 7, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I have a big table.","tiles":["Үлкен","үстелім","бар","жоқ","үстел"],"correctAns":["Үлкен","үстелім","бар"]}'::jsonb, 'active', 'high')
+on conflict (id) do update set
+  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
+  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
+
+-- u5-b5-2
+insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
+  ('u5-b5-2-e1', 'u5-b5-2', 1, 'TEACH', '{"type":"TEACH","title":"Review: two kinds of endings","body":["Don''t mix them up: *I am* endings go on what you **are**; possessive endings go on what you **have**."],"table":{"headers":["my (possessive)","I am (personal)"],"rows":[["қыз**ым** — my daughter","қыз**бын** — I am a girl"],["әріптес**ім** — my colleague","әріптес**пін** — I am a colleague"],["дәрігер**ім** — my doctor","дәрігер**мін** — I am a doctor"]]}}'::jsonb, 'active', 'high'),
+  ('u5-b5-2-e2', 'u5-b5-2', 2, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Қызым инженер емес.","options":["I am not an engineer.","I don''t have a daughter.","My daughter is not an engineer.","My daughter is an engineer."],"correctAns":"My daughter is not an engineer."}'::jsonb, 'active', 'high'),
+  ('u5-b5-2-e3', 'u5-b5-2', 3, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"Your house is not big.","tiles":["Сенің","үйің","үлкен","емес","үйім","жоқ"],"correctAns":["Сенің","үйің","үлкен","емес"]}'::jsonb, 'active', 'high'),
+  ('u5-b5-2-e4', 'u5-b5-2', 4, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Атым Энди емес.","options":["Andy is not here.","His name is not Andy.","My name is not Andy.","My name is Andy."],"correctAns":"My name is not Andy."}'::jsonb, 'active', 'high'),
+  ('u5-b5-2-e5', 'u5-b5-2', 5, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Бір қарындасым бар.","options":["I have two younger sisters.","I have one younger sister.","I am one younger sister.","My sister is young."],"correctAns":"I have one younger sister."}'::jsonb, 'active', 'high'),
+  ('u5-b5-2-e6', 'u5-b5-2', 6, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Жақсы ата-анамыз бар.","options":["We have good parents.","I have good parents.","We are good parents.","Our grandparents are good."],"correctAns":"We have good parents."}'::jsonb, 'active', 'high'),
+  ('u5-b5-2-e7', 'u5-b5-2', 7, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":[""," әдемі."],"options":["қалаң","қалам","қалаым"],"correctAns":"қалам","hintEn":"My city is beautiful."}'::jsonb, 'active', 'high'),
+  ('u5-b5-2-e8', 'u5-b5-2', 8, 'MATCH_PAIRS', '{"type":"MATCH_PAIRS","pairs":[{"kazakh":"үлкен","english":"big"},{"kazakh":"әдемі","english":"beautiful"},{"kazakh":"жақсы","english":"good"},{"kazakh":"үй","english":"house"},{"kazakh":"жұмыс","english":"work"}]}'::jsonb, 'active', 'high')
 on conflict (id) do update set
   lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
   prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
@@ -820,15 +888,22 @@ insert into public.exercises (id, lesson_id, "order", type, prompt, status, conf
   ('u6-b3-e4', 'u6-b3', 4, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["жұмыс",""],"options":["та","те","да"],"correctAns":"та","hintEn":"at work"}'::jsonb, 'active', 'high'),
   ('u6-b3-e5', 'u6-b3', 5, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Алматы",""],"options":["та","да","де"],"correctAns":"да","hintEn":"in Almaty"}'::jsonb, 'active', 'high'),
   ('u6-b3-e6', 'u6-b3', 6, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Шымкент",""],"options":["те","де","та"],"correctAns":"те","hintEn":"in Shymkent"}'::jsonb, 'active', 'high'),
-  ('u6-b3-e7', 'u6-b3', 7, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["мектеп",""],"options":["та","те","де"],"correctAns":"те","hintEn":"at school"}'::jsonb, 'active', 'high'),
-  ('u6-b3-e8', 'u6-b3', 8, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["кафе",""],"options":["да","де","те"],"correctAns":"де","hintEn":"in a café"}'::jsonb, 'active', 'high'),
-  ('u6-b3-e9', 'u6-b3', 9, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["ресторан",""],"options":["де","да","та"],"correctAns":"да","hintEn":"in a restaurant"}'::jsonb, 'active', 'high'),
-  ('u6-b3-e10', 'u6-b3', 10, 'TEACH', '{"type":"TEACH","title":"I''m at… / I live in…","body":["Add *I am* to a place: Мен үйде**мін**. = *I''m at home.*","**Тұрамын** = *I live*. **Сингапурда тұрамын.** = *I live in Singapore.* (more on verbs in Unit 7)"],"examples":[{"kk":"Мен дүкенде**мін**.","en":"I''m at the shop."},{"kk":"Сингапурда тұрамын.","en":"I live in Singapore."},{"kk":"Досым Италияда тұрады.","en":"My friend lives in Italy."},{"kk":"Кофе үстелде емес.","en":"The coffee is not on the table."}]}'::jsonb, 'active', 'high'),
-  ('u6-b3-e11', 'u6-b3', 11, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Мен үйдемін.","options":["I am at home.","I am home-made.","I live at home.","My house is here."],"correctAns":"I am at home."}'::jsonb, 'active', 'high'),
-  ('u6-b3-e12', 'u6-b3', 12, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I live in Singapore.","tiles":["Сингапурда","тұрамын","Сингапур","тұрады"],"correctAns":["Сингапурда","тұрамын"]}'::jsonb, 'active', 'high'),
-  ('u6-b3-e13', 'u6-b3', 13, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Досым Италияда тұрады.","options":["My friend goes to Italy.","My friend is from Italy.","My friend lives in Italy.","I live in Italy."],"correctAns":"My friend lives in Italy."}'::jsonb, 'active', 'high'),
-  ('u6-b3-e14', 'u6-b3', 14, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Кофе үстелде емес.","options":["There is no coffee.","The coffee is not on the table.","The table is not here.","The coffee is on the table."],"correctAns":"The coffee is not on the table."}'::jsonb, 'active', 'high'),
-  ('u6-b3-e15', 'u6-b3', 15, 'LISTENING', '{"type":"LISTENING","audioKk":"далада","options":["далада","қалада","дала"],"correctAns":"далада"}'::jsonb, 'active', 'high')
+  ('u6-b3-e7', 'u6-b3', 7, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["мектеп",""],"options":["та","те","де"],"correctAns":"те","hintEn":"at school"}'::jsonb, 'active', 'high')
+on conflict (id) do update set
+  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
+  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
+
+-- u6-b3-2
+insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
+  ('u6-b3-2-e1', 'u6-b3-2', 1, 'TEACH', '{"type":"TEACH","title":"Where? — one ending","body":["**-да / -де / -та / -те** = *in / on / at*.","After a **voiceless** consonant (к қ п с т ш…) → **-та / -те**. After everything else → **-да / -де**."],"examples":[{"kk":"үй**де**","en":"at home"},{"kk":"жұмыс**та**","en":"at work"},{"kk":"қала**да**","en":"in the city"},{"kk":"дала**да**","en":"outside"},{"kk":"Сингапур**да**","en":"in Singapore"},{"kk":"Бангкок**та**","en":"in Bangkok"},{"kk":"Шымкент**те**","en":"in Shymkent"},{"kk":"Берлин**де**","en":"in Berlin"}]}'::jsonb, 'active', 'high'),
+  ('u6-b3-2-e2', 'u6-b3-2', 2, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["кафе",""],"options":["де","да","те"],"correctAns":"де","hintEn":"in a café"}'::jsonb, 'active', 'high'),
+  ('u6-b3-2-e3', 'u6-b3-2', 3, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["ресторан",""],"options":["да","де","та"],"correctAns":"да","hintEn":"in a restaurant"}'::jsonb, 'active', 'high'),
+  ('u6-b3-2-e4', 'u6-b3-2', 4, 'TEACH', '{"type":"TEACH","title":"I''m at… / I live in…","body":["Add *I am* to a place: Мен үйде**мін**. = *I''m at home.*","**Тұрамын** = *I live*. **Сингапурда тұрамын.** = *I live in Singapore.* (more on verbs in Unit 7)"],"examples":[{"kk":"Мен дүкенде**мін**.","en":"I''m at the shop."},{"kk":"Сингапурда тұрамын.","en":"I live in Singapore."},{"kk":"Досым Италияда тұрады.","en":"My friend lives in Italy."},{"kk":"Кофе үстелде емес.","en":"The coffee is not on the table."}]}'::jsonb, 'active', 'high'),
+  ('u6-b3-2-e5', 'u6-b3-2', 5, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Мен үйдемін.","options":["I live at home.","My house is here.","I am at home.","I am home-made."],"correctAns":"I am at home."}'::jsonb, 'active', 'high'),
+  ('u6-b3-2-e6', 'u6-b3-2', 6, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I live in Singapore.","tiles":["Сингапурда","тұрамын","Сингапур","тұрады"],"correctAns":["Сингапурда","тұрамын"]}'::jsonb, 'active', 'high'),
+  ('u6-b3-2-e7', 'u6-b3-2', 7, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Досым Италияда тұрады.","options":["My friend lives in Italy.","My friend goes to Italy.","I live in Italy.","My friend is from Italy."],"correctAns":"My friend lives in Italy."}'::jsonb, 'active', 'high'),
+  ('u6-b3-2-e8', 'u6-b3-2', 8, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Кофе үстелде емес.","options":["The coffee is on the table.","The coffee is not on the table.","The table is not here.","There is no coffee."],"correctAns":"The coffee is not on the table."}'::jsonb, 'active', 'high'),
+  ('u6-b3-2-e9', 'u6-b3-2', 9, 'LISTENING', '{"type":"LISTENING","audioKk":"далада","options":["қалада","дала","далада"],"correctAns":"далада"}'::jsonb, 'active', 'high')
 on conflict (id) do update set
   lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
   prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
@@ -913,13 +988,20 @@ insert into public.exercises (id, lesson_id, "order", type, prompt, status, conf
   ('u7-b3-e4', 'u7-b3', 4, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Біз күнде су ","."],"options":["ішемыз","ішеміз","ішаміз"],"correctAns":"ішеміз","hintEn":"We drink water every day."}'::jsonb, 'active', 'high'),
   ('u7-b3-e5', 'u7-b3', 5, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Сіз Бернде ","."],"options":["тұресыз","тұрасыз","тұрасіз"],"correctAns":"тұрасыз","hintEn":"You live in Bern. (polite)"}'::jsonb, 'active', 'high'),
   ('u7-b3-e6', 'u7-b3', 6, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Қызым әдетте көк шай ","."],"options":["ішеды","ішеді","ішаді"],"correctAns":"ішеді","hintEn":"My daughter usually drinks green tea."}'::jsonb, 'active', 'high'),
-  ('u7-b3-e7', 'u7-b3', 7, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Олар үйде тамақ ","."],"options":["жейды","жеді","жейді"],"correctAns":"жейді","hintEn":"They eat at home."}'::jsonb, 'active', 'high'),
-  ('u7-b3-e8', 'u7-b3', 8, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Сендер не ","?"],"options":["істейсыңдар","істесіңдер","істейсіңдер"],"correctAns":"істейсіңдер","hintEn":"What do you (all) do?"}'::jsonb, 'active', 'high'),
-  ('u7-b3-e9', 'u7-b3', 9, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Досым кафеде кофе ішеді.","options":["My friend drinks coffee in a café.","My friend is in a café.","My friend makes coffee at home.","I drink coffee in a café."],"correctAns":"My friend drinks coffee in a café."}'::jsonb, 'active', 'high'),
-  ('u7-b3-e10', 'u7-b3', 10, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Әйелім күнде кофе ішеді.","options":["My wife drinks coffee today.","My wife drinks tea every day.","My wife drinks coffee every day.","I drink coffee every day."],"correctAns":"My wife drinks coffee every day."}'::jsonb, 'active', 'high'),
-  ('u7-b3-e11', 'u7-b3', 11, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"My friend lives in Italy.","tiles":["Досым","Италияда","тұрады","тұрамын","Италия"],"correctAns":["Досым","Италияда","тұрады"]}'::jsonb, 'active', 'high'),
-  ('u7-b3-e12', 'u7-b3', 12, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"We live in Singapore.","tiles":["Сингапурда","тұрамыз","тұрады","Сингапур"],"correctAns":["Сингапурда","тұрамыз"]}'::jsonb, 'active', 'high'),
-  ('u7-b3-e13', 'u7-b3', 13, 'LISTENING', '{"type":"LISTENING","audioKk":"ішесіңдер","options":["ішесіздер","ішесіңдер","ішеміз"],"correctAns":"ішесіңдер"}'::jsonb, 'active', 'high')
+  ('u7-b3-e7', 'u7-b3', 7, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Олар үйде тамақ ","."],"options":["жейды","жеді","жейді"],"correctAns":"жейді","hintEn":"They eat at home."}'::jsonb, 'active', 'high')
+on conflict (id) do update set
+  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
+  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
+
+-- u7-b3-2
+insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
+  ('u7-b3-2-e1', 'u7-b3-2', 1, 'TEACH', '{"type":"TEACH","title":"Every person","body":["**бару** go · **ішу** drink · **жасау** do"],"table":{"headers":["","бару","ішу","жасау"],"rows":[["мен","бар**амын**","іш**емін**","жаса**ймын**"],["сен","бар**асың**","іш**есің**","жаса**йсың**"],["сіз","бар**асыз**","іш**есіз**","жаса**йсыз**"],["ол","бар**ады**","іш**еді**","жаса**йды**"],["біз","бар**амыз**","іш**еміз**","жаса**ймыз**"],["сендер","бар**асыңдар**","іш**есіңдер**","жаса**йсыңдар**"],["сіздер","бар**асыздар**","іш**есіздер**","жаса**йсыздар**"],["олар","бар**ады**","іш**еді**","жаса**йды**"]]},"tip":"**ол** and **олар** share one form: Ол барады · Олар барады."}'::jsonb, 'active', 'high'),
+  ('u7-b3-2-e2', 'u7-b3-2', 2, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Сендер не ","?"],"options":["істейсыңдар","істесіңдер","істейсіңдер"],"correctAns":"істейсіңдер","hintEn":"What do you (all) do?"}'::jsonb, 'active', 'high'),
+  ('u7-b3-2-e3', 'u7-b3-2', 3, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Досым кафеде кофе ішеді.","options":["I drink coffee in a café.","My friend is in a café.","My friend drinks coffee in a café.","My friend makes coffee at home."],"correctAns":"My friend drinks coffee in a café."}'::jsonb, 'active', 'high'),
+  ('u7-b3-2-e4', 'u7-b3-2', 4, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Әйелім күнде кофе ішеді.","options":["My wife drinks coffee today.","I drink coffee every day.","My wife drinks coffee every day.","My wife drinks tea every day."],"correctAns":"My wife drinks coffee every day."}'::jsonb, 'active', 'high'),
+  ('u7-b3-2-e5', 'u7-b3-2', 5, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"My friend lives in Italy.","tiles":["Досым","Италияда","тұрады","тұрамын","Италия"],"correctAns":["Досым","Италияда","тұрады"]}'::jsonb, 'active', 'high'),
+  ('u7-b3-2-e6', 'u7-b3-2', 6, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"We live in Singapore.","tiles":["Сингапурда","тұрамыз","тұрады","Сингапур"],"correctAns":["Сингапурда","тұрамыз"]}'::jsonb, 'active', 'high'),
+  ('u7-b3-2-e7', 'u7-b3-2', 7, 'LISTENING', '{"type":"LISTENING","audioKk":"ішесіңдер","options":["ішесіңдер","ішеміз","ішесіздер"],"correctAns":"ішесіңдер"}'::jsonb, 'active', 'high')
 on conflict (id) do update set
   lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
   prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
@@ -951,14 +1033,20 @@ insert into public.exercises (id, lesson_id, "order", type, prompt, status, conf
   ('u7-b5-e4', 'u7-b5', 4, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Кешке кофе ","."],"options":["ішбеймін","ішмеймін","ішпеймін"],"correctAns":"ішпеймін","hintEn":"I don''t drink coffee in the evening."}'::jsonb, 'active', 'high'),
   ('u7-b5-e5', 'u7-b5', 5, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Кеш ","."],"options":["оянпаймын","оянбаймын","оянмаймын"],"correctAns":"оянбаймын","hintEn":"I don''t wake up late."}'::jsonb, 'active', 'high'),
   ('u7-b5-e6', 'u7-b5', 6, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Ертең қызым эссе ","."],"options":["жазпайды","жазмайды","жазбайды"],"correctAns":"жазбайды","hintEn":"Tomorrow my daughter won''t write an essay."}'::jsonb, 'active', 'high'),
-  ('u7-b5-e7', 'u7-b5', 7, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Қарындасым Сингапурда ","."],"options":["тұрбайды","тұрмайды","тұрпайды"],"correctAns":"тұрмайды","hintEn":"My younger sister doesn''t live in Singapore."}'::jsonb, 'active', 'high'),
-  ('u7-b5-e8', 'u7-b5', 8, 'TEACH', '{"type":"TEACH","title":"Questions: ма / ме, ба / бе","body":["To ask a yes/no question, put a particle **after** the verb.","After **-ды/-ді** and **-сыңдар, -сыздар** → **ма / ме**. After **-мын, -сың, -сыз, -мыз** → **ба / бе**."],"examples":[{"kk":"Барасың **ба**?","en":"Are you going?"},{"kk":"Кофе ішесің **бе**?","en":"Do you drink coffee?"},{"kk":"Ол жұмыс істейді **ме**?","en":"Does she work?"},{"kk":"Ертең сабақтарың бар **ма**?","en":"Do you have lessons tomorrow?"}]}'::jsonb, 'active', 'high'),
-  ('u7-b5-e9', 'u7-b5', 9, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Кофе ішесің ","?"],"options":["ме","бе","ба"],"correctAns":"бе","hintEn":"Do you drink coffee?"}'::jsonb, 'active', 'high'),
-  ('u7-b5-e10', 'u7-b5', 10, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Ол жұмыс істейді ","?"],"options":["бе","ма","ме"],"correctAns":"ме","hintEn":"Does she work?"}'::jsonb, 'active', 'high'),
-  ('u7-b5-e11', 'u7-b5', 11, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Барасыз ","?"],"options":["ма","ба","бе"],"correctAns":"ба","hintEn":"Are you going? (polite)"}'::jsonb, 'active', 'high'),
-  ('u7-b5-e12', 'u7-b5', 12, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Ертең сабақтарың бар ма?","options":["Do you have lessons today?","You have lessons tomorrow.","Where are your lessons tomorrow?","Do you have lessons tomorrow?"],"correctAns":"Do you have lessons tomorrow?"}'::jsonb, 'active', 'high'),
-  ('u7-b5-e13', 'u7-b5', 13, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I don''t work tomorrow, I rest.","tiles":["Ертең","жұмыс","істемеймін","демаламын","істеймін","демалмаймын"],"correctAns":["Ертең","жұмыс","істемеймін","демаламын"]}'::jsonb, 'active', 'high'),
-  ('u7-b5-e14', 'u7-b5', 14, 'LISTENING', '{"type":"LISTENING","audioKk":"бармаймын","options":["бармайды","барамын","бармаймын"],"correctAns":"бармаймын"}'::jsonb, 'active', 'high')
+  ('u7-b5-e7', 'u7-b5', 7, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Қарындасым Сингапурда ","."],"options":["тұрбайды","тұрмайды","тұрпайды"],"correctAns":"тұрмайды","hintEn":"My younger sister doesn''t live in Singapore."}'::jsonb, 'active', 'high')
+on conflict (id) do update set
+  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
+  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
+
+-- u7-b5-2
+insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
+  ('u7-b5-2-e1', 'u7-b5-2', 1, 'TEACH', '{"type":"TEACH","title":"Questions: ма / ме, ба / бе","body":["To ask a yes/no question, put a particle **after** the verb.","After **-ды/-ді** and **-сыңдар, -сыздар** → **ма / ме**. After **-мын, -сың, -сыз, -мыз** → **ба / бе**."],"examples":[{"kk":"Барасың **ба**?","en":"Are you going?"},{"kk":"Кофе ішесің **бе**?","en":"Do you drink coffee?"},{"kk":"Ол жұмыс істейді **ме**?","en":"Does she work?"},{"kk":"Ертең сабақтарың бар **ма**?","en":"Do you have lessons tomorrow?"}]}'::jsonb, 'active', 'high'),
+  ('u7-b5-2-e2', 'u7-b5-2', 2, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Кофе ішесің ","?"],"options":["ба","бе","ме"],"correctAns":"бе","hintEn":"Do you drink coffee?"}'::jsonb, 'active', 'high'),
+  ('u7-b5-2-e3', 'u7-b5-2', 3, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Ол жұмыс істейді ","?"],"options":["ме","бе","ма"],"correctAns":"ме","hintEn":"Does she work?"}'::jsonb, 'active', 'high'),
+  ('u7-b5-2-e4', 'u7-b5-2', 4, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Барасыз ","?"],"options":["ба","ма","бе"],"correctAns":"ба","hintEn":"Are you going? (polite)"}'::jsonb, 'active', 'high'),
+  ('u7-b5-2-e5', 'u7-b5-2', 5, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Ертең сабақтарың бар ма?","options":["Do you have lessons tomorrow?","Where are your lessons tomorrow?","You have lessons tomorrow.","Do you have lessons today?"],"correctAns":"Do you have lessons tomorrow?"}'::jsonb, 'active', 'high'),
+  ('u7-b5-2-e6', 'u7-b5-2', 6, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I don''t work tomorrow, I rest.","tiles":["Ертең","жұмыс","істемеймін","демаламын","істеймін","демалмаймын"],"correctAns":["Ертең","жұмыс","істемеймін","демаламын"]}'::jsonb, 'active', 'high'),
+  ('u7-b5-2-e7', 'u7-b5-2', 7, 'LISTENING', '{"type":"LISTENING","audioKk":"бармаймын","options":["бармайды","барамын","бармаймын"],"correctAns":"бармаймын"}'::jsonb, 'active', 'high')
 on conflict (id) do update set
   lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
   prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
@@ -974,19 +1062,32 @@ insert into public.exercises (id, lesson_id, "order", type, prompt, status, conf
   ('u7-b6-e7', 'u7-b6', 7, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Маған кеш ояну ","."],"options":["ұнайды","ұнамайды","ұнай ма"],"correctAns":"ұнайды","hintEn":"I like waking up late."}'::jsonb, 'active', 'high'),
   ('u7-b6-e8', 'u7-b6', 8, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":[""," ерте ояну ұнай ма?"],"options":["Сізге","Сіз","Сізде"],"correctAns":"Сізге","hintEn":"Do you like waking up early? (polite)"}'::jsonb, 'active', 'high'),
   ('u7-b6-e9', 'u7-b6', 9, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I like working.","tiles":["Маған","жұмыс","істеу","ұнайды","Мен","ұнамайды"],"correctAns":["Маған","жұмыс","істеу","ұнайды"]}'::jsonb, 'active', 'high'),
-  ('u7-b6-e10', 'u7-b6', 10, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I don''t like living in Germany.","tiles":["Маған","Германияда","тұру","ұнамайды","ұнайды","Германия"],"correctAns":["Маған","Германияда","тұру","ұнамайды"]}'::jsonb, 'active', 'high'),
-  ('u7-b6-e11', 'u7-b6', 11, 'TEACH', '{"type":"TEACH","title":"I need: маған … керек","body":["Same pattern: **маған** + the thing + **керек** (necessary). For *don''t need*, add **жоқ**: керек **жоқ**. For a question, add **пе**: керек **пе**?"],"examples":[{"kk":"Маған ақ нан керек.","en":"I need white bread."},{"kk":"Маған кофе керек **жоқ**.","en":"I don''t need coffee."},{"kk":"Саған кофе керек пе?","en":"Do you need coffee?"},{"kk":"Маған ерте ояну керек.","en":"I need to wake up early."},{"kk":"Маған су **да** керек.","en":"I also need water."}],"tip":"**да / де / та / те** after a word means *too*: су **да** (water too), досым **да** (my friend too), мысық **та** (a cat too). It follows the same rule as -да/-та, but it''s written as a separate word."}'::jsonb, 'active', 'high'),
-  ('u7-b6-e12', 'u7-b6', 12, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Маған қара кофе керек.","options":["You need black coffee.","I need black coffee.","I like black coffee.","I need black tea."],"correctAns":"I need black coffee."}'::jsonb, 'active', 'high'),
-  ('u7-b6-e13', 'u7-b6', 13, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I need white bread.","tiles":["Маған","ақ","нан","керек","қара","ұнайды"],"correctAns":["Маған","ақ","нан","керек"]}'::jsonb, 'active', 'high'),
-  ('u7-b6-e14', 'u7-b6', 14, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Саған ерте ояну керек пе?","options":["Do you need to wake up early?","I need to wake up early.","Do you wake up early?","Do you like waking up early?"],"correctAns":"Do you need to wake up early?"}'::jsonb, 'active', 'high'),
-  ('u7-b6-e15', 'u7-b6', 15, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Маған су "," керек."],"options":["де","та","да"],"correctAns":"да","hintEn":"I also need water."}'::jsonb, 'active', 'high'),
-  ('u7-b6-e16', 'u7-b6', 16, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Қызым "," жақсы."],"options":["де","та","да"],"correctAns":"да","hintEn":"My daughter is also good."}'::jsonb, 'active', 'high'),
-  ('u7-b6-e17', 'u7-b6', 17, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","questionEn":"What does мүмкін mean?","options":["yes","no","maybe","never"],"correctAns":"maybe"}'::jsonb, 'active', 'high'),
-  ('u7-b6-e18', 'u7-b6', 18, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Мүмкін ертең кофе ішемін.","options":["Maybe I drink coffee every day.","I''ll definitely drink coffee tomorrow.","Maybe I''ll drink tea tomorrow.","Maybe I''ll drink coffee tomorrow."],"correctAns":"Maybe I''ll drink coffee tomorrow."}'::jsonb, 'active', 'high'),
-  ('u7-b6-e19', 'u7-b6', 19, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Мүмкін маған Гонконгта тұру ұнайды.","options":["Maybe I need to live in Hong Kong.","Maybe I live in Hong Kong.","I don''t like living in Hong Kong.","Maybe I''d like living in Hong Kong."],"correctAns":"Maybe I''d like living in Hong Kong."}'::jsonb, 'active', 'high'),
-  ('u7-b6-e20', 'u7-b6', 20, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Маған кофе керек жоқ.","options":["I don''t need coffee.","Do I need coffee?","I need coffee.","I don''t like coffee."],"correctAns":"I don''t need coffee."}'::jsonb, 'active', 'high'),
-  ('u7-b6-e21', 'u7-b6', 21, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Маған кофе керек ","."],"options":["жоқ","пе","бар"],"correctAns":"жоқ","hintEn":"I don''t need coffee."}'::jsonb, 'active', 'high'),
-  ('u7-b6-e22', 'u7-b6', 22, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I don''t need coffee.","tiles":["Маған","кофе","керек","жоқ","ұнайды","пе"],"correctAns":["Маған","кофе","керек","жоқ"]}'::jsonb, 'active', 'high')
+  ('u7-b6-e10', 'u7-b6', 10, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I don''t like living in Germany.","tiles":["Маған","Германияда","тұру","ұнамайды","ұнайды","Германия"],"correctAns":["Маған","Германияда","тұру","ұнамайды"]}'::jsonb, 'active', 'high')
+on conflict (id) do update set
+  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
+  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
+
+-- u7-b6-2
+insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
+  ('u7-b6-2-e1', 'u7-b6-2', 1, 'TEACH', '{"type":"TEACH","title":"I need: маған … керек","body":["Same pattern: **маған** + the thing + **керек** (necessary). For *don''t need*, add **жоқ**: керек **жоқ**. For a question, add **пе**: керек **пе**?"],"examples":[{"kk":"Маған ақ нан керек.","en":"I need white bread."},{"kk":"Маған кофе керек **жоқ**.","en":"I don''t need coffee."},{"kk":"Саған кофе керек пе?","en":"Do you need coffee?"},{"kk":"Маған ерте ояну керек.","en":"I need to wake up early."},{"kk":"Маған су **да** керек.","en":"I also need water."}],"tip":"**да / де / та / те** after a word means *too*: су **да** (water too), досым **да** (my friend too), мысық **та** (a cat too). It follows the same rule as -да/-та, but it''s written as a separate word."}'::jsonb, 'active', 'high'),
+  ('u7-b6-2-e2', 'u7-b6-2', 2, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Маған қара кофе керек.","options":["I like black coffee.","You need black coffee.","I need black coffee.","I need black tea."],"correctAns":"I need black coffee."}'::jsonb, 'active', 'high'),
+  ('u7-b6-2-e3', 'u7-b6-2', 3, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I need white bread.","tiles":["Маған","ақ","нан","керек","қара","ұнайды"],"correctAns":["Маған","ақ","нан","керек"]}'::jsonb, 'active', 'high'),
+  ('u7-b6-2-e4', 'u7-b6-2', 4, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Саған ерте ояну керек пе?","options":["Do you like waking up early?","Do you need to wake up early?","Do you wake up early?","I need to wake up early."],"correctAns":"Do you need to wake up early?"}'::jsonb, 'active', 'high'),
+  ('u7-b6-2-e5', 'u7-b6-2', 5, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Маған су "," керек."],"options":["да","де","та"],"correctAns":"да","hintEn":"I also need water."}'::jsonb, 'active', 'high'),
+  ('u7-b6-2-e6', 'u7-b6-2', 6, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Қызым "," жақсы."],"options":["де","да","та"],"correctAns":"да","hintEn":"My daughter is also good."}'::jsonb, 'active', 'high')
+on conflict (id) do update set
+  lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
+  prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;
+
+-- u7-b6-3
+insert into public.exercises (id, lesson_id, "order", type, prompt, status, confidence) values
+  ('u7-b6-3-e1', 'u7-b6-3', 1, 'TEACH', '{"type":"TEACH","title":"I need: маған … керек","body":["Same pattern: **маған** + the thing + **керек** (necessary). For *don''t need*, add **жоқ**: керек **жоқ**. For a question, add **пе**: керек **пе**?"],"examples":[{"kk":"Маған ақ нан керек.","en":"I need white bread."},{"kk":"Маған кофе керек **жоқ**.","en":"I don''t need coffee."},{"kk":"Саған кофе керек пе?","en":"Do you need coffee?"},{"kk":"Маған ерте ояну керек.","en":"I need to wake up early."},{"kk":"Маған су **да** керек.","en":"I also need water."}],"tip":"**да / де / та / те** after a word means *too*: су **да** (water too), досым **да** (my friend too), мысық **та** (a cat too). It follows the same rule as -да/-та, but it''s written as a separate word."}'::jsonb, 'active', 'high'),
+  ('u7-b6-3-e2', 'u7-b6-3', 2, 'MULTIPLE_CHOICE', '{"type":"MULTIPLE_CHOICE","questionEn":"What does мүмкін mean?","options":["yes","maybe","never","no"],"correctAns":"maybe"}'::jsonb, 'active', 'high'),
+  ('u7-b6-3-e3', 'u7-b6-3', 3, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Мүмкін ертең кофе ішемін.","options":["Maybe I''ll drink tea tomorrow.","I''ll definitely drink coffee tomorrow.","Maybe I drink coffee every day.","Maybe I''ll drink coffee tomorrow."],"correctAns":"Maybe I''ll drink coffee tomorrow."}'::jsonb, 'active', 'high'),
+  ('u7-b6-3-e4', 'u7-b6-3', 4, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Мүмкін маған Гонконгта тұру ұнайды.","options":["Maybe I''d like living in Hong Kong.","I don''t like living in Hong Kong.","Maybe I need to live in Hong Kong.","Maybe I live in Hong Kong."],"correctAns":"Maybe I''d like living in Hong Kong."}'::jsonb, 'active', 'high'),
+  ('u7-b6-3-e5', 'u7-b6-3', 5, 'TRANSLATE_KK_EN', '{"type":"TRANSLATE_KK_EN","promptKk":"Маған кофе керек жоқ.","options":["Do I need coffee?","I need coffee.","I don''t need coffee.","I don''t like coffee."],"correctAns":"I don''t need coffee."}'::jsonb, 'active', 'high'),
+  ('u7-b6-3-e6', 'u7-b6-3', 6, 'FILL_BLANK', '{"type":"FILL_BLANK","sentenceKkParts":["Маған кофе керек ","."],"options":["пе","жоқ","бар"],"correctAns":"жоқ","hintEn":"I don''t need coffee."}'::jsonb, 'active', 'high'),
+  ('u7-b6-3-e7', 'u7-b6-3', 7, 'TRANSLATE_EN_KK', '{"type":"TRANSLATE_EN_KK","promptEn":"I don''t need coffee.","tiles":["Маған","кофе","керек","жоқ","ұнайды","пе"],"correctAns":["Маған","кофе","керек","жоқ"]}'::jsonb, 'active', 'high')
 on conflict (id) do update set
   lesson_id=excluded.lesson_id, "order"=excluded."order", type=excluded.type,
   prompt=excluded.prompt, status=excluded.status, confidence=excluded.confidence;

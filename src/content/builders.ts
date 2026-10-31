@@ -19,7 +19,11 @@ import {
   type Person,
   type Possessor,
 } from "@/core/harmony";
+import { MAX_GRADED } from "@/core/session";
 import { toScript } from "@/core/transliterate";
+
+/** Fewest graded exercises a lesson may have; the session adds echoes up to MAX_GRADED. */
+const MIN_GRADED = 5;
 
 export type Confidence = "high" | "medium" | "low";
 
@@ -279,8 +283,10 @@ export function validateUnits(units: ContentUnit[]): number {
       if (lessonIds.has(l.id)) errors.push(`duplicate lesson ${l.id}`);
       lessonIds.add(l.id);
       if (!l.id.startsWith(`${u.id}-`)) errors.push(`lesson ${l.id} not prefixed with ${u.id}`);
-      const graded = l.items.filter((it) => it.prompt.type !== "TEACH").length;
-      if (graded < 8) errors.push(`${l.id} has only ${graded} graded exercises`);
+      // What the learner is asked: teach cards aren't graded, Listening is retired.
+      const graded = l.items.filter((it) => it.prompt.type !== "TEACH" && it.prompt.type !== "LISTENING").length;
+      if (graded < MIN_GRADED) errors.push(`${l.id} has only ${graded} graded exercises`);
+      if (graded > MAX_GRADED) errors.push(`${l.id} has ${graded} graded exercises; split it (max ${MAX_GRADED})`);
       if (l.items[0]?.prompt.type !== "TEACH") errors.push(`${l.id} should open with a teach card`);
       for (const ex of compileLesson(l)) {
         n++;

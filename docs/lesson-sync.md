@@ -37,6 +37,15 @@ session's runbook; `docs/lesson-sources.json` is its state.
    - Personal notes, scheduling, or anything not teaching Kazakh → ignore.
    Keep lesson and exercise ids stable for content that already exists, so
    learners' progress keeps pointing at the same rows.
+
+   **A lesson asks at most 10 questions** (teach cards and Listening don't
+   count; `validateUnits` fails CI past 10 and under 5). The app fills each
+   session up to 10 with echoes of the lesson's own questions, so 5–8 authored
+   questions is the sweet spot. When new material would push a lesson past
+   10, don't trim the tutor's examples: continue it in a new part right after
+   it, id `<lesson>-2` (then `-3`), titled "… · part 2" / "… · 2-бөлім", opening
+   with the lesson's main teach card as a recap (see `u7-b6-2`, `u7-b6-3`).
+   Never re-split a lesson whose ids already exist in prod; add a part instead.
 5. **Build and check.** `npm run content:build`, then `npm run ci`
    (typecheck, tests, build). Fix until green.
 6. **Ship.** Update `docs/lesson-sources.json` (`lastSyncedAt` = the time
