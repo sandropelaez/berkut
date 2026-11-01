@@ -81,9 +81,12 @@ export default function LessonPlayer() {
   if (!item) return null;
   const exercise: Exercise = item.exercise;
 
-  const total = queue.length;
   // Teach cards are ungraded: no answer phase, just read and continue.
   const isTeach = exercise.type === "TEACH";
+  // The header counts questions only, so a session reads as at most MAX_GRADED.
+  const isQuestion = (i: SessionItem) => i.exercise.type !== "TEACH";
+  const total = queue.filter(isQuestion).length;
+  const answered = queue.slice(0, idx).filter(isQuestion).length + (phase === "checked" && !isTeach ? 1 : 0);
 
   function handleAnswer(correct: boolean, vocabIds: string[] = []) {
     if (phase !== "answering") return;
@@ -158,7 +161,7 @@ export default function LessonPlayer() {
       <header className="sticky top-0 z-10 bg-berkut-bg pt-[env(safe-area-inset-top)]">
         <div className="mx-auto max-w-content px-4 py-2">
           <LessonHeader
-            step={idx + (phase === "checked" || isTeach ? 1 : 0)}
+            step={answered}
             total={total}
             onClose={() => navigate("/")}
           />
