@@ -73,21 +73,8 @@ export default function Home() {
         </Link>
       </div>
 
-      <div className="space-y-8">
-        {pathUnits.map((unit) => (
-          <UnitCard
-            key={unit.id}
-            unit={unit}
-            tags={[`Unit ${unit.id}`, unit.cefrLevel]}
-            progress={progress}
-            currentId={pathCurrent}
-            onOpen={(id) => navigate(`/lesson/${id}`)}
-          />
-        ))}
-      </div>
-
       {alphabetUnits.length > 0 && (
-        <section className="mt-12" aria-labelledby="alphabet-heading">
+        <section className="mb-12" aria-labelledby="alphabet-heading">
           <div className="mb-6">
             <h2 id="alphabet-heading" className="text-title-lg">
               <ScriptText>Қатар оқу</ScriptText>
@@ -110,6 +97,20 @@ export default function Home() {
           </div>
         </section>
       )}
+
+      <div className="space-y-8">
+        {pathUnits.map((unit) => (
+          <UnitCard
+            key={unit.id}
+            unit={unit}
+            tags={[`Unit ${unit.id}`, unit.cefrLevel]}
+            progress={progress}
+            currentId={pathCurrent}
+            onOpen={(id) => navigate(`/lesson/${id}`)}
+          />
+        ))}
+      </div>
+
     </div>
   );
 }
