@@ -45,7 +45,7 @@ export const REVIEW_ITEMS = 3;
 /** A missed exercise comes back this many slots later (or at the end). */
 export const MISTAKE_GAP = 3;
 /**
- * Upper bound on graded exercises in a session (before re-asked mistakes).
+ * Upper bound on graded exercises in a session, re-asked mistakes included.
  * Authored exercises come first; echoes and the review only fill what's left.
  */
 export const MAX_GRADED = 10;
@@ -537,7 +537,8 @@ export function buildSession(lesson: Lesson, rand: Rand = Math.random): SessionI
 
 /**
  * Re-ask the exercise at `pos` (just missed) a few slots later, with its
- * options reshuffled. Returns the queue unchanged once it hit MAX_REQUEUES.
+ * options reshuffled, keeping the session at MAX_GRADED questions. Returns the
+ * queue unchanged once it hit MAX_REQUEUES or there's nothing to swap out.
  */
 export function requeueMistake(queue: SessionItem[], pos: number, rand: Rand = Math.random): SessionItem[] {
   const missed = queue[pos];
@@ -551,5 +552,18 @@ export function requeueMistake(queue: SessionItem[], pos: number, rand: Rand = M
     requeues,
   };
   const at = Math.min(pos + 1 + MISTAKE_GAP, queue.length);
-  return [...queue.slice(0, at), again, ...queue.slice(at)];
+  const next = [...queue.slice(0, at), again, ...queue.slice(at)];
+  if (next.filter((i) => i.exercise.type !== "TEACH").length <= MAX_GRADED) return next;
+  // Still MAX_GRADED questions: the re-ask takes the place of the last echo
+  // or review item still ahead. With none left, the in-place retry has to do.
+  let drop = -1;
+  for (let i = next.length - 1; i > pos; i--) {
+    if (next[i]!.kind === "echo" || next[i]!.kind === "review") {
+      drop = i;
+      break;
+    }
+  }
+  if (drop < 0) return queue;
+  next.splice(drop, 1);
+  return next;
 }

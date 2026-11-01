@@ -173,16 +173,28 @@ describe("requeueMistake", () => {
 
   it("re-asks the missed exercise a few slots later", () => {
     const next = requeueMistake(q, pos, seeded(1));
-    expect(next.length).toBe(q.length + 1);
+    expect(next.length).toBe(q.length);
+    expect(graded(next).length).toBeLessThanOrEqual(MAX_GRADED);
     const again = next[pos + 1 + MISTAKE_GAP]!;
     expect(again.kind).toBe("mistake");
     expect(again.exercise.id).toBe(q[pos]!.exercise.id);
     expect(again.key).not.toBe(q[pos]!.key);
   });
 
-  it("appends at the end when the lesson is nearly over", () => {
-    const next = requeueMistake(q, q.length - 1, seeded(1));
+  it(`takes the place of an echo or review item, never going past ${MAX_GRADED}`, () => {
+    const next = requeueMistake(q, pos, seeded(1));
+    const kinds = (qq: SessionItem[]) => qq.filter((i) => i.kind === "echo" || i.kind === "review").length;
+    expect(kinds(next)).toBe(kinds(q) - 1);
+  });
+
+  it("appends at the end when the lesson is nearly over and has room", () => {
+    const short = q.filter((i) => i.kind !== "review");
+    const next = requeueMistake(short, short.length - 1, seeded(1));
     expect(next[next.length - 1]!.kind).toBe("mistake");
+  });
+
+  it("skips the re-ask when the lesson is full and nothing is left to swap out", () => {
+    expect(requeueMistake(q, q.length - 1, seeded(1))).toBe(q);
   });
 
   it(`gives up after ${MAX_REQUEUES} requeues`, () => {

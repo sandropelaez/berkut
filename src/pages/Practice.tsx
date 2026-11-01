@@ -6,6 +6,7 @@ import { dueItems } from "@/core/srs";
 import { useKazakh } from "@/components/ScriptText";
 import { speakKazakh } from "@/core/tts";
 import { answersMatch } from "@/core/scoring";
+import { MAX_GRADED } from "@/core/session";
 import { ChoiceTile, Logo, optionState, ProgressBar, SpokenPrompt } from "@/components/ui";
 
 export default function Practice() {
@@ -42,7 +43,7 @@ export default function Practice() {
     return items
       .map((it) => allVocabList.find((v) => v.id === it.vocabId))
       .filter(Boolean)
-      .slice(0, 15) as typeof allVocabList;
+      .slice(0, MAX_GRADED) as typeof allVocabList;
   }, [srsMap, allVocabList]);
 
   const [idx, setIdx] = useState(0);
