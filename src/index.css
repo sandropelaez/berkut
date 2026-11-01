@@ -131,7 +131,7 @@ h3 {
   }
   /* After the variants so they win over the base size. */
   .btn-lg {
-    @apply min-h-control-lg text-[18px];
+    @apply min-h-control-lg text-[18px] short:min-h-control;
   }
   /* Admin only: 44px, for several buttons in one card or table row. */
   .btn-sm {
@@ -166,7 +166,17 @@ h3 {
 
   /* Choice tile (exercise answers) */
   .tile {
-    @apply flex min-h-tile w-full items-center justify-center gap-2 rounded-tile bg-berkut-surface px-5 py-2 text-center text-option text-berkut-ink transition-[background-color,box-shadow] duration-150 hover:shadow-[inset_0_0_0_2px_rgb(var(--bk-line))];
+    @apply flex min-h-tile w-full items-center justify-center gap-2 rounded-tile bg-berkut-surface px-4 py-2 text-center [overflow-wrap:anywhere] short:min-h-control sm:px-5 text-option text-berkut-ink transition-[background-color,box-shadow] duration-150 hover:shadow-[inset_0_0_0_2px_rgb(var(--bk-line))];
+  }
+  /* Exactly the visible screen: dvh follows the phone's browser toolbars; vh where dvh is unknown. */
+  .h-viewport {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  /* The column an exercise is laid out in: prompt, answers, revealed answer. */
+  .exercise {
+    @apply flex flex-col gap-6 short:gap-4;
   }
   .tile-start {
     @apply justify-start text-left;

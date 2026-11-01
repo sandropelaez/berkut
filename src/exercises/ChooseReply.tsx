@@ -25,7 +25,7 @@ export default function ChooseReply({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="exercise">
       <h2 className="text-prompt text-berkut-ink-muted">Choose the best reply</h2>
 
       {/* The other speaker's line, as a chat bubble. */}

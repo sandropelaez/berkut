@@ -4,6 +4,7 @@ import ScriptText from "@/components/ScriptText";
 import { typedMatch } from "@/core/scoring";
 import { useStore } from "@/store/useStore";
 import { Button } from "@/components/ui";
+import { LessonAction } from "@/components/LessonAction";
 
 export default function TypeAnswer({
   prompt,
@@ -34,7 +35,7 @@ export default function TypeAnswer({
   const showAnswer = phase === "checked" && grade !== "exact";
 
   return (
-    <form className="space-y-6" onSubmit={check}>
+    <form id="type-answer" className="exercise" onSubmit={check}>
       <div className="flex flex-col gap-2">
         <h2 className="text-prompt text-berkut-ink-muted">Type this in Kazakh</h2>
         <p className="text-title-md">{prompt.promptEn}</p>
@@ -73,9 +74,12 @@ export default function TypeAnswer({
       )}
 
       {phase === "answering" && (
-        <Button type="submit" size="lg" block disabled={!typed.trim()}>
-          Check
-        </Button>
+        <LessonAction>
+          {/* Lives in the bottom bar, outside the form: form= keeps Enter and the tap the same. */}
+          <Button type="submit" form="type-answer" size="lg" block className="whitespace-nowrap px-5" disabled={!typed.trim()}>
+            Check
+          </Button>
+        </LessonAction>
       )}
     </form>
   );

@@ -5,6 +5,7 @@ import { arraysMatch } from "@/core/scoring";
 import { useStore } from "@/store/useStore";
 import { toScript } from "@/core/transliterate";
 import { Button } from "@/components/ui";
+import { LessonAction } from "@/components/LessonAction";
 
 export default function TranslateENKK({
   prompt,
@@ -42,13 +43,13 @@ export default function TranslateENKK({
     .filter(({ i }) => !chosen.includes(i));
 
   return (
-    <div className="space-y-6">
+    <div className="exercise">
       <div className="flex flex-col gap-2">
         <h2 className="text-prompt text-berkut-ink-muted">Translate this sentence</h2>
         <p className="text-title-md">{prompt.promptEn}</p>
       </div>
 
-      <div className="min-h-[96px] rounded-tile border-2 border-dashed border-berkut-line p-3 flex flex-wrap gap-2 items-start">
+      <div className="min-h-[96px] short:min-h-[72px] rounded-tile border-2 border-dashed border-berkut-line p-3 flex flex-wrap gap-2 items-start">
         {chosen.length === 0 ? (
           <span className="p-2 text-small text-berkut-ink-muted">
             Tap tiles below to build the answer
@@ -81,9 +82,11 @@ export default function TranslateENKK({
       </div>
 
       {phase === "answering" && (
-        <Button size="lg" block onClick={check} disabled={chosen.length === 0}>
-          Check
-        </Button>
+        <LessonAction>
+          <Button size="lg" block className="whitespace-nowrap px-5" onClick={check} disabled={chosen.length === 0}>
+            Check
+          </Button>
+        </LessonAction>
       )}
     </div>
   );

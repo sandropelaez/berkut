@@ -12,6 +12,10 @@ export default {
   darkMode: "class",
   theme: {
     extend: {
+      // Phones in landscape and small phones (iPhone SE and the like): lessons tighten up.
+      screens: {
+        short: { raw: "(max-height: 700px)" },
+      },
       colors: {
         berkut: {
           bg: v("bg"),
@@ -45,8 +49,11 @@ export default {
       },
       fontSize: {
         "display-xl": type("60px", "64px", "600", "-0.035em"),
-        "display-word": type("52px", "56px", "600", "-0.035em"),
-        "display-sentence": type("30px", "38px", "600", "-0.02em"),
+        // The exercise prompts scale down with the screen (width and height), so a
+        // long word fits a small phone without breaking mid-word or pushing the
+        // answers off screen: 52px/30px from a ~400px wide, ~650px tall screen up.
+        "display-word": type("clamp(34px, min(13vw, 8vh), 52px)", "1.1", "600", "-0.035em"),
+        "display-sentence": type("clamp(23px, min(7.5vw, 4.6vh), 30px)", "1.27", "600", "-0.02em"),
         "title-lg": type("26px", "32px", "600", "-0.015em"),
         "title-md": type("22px", "28px", "600", "-0.01em"),
         "title-sm": type("19px", "26px", "600", "-0.005em"),
