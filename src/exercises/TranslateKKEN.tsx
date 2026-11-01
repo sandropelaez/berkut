@@ -24,7 +24,7 @@ export default function TranslateKKEN({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="exercise">
       <SpokenPrompt
         {...kazakh(prompt.promptKk)}
         instruction="Translate to English"

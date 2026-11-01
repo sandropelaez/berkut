@@ -28,7 +28,7 @@ export default function SpotMistake({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="exercise">
       <SpokenPrompt
         {...kazakh(prompt.sentenceKk)}
         instruction={`Does this mean “${prompt.meaningEn}”?`}

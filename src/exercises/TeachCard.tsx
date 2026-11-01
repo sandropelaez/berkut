@@ -35,7 +35,7 @@ const plain = (s: string) => s.replace(/\*/g, "");
 
 export default function TeachCard({ prompt }: { prompt: TeachPrompt }) {
   return (
-    <div className="space-y-5">
+    <div className="flex flex-col gap-5 short:gap-4">
       <div>
         <Tag>
           <Icon name="bulb" size={16} /> Learn
@@ -53,13 +53,13 @@ export default function TeachCard({ prompt }: { prompt: TeachPrompt }) {
 
       {prompt.table && (
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse break-words">
             <thead>
               <tr>
                 {prompt.table.headers.map((h, i) => (
                   <th
                     key={i}
-                    className="px-2 py-2 text-small font-semibold text-berkut-ink-muted border-b-2 border-berkut-line"
+                    className="px-1 py-2 first:pl-0 last:pr-0 text-caption min-[400px]:px-1.5 sm:text-small font-semibold text-berkut-ink-muted border-b-2 border-berkut-line sm:px-2"
                   >
                     <Rich text={h} />
                   </th>
@@ -70,7 +70,7 @@ export default function TeachCard({ prompt }: { prompt: TeachPrompt }) {
               {prompt.table.rows.map((row, r) => (
                 <tr key={r} className="border-b border-berkut-line">
                   {row.map((cell, c) => (
-                    <td key={c} className="px-2 py-2 align-top text-[15px] sm:text-base">
+                    <td key={c} className="px-1 py-2 first:pl-0 last:pr-0 align-top text-[clamp(12px,3.6vw,15px)] leading-5 min-[400px]:px-1.5 sm:px-2 sm:text-base">
                       <Rich text={cell} />
                     </td>
                   ))}

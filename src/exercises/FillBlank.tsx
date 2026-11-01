@@ -24,7 +24,7 @@ export default function FillBlank({
   const [before, after] = prompt.sentenceKkParts;
 
   return (
-    <div className="space-y-6">
+    <div className="exercise">
       <h2 className="text-prompt text-berkut-ink-muted">Fill in the blank</h2>
       {prompt.hintEn && (
         <p className="text-small text-berkut-ink-muted">

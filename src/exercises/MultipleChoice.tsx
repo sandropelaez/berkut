@@ -25,7 +25,7 @@ export default function MultipleChoice({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="exercise">
       {prompt.promptKk ? (
         <SpokenPrompt
           {...kazakh(prompt.promptKk)}

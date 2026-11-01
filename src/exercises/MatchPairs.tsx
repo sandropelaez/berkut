@@ -87,7 +87,7 @@ export default function MatchPairs({
   const right = tiles.filter((t) => t.side === "en");
 
   return (
-    <div className="space-y-6">
+    <div className="exercise">
       <h2 className="text-prompt text-berkut-ink-muted">Match the pairs</h2>
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-3">
