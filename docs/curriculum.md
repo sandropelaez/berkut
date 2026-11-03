@@ -71,7 +71,7 @@ the path is locked behind it.
 | 4 | Көпше түр — Plurals | 24 | -лар/-дар/-тар; no plural after numbers / көп; олар + plural |
 | 5 | Менің отбасым — My Family | 25 | Possessives -м/-ым/-ім…, қ→ғ к→г п→б, бар / жоқ (to have), емес vs жоқ |
 | 6 | Сандар, уақыт, орын — Numbers, Time & Place | 33 | 1–100, age (жаста), locative -да/-та, сағат …-да, weekdays |
-| 7 | Не істейсің? — Everyday Verbs | 37 | Present/future -а/-е/-й + endings, SOV, negative -ма/-ба/-па, questions ма/ба, маған … ұнайды / керек (like, need), да/де "too" |
+| 7 | Не істейсің? — Everyday Verbs | 41 | Present/future -а/-е/-й + endings, word order who–when–where–what–verb (кеше / бүгін / ертең), negative -ма/-ба/-па, questions ма/ба (ол: жаза ма?), маған … ұнайды / керек (like, need), да/де "too" |
 
 The previous A1.1 lessons in units 1–7 (including the old Food & Drink
 lessons in unit 7) are archived by `013_beginner_revamp.sql`.
