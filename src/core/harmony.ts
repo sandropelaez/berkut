@@ -173,15 +173,52 @@ export function presentTense(infinitive: string, person: Person): string {
   return stem + pick(stem, "а", "е") + ending;
 }
 
+// Negation -ма/-ме, -ба/-бе, -па/-пе on the verb stem (present and past).
+function negativeParticle(stem: string): string {
+  const f = finalClass(stem);
+  if (f === "voiceless") return pick(stem, "па", "пе");
+  if (f === "voiced" || f === "mnng") return pick(stem, "ба", "бе");
+  return pick(stem, "ма", "ме");
+}
+
 export function presentNegative(infinitive: string, person: Person): string {
   const stem = verbStem(infinitive);
-  const f = finalClass(stem);
-  const neg =
-    f === "voiceless"
-      ? pick(stem, "па", "пе")
-      : f === "voiced" || f === "mnng"
-        ? pick(stem, "ба", "бе")
-        : pick(stem, "ма", "ме");
   const [strong, soft] = PRESENT_ENDINGS[person];
-  return stem + neg + "й" + pick(stem, strong, soft);
+  return stem + negativeParticle(stem) + "й" + pick(stem, strong, soft);
+}
+
+// ─── Past simple: stem + -ды/-ді/-ты/-ті + short personal ending ─────────
+// мен -м, сен -ң, сіз -ңыз/-ңіз, ол —, біз -қ/-к, сендер -ңдар/-ңдер,
+// сіздер -ңыздар/-ңіздер, олар —. -ты/-ті after a voiceless final, where
+// ғ / г / б also devoice: шығу → шықты.
+const PAST_ENDINGS: Record<Person, [string, string]> = {
+  мен: ["м", "м"],
+  сен: ["ң", "ң"],
+  сіз: ["ңыз", "ңіз"],
+  ол: ["", ""],
+  біз: ["қ", "к"],
+  сендер: ["ңдар", "ңдер"],
+  сіздер: ["ңыздар", "ңіздер"],
+  олар: ["", ""],
+};
+
+const DEVOICE: Record<string, string> = { ғ: "қ", г: "к", б: "п" };
+
+export function pastTense(infinitive: string, person: Person): string {
+  const stem = verbStem(infinitive);
+  const [strong, soft] = PAST_ENDINGS[person];
+  const ending = pick(stem, strong, soft);
+  if (finalClass(stem) === "voiceless") {
+    const last = stem[stem.length - 1]!;
+    const base = stem.slice(0, -1) + (DEVOICE[last] ?? last);
+    return base + pick(stem, "ты", "ті") + ending;
+  }
+  return stem + pick(stem, "ды", "ді") + ending;
+}
+
+/** Past negative: stem + -ма/-ба/-па + -ды/-ді + ending (жазбадым, кеспедім). */
+export function pastNegative(infinitive: string, person: Person): string {
+  const stem = verbStem(infinitive);
+  const [strong, soft] = PAST_ENDINGS[person];
+  return stem + negativeParticle(stem) + pick(stem, "ды", "ді") + pick(stem, strong, soft);
 }

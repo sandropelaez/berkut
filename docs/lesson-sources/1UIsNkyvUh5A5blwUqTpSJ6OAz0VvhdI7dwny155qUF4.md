@@ -2000,7 +2000,146 @@ tomorrow my wife works at home → әйелім ертең үйде жұмыс �
 
 ерте ояна ма? - will she wake up early?
 
-кітап жазбай ма? - won’t she write a book?  
+кітап жазбай ма? - won’t she write a book?
+
+бүгін жұмыс істейсің бе?
+
+  
+
+ істеу / жасау - to do 
+
+  
+
+бүгін жұмыс істеймін
+
+  
+
+  - қара кофе ішесің бе?
+  - қара кофе ішемін 
+
+  
+
+  - қызың ерте ояна ма?
+  - қызым ерте оянады
+  - мен де ерте оянамын
+  - әйелім де ерте оянады
+
+  
+
+  - тамақ жеу - to eat food
+  - бешпармақ жеймін
+  - қызым плов жейді
+
+  
+
+да/де/та/те - as well / also
+
+  
+
+Present: -а/е/й 
+
+Past: -ды/ді/ты/ті
+
+  
+
+  Present  Past
+
+мен   оянамын  ояндым
+
+сен   оянасың  ояндың
+
+сіз   оянасыз  ояндыңыз
+
+ол  оянады  оянды
+
+  
+
+**не** істедің? - **what** did you do?
+
+жұмыс істедім - I worked
+
+кофе іштім - I drank coffee
+
+имейл жаздым - I wrote an email
+
+жазу - to write
+
+шы**ғ**у - to go out (leave the building)
+
+үй**ден** шы**қ**тым - I left the house
+
+**from** the house I left 
+
+жұмыс**тан** шықтым - I left work
+
+  
+
+кеше тамақ пісірдім - yesterday I cooked food
+
+бүгін әйелім тамақ пісірді - today my wife cooked
+
+  
+
+кеше қызым кеш оянды
+
+ кеш - late / evening
+
+әйелім де кеш оянды
+
+  
+
+today I woke up early - бүгін ерте ояндым
+
+everyday I wake up early - күнде ерте оянамын 
+
+  
+
+today I ate salad - бүгін салат жедім
+
+everyday I eat salad - күнде салат жеймін
+
+  
+
+i drank coffee today - бүгін кофе іштім
+
+tomorrow i drink coffee - ертең кофе ішемін
+
+  
+
+күнің қалай өтті? - how was your day?
+
+ өту - to pass
+
+күнім жақсы өтті
+
+  
+
+аптаң қалай өтті? - how was your week?
+
+аптам жақсы өтті
+
+  
+
+ тез - quick
+
+  
+
+ұйқың қанды ма? - how was your sleep? did you sleep enough?
+
+  
+
+ ұйқы - sleep (noun)
+
+ қану - to get satisfied
+
+  
+
+ұйқым қанды - I slept enough
+
+ұйқым қанбады - I didn’t sleep enough
+
+  
+  
 
 # Quiz  
 
