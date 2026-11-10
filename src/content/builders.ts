@@ -11,6 +11,8 @@ import {
   locativeSuffix,
   personalSuffix,
   pluralSuffix,
+  pastNegative,
+  pastTense,
   possessive,
   presentNegative,
   presentTense,
@@ -230,6 +232,27 @@ export function verbDrill(before: string, verb: string, person: Person, after: s
 /** Present negative: blank is the negated verb. */
 export function negDrill(before: string, verb: string, person: Person, after: string, hintEn: string): Item {
   const correct = presentNegative(verb, person);
+  const stem = verbStem(verb);
+  const neg = correct.slice(stem.length, stem.length + 2);
+  const tail = correct.slice(stem.length + 2);
+  const candidates = ["м", "б", "п"].filter((c) => c !== neg[0]).map((c) => stem + c + neg[1] + tail);
+  return fill(before, after, correct, pickTwo(correct, candidates), hintEn);
+}
+
+/** Past simple: blank is the past form (ояндым). Decoys: wrong -д/-т, wrong harmony, present. */
+export function pastDrill(before: string, verb: string, person: Person, after: string, hintEn: string): Item {
+  const correct = pastTense(verb, person);
+  const i = verbStem(verb).length; // devoicing (шығ → шық) keeps the length
+  const head = correct.slice(0, i);
+  const suf = correct.slice(i);
+  const otherDT = (suf[0] === "д" ? "т" : "д") + suf.slice(1);
+  const candidates = [head + otherDT, head + flip(suf), presentTense(verb, person)];
+  return fill(before, after, correct, pickTwo(correct, candidates), hintEn);
+}
+
+/** Past negative: blank is the negated past form (жазбадым). */
+export function pastNegDrill(before: string, verb: string, person: Person, after: string, hintEn: string): Item {
+  const correct = pastNegative(verb, person);
   const stem = verbStem(verb);
   const neg = correct.slice(stem.length, stem.length + 2);
   const tail = correct.slice(stem.length + 2);
