@@ -1,4 +1,4 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type { ApiRequest, ApiResponse } from "./_lib/http.js";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getBearer, userClient } from "./_lib/supabase.js";
 import {
@@ -63,7 +63,7 @@ async function save(supabase: SupabaseClient, userId: string, s: ProgressSnapsho
   if (profile.error) throw profile.error;
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: ApiRequest, res: ApiResponse) {
   const token = getBearer(req as any);
   if (!token) return res.status(401).json({ error: "unauthorized" });
 

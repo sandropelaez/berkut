@@ -1,10 +1,10 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type { ApiRequest, ApiResponse } from "./_lib/http.js";
 import { adminClient } from "./_lib/supabase.js";
 
 // Single endpoint that fans out by ?action. Avoids Vercel catch-all
 // routing pitfalls — URLs look like /api/content?action=course&lang=kk.
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
     return res.status(405).json({ error: "method_not_allowed" });

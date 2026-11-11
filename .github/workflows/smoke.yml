@@ -1,9 +1,8 @@
 name: Production smoke test
 
-# Runs after Vercel finishes deploying to production. Polls for the new
-# deployment to be live (matches the latest commit), then hits the live URL
-# with the smoke checks. Fails the workflow if any check breaks — you'll
-# get an email from GitHub.
+# Runs after each push to main (Cloudflare Workers Builds deploys it), polls
+# until the live site answers, then hits it with the smoke checks. Fails the
+# workflow if any check breaks — you'll get an email from GitHub.
 #
 # Also runs on-demand via "Run workflow" in the Actions tab, so you can
 # re-verify the live site whenever Supabase wakes up from auto-pause etc.
@@ -11,10 +10,6 @@ name: Production smoke test
 on:
   push:
     branches: [main]
-  # Vercel reports each deployment back to GitHub. Merges made by the
-  # Dependabot auto-merge job don't fire `push` workflows (GitHub skips them for
-  # GITHUB_TOKEN pushes), so this is what smoke-tests those deploys.
-  deployment_status:
   workflow_dispatch:
   schedule:
     # Every 6 hours — catches Supabase free-tier pauses + cert/DNS regressions.
@@ -22,11 +17,6 @@ on:
 
 jobs:
   smoke:
-    # Only finished production deploys, not previews or in-progress statuses.
-    if: >-
-      github.event_name != 'deployment_status' ||
-      (github.event.deployment_status.state == 'success' &&
-       startsWith(github.event.deployment.environment, 'Production'))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -40,7 +30,7 @@ jobs:
       - name: Install (runtime only — smoke test has no extra deps)
         run: npm ci
 
-      - name: Wait for Vercel to publish the new deployment
+      - name: Wait for the site to answer
         # Polls /api/health up to ~5 minutes after a push. For non-push triggers
         # (schedule, workflow_dispatch) this just verifies the site is reachable.
         run: |
