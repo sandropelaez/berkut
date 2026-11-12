@@ -1,0 +1,28 @@
+// Cloudflare Worker that hosts Berkut: the Vite build as static assets plus
+// the API handlers in api/ (via worker/index.ts) for /api/*.
+//
+// Deploys from GitHub with Cloudflare Workers Builds (build: npm run build,
+// deploy: npx wrangler deploy). The one secret, SUPABASE_SERVICE_ROLE_KEY,
+// is set in the Cloudflare dashboard (or: npx wrangler secret put ...).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "berkut",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*", "/api"]
+  },
+  // Run the API near Supabase (Singapore) instead of near each visitor:
+  // every request makes several database round trips.
+  "placement": { "mode": "smart" },
+  "observability": { "enabled": true },
+  // Public values (the anon key already ships in the browser bundle).
+  "vars": {
+    "SUPABASE_URL": "https://auegzooosqjligiecddy.supabase.co",
+    "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1ZWd6b29vc3FqbGlnaWVjZGR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzMjQ1NjQsImV4cCI6MjA5MzkwMDU2NH0.vGDm63SzN-yY2hjuJrn1OPPM0euG5dCv0HcKF_8OUgs"
+  }
+}

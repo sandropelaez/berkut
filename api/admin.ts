@@ -1,4 +1,4 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type { ApiRequest, ApiResponse } from "./_lib/http.js";
 import { requireAdmin, recordAudit, type AdminContext } from "./_lib/admin.js";
 
 // Single endpoint that fans out by ?action. Avoids Vercel catch-all
@@ -23,7 +23,7 @@ import { requireAdmin, recordAudit, type AdminContext } from "./_lib/admin.js";
 //   DELETE /api/admin?action=content&kind=exercises&id=u1-l1-e1
 //   GET    /api/admin?action=audit
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: ApiRequest, res: ApiResponse) {
   const action = (req.query.action as string) ?? "";
 
   // /admins POST/DELETE requires super_admin; everything else needs admin.
@@ -56,7 +56,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 }
 
-async function getStats(ctx: AdminContext, res: VercelResponse) {
+async function getStats(ctx: AdminContext, res: ApiResponse) {
   const svc = ctx.service;
   const dayMs = 24 * 60 * 60 * 1000;
   const now = Date.now();
@@ -97,7 +97,7 @@ async function getStats(ctx: AdminContext, res: VercelResponse) {
   });
 }
 
-async function handleUsers(ctx: AdminContext, req: VercelRequest, res: VercelResponse) {
+async function handleUsers(ctx: AdminContext, req: ApiRequest, res: ApiResponse) {
   const id = (req.query.id as string | undefined) ?? "";
   const svc = ctx.service;
 
@@ -190,7 +190,7 @@ async function handleUsers(ctx: AdminContext, req: VercelRequest, res: VercelRes
   return res.status(405).json({ error: "method_not_allowed" });
 }
 
-async function handleAdmins(ctx: AdminContext, req: VercelRequest, res: VercelResponse) {
+async function handleAdmins(ctx: AdminContext, req: ApiRequest, res: ApiResponse) {
   const svc = ctx.service;
 
   if (req.method === "GET") {
@@ -264,7 +264,7 @@ async function handleAdmins(ctx: AdminContext, req: VercelRequest, res: VercelRe
   return res.status(405).json({ error: "method_not_allowed" });
 }
 
-async function getAudit(ctx: AdminContext, req: VercelRequest, res: VercelResponse) {
+async function getAudit(ctx: AdminContext, req: ApiRequest, res: ApiResponse) {
   const limit = Math.min(200, Math.max(1, parseInt((req.query.limit as string) ?? "50", 10)));
   const { data, error } = await ctx.service
     .from("admin_audit_log")
@@ -275,7 +275,7 @@ async function getAudit(ctx: AdminContext, req: VercelRequest, res: VercelRespon
   return res.status(200).json(data ?? []);
 }
 
-async function handleReports(ctx: AdminContext, req: VercelRequest, res: VercelResponse) {
+async function handleReports(ctx: AdminContext, req: ApiRequest, res: ApiResponse) {
   const svc = ctx.service;
   const id = (req.query.id as string | undefined) ?? "";
   const status = (req.query.status as string | undefined) ?? "open";
@@ -344,7 +344,7 @@ async function handleReports(ctx: AdminContext, req: VercelRequest, res: VercelR
   return res.status(405).json({ error: "method_not_allowed" });
 }
 
-async function handleContent(ctx: AdminContext, req: VercelRequest, res: VercelResponse) {
+async function handleContent(ctx: AdminContext, req: ApiRequest, res: ApiResponse) {
   const kind = (req.query.kind as string) ?? "";
   const id = (req.query.id as string | undefined) ?? "";
   const svc = ctx.service;
@@ -389,8 +389,9 @@ async function handleContent(ctx: AdminContext, req: VercelRequest, res: VercelR
     if (req.method === "PATCH" && (kind === "lessons" || kind === "exercises")) {
       const lessonId = kind === "lessons" ? id! : (before as any)?.lesson_id;
       if (lessonId) {
-        const [lesson, exercises, vocab] = await Promise.all([
-          svc.from("lessons").select("*").eq("id", lessonId).maybeSingle(),
+        // The lesson is read first because the vocab query needs its unit.
+        const lesson = await svc.from("lessons").select("*").eq("id", lessonId).maybeSingle();
+        const [exercises, vocab] = await Promise.all([
           svc.from("exercises").select("*").eq("lesson_id", lessonId).order("order"),
           svc.from("vocab").select("*").eq("unit_id", (lesson.data as any)?.unit_id ?? ""),
         ]);

@@ -1,4 +1,4 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type { ApiRequest, ApiResponse } from "./http.js";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { adminClient, getBearer, userClient } from "./supabase.js";
 
@@ -14,8 +14,8 @@ export interface AdminContext {
 }
 
 export async function requireAdmin(
-  req: VercelRequest,
-  res: VercelResponse,
+  req: ApiRequest,
+  res: ApiResponse,
   needSuperAdmin = false,
 ): Promise<AdminContext | null> {
   const token = getBearer(req as any);

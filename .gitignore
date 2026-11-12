@@ -14,3 +14,5 @@ vite.config.d.ts
 .vscode/*
 !.vscode/extensions.json
 .idea
+.dev.vars
+.wrangler

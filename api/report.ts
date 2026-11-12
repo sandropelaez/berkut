@@ -1,4 +1,4 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type { ApiRequest, ApiResponse } from "./_lib/http.js";
 import { getBearer, userClient, adminClient } from "./_lib/supabase.js";
 
 const VALID_REASONS = new Set([
@@ -18,7 +18,7 @@ const VALID_REASONS = new Set([
 // Auth required. The submission is attributed to the JWT user and goes
 // into public.exercise_reports. Server enforces rate limit (8/hour/user)
 // to prevent abuse; the trigger on exercise_reports bumps exercises.report_count.
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "method_not_allowed" });

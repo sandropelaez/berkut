@@ -3,8 +3,7 @@
 Kazakh language learning app — bite-sized lessons, dual-script (Cyrillic ↔ Latin), gamified.
 
 Implementation of the Berkut v1.1 spec: React + Vite + TypeScript, Tailwind, Zustand,
-Supabase (Auth + Postgres + Storage), Vercel (frontend + serverless API),
-Cloudflare (DNS + CDN).
+Supabase (Auth + Postgres + Storage), Cloudflare Workers (frontend + API, DNS, CDN).
 
 ---
 
@@ -93,7 +92,7 @@ bootstrap `UPDATE`, re-run the migration.
 
 ```
 berkut/
-├── api/                      # Vercel serverless functions (REST endpoints)
+├── api/                      # API handlers (REST endpoints), run by the Worker
 │   ├── _lib/supabase.ts      # admin + user-scoped Supabase clients
 │   ├── health.ts             # GET /api/health
 │   ├── progress.ts           # GET/POST /api/progress
@@ -114,7 +113,8 @@ berkut/
 ├── .env.example
 ├── tailwind.config.js
 ├── vite.config.ts
-├── vercel.json
+├── wrangler.jsonc            # Cloudflare Worker: static assets + /api
+├── worker/index.ts           # routes /api/* to the handlers in api/
 └── package.json
 ```
 
@@ -136,8 +136,8 @@ to enable real accounts and cross-device sync.
 
 ## Production deployment
 
-You need three accounts: **Supabase** (DB + Auth + OAuth broker), **Vercel**
-(frontend + API), **Cloudflare** (DNS — already set up). All free tier.
+You need two accounts: **Supabase** (DB + Auth + OAuth broker) and **Cloudflare**
+(frontend + API on Workers, plus DNS). Both free tier.
 
 ### 1 · Supabase project (≈5 min)
 
@@ -190,44 +190,31 @@ Follows §12.3 of the spec.
      - `https://berkutai.com/auth/callback`
      - `http://localhost:5173/auth/callback`
 
-### 3 · Vercel project (≈5 min)
+### 3 · Cloudflare Worker (≈5 min)
 
-1. <https://vercel.com> → **Add New → Project** → import the
-   `sandropelaez/berkut` repo.
-2. Framework Preset: **Vite** (auto-detected).
-3. **Environment Variables** — add all five from `.env.example`:
+The site and API run as one Cloudflare Worker (`wrangler.jsonc`): the Vite build is
+served as static assets with SPA fallback, and `/api/*` runs the handlers in `api/`
+through `worker/index.ts`. Smart Placement runs the API near Supabase (Singapore).
 
-   | Name                          | Where to find                                    |
-   |-------------------------------|--------------------------------------------------|
-   | `VITE_SUPABASE_URL`           | Supabase → Settings → API → Project URL          |
-   | `VITE_SUPABASE_ANON_KEY`      | Supabase → Settings → API → anon public          |
-   | `SUPABASE_URL`                | (same as above)                                  |
-   | `SUPABASE_ANON_KEY`           | (same as above)                                  |
-   | `SUPABASE_SERVICE_ROLE_KEY`   | Supabase → Settings → API → service_role         |
+1. Cloudflare dashboard → **Workers & Pages → Create → Import a repository** →
+   `sandropelaez/berkut`. Build command `npm run build`, deploy command
+   `npx wrangler deploy` (Workers Builds reads `wrangler.jsonc`). Every push to `main`
+   deploys; other branches get preview URLs.
+2. Worker → **Settings → Variables and Secrets** → add the secret
+   `SUPABASE_SERVICE_ROLE_KEY` (Supabase → Settings → API → service_role).
+   `SUPABASE_URL` / `SUPABASE_ANON_KEY` live in `wrangler.jsonc`, and the browser's
+   `VITE_*` values in `.env.production` (both public by design).
+3. Worker → **Settings → Domains & Routes** → add custom domains `berkutai.com` and
+   `www.berkutai.com`. Delete any old `A` / `CNAME` records for them first.
 
-   Set scope to **Production, Preview, Development** for all five.
-4. **Deploy**. First build takes ~90s.
-5. **Settings → Domains** → **Add** → `berkutai.com` and `www.berkutai.com`.
-   Vercel will show two DNS records to add (one A or ALIAS for the apex,
-   one CNAME for `www`).
+From a laptop instead: `npx wrangler login`, `npx wrangler secret put
+SUPABASE_SERVICE_ROLE_KEY`, `npm run deploy`. To run the Worker locally, put the three
+`SUPABASE_*` values in `.dev.vars` and run `npm run dev:worker`.
 
-### 4 · Cloudflare DNS (≈2 min)
+### 4 · DNS
 
-1. Cloudflare dashboard → `berkutai.com` → **DNS → Records**.
-2. **Apex (`@`)**: add an `A` record pointing to `76.76.21.21` (Vercel's
-   anycast IP), Proxy status: **DNS only** (gray cloud — Vercel issues the
-   TLS cert directly via its own edge).
-3. **`www`**: add a `CNAME` record pointing to `cname.vercel-dns.com`,
-   Proxy status: **DNS only**.
-4. Wait 1–5 min for DNS to propagate. Vercel will auto-issue Let's Encrypt
-   certs once it sees the records.
-
-> **Why DNS-only and not Cloudflare-proxied?** Vercel's edge already runs
-> a CDN and handles HTTPS termination on its own anycast network. Putting
-> Cloudflare in front means double-proxying, which complicates SSL renewal
-> and breaks Vercel's Edge Network optimizations. If you specifically want
-> Cloudflare's WAF / page rules, switch the proxy on **after** Vercel's
-> first successful cert issuance and use **Full (strict)** SSL mode.
+`berkutai.com` is a Cloudflare zone, so the custom domains in step 3 create the DNS
+records and TLS certificates themselves.
 
 ### 5 · Verify
 
@@ -242,7 +229,7 @@ Follows §12.3 of the spec.
 
 ## Dependency updates
 
-Vercel patches the Node runtime and Supabase patches Postgres/Auth; the npm
+Cloudflare patches the Workers runtime and Supabase patches Postgres/Auth; the npm
 packages are ours to keep current. That runs on its own:
 
 - **Dependabot** ([`.github/dependabot.yml`](.github/dependabot.yml)) opens one
@@ -250,8 +237,8 @@ packages are ours to keep current. That runs on its own:
   security advisory lands.
 - **Auto-merge** (the `dependabot-auto-merge` job in
   [`ci.yml`](.github/workflows/ci.yml)) squash-merges those patch and minor PRs
-  once typecheck, tests and build pass. Vercel deploys, and the smoke test runs
-  against the live site when the production deploy finishes.
+  once typecheck, tests and build pass. Cloudflare deploys, and the scheduled
+  smoke test checks the live site every 6 hours.
 - **Major versions** are left out of Dependabot's weekly run (they usually need
   code changes). A weekly Claude session runs `npm audit`, does the upgrade,
   fixes what breaks and opens a PR for review.
@@ -269,11 +256,11 @@ One-time GitHub settings this needs (**Settings** on the repo):
 
 | Spec §8 | This implementation |
 |---|---|
-| Fastify monolith on Railway/Fly | **Vercel serverless functions** (`/api/*`). Same REST shape, JWT-verified, RLS-protected. Easier to operate at MVP scale. |
+| Fastify monolith on Railway/Fly | **Cloudflare Worker** (`/api/*`). Same REST shape, JWT-verified, RLS-protected. Easier to operate at MVP scale. |
 | Prisma ORM | **Direct `@supabase/supabase-js` calls** with RLS as the authorisation boundary. Reintroduce Prisma in Phase 2 when query complexity warrants it. |
 | Modular monolith → service extraction | All API endpoints live under `/api`; refactor into per-service folders when one of them gets hot. |
 | Object storage for audio | **Web Speech TTS** for MVP (free, instant). Swap to pre-recorded MP3s in Supabase Storage at `/audio/{unit}/{lesson}/{word_id}.mp3` when budget allows. |
-| Redis cache (Phase 2) | Vercel Edge cache (`s-maxage`) on the leaderboard endpoint. Add Upstash Redis when traffic warrants. |
+| Redis cache (Phase 2) | Cloudflare edge cache (`s-maxage`, via the Worker's Cache API) on the leaderboard endpoint. Add Upstash Redis when traffic warrants. |
 | Mobile (Expo) | Not built — frontend is web-only for v1.1. The `core/` package is dependency-free and ready to be extracted into `packages/core` for an Expo app later. |
 
 ## Going to v1.2 / Phase 2
@@ -284,7 +271,7 @@ Things to add when you cross 1k users:
   cache.
 - Resend or Postmark for transactional email (currently Supabase's free SMTP).
 - Sentry for browser + serverless error tracking.
-- A weekly cron (Vercel Cron) to call `select reset_weekly_xp()` on
+- A weekly cron (Worker Cron Trigger) to call `select reset_weekly_xp()` on
   Sundays at 00:00 UTC.
 - Pre-recorded native-speaker audio for Unit 1–3 vocab.
 - Speaking exercises with the Web Speech API.
